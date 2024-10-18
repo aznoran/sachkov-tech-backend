@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Entities;
+using NotificationService.Extensions;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
@@ -17,11 +18,8 @@ namespace NotificationService.Features.Commands
             PatchNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
-            var dbSet = _dbContext.Set<NotificationSettings>();
-
-            var notificationSettings = await dbSet.FirstOrDefaultAsync(
-                            x => x.Id == command.Id,
-                            cancellationToken);
+            var notificationSettings = await _dbContext.NotificationSettings
+                .FirstOrDefaultAsync(x => x.Id == command.Id,cancellationToken);
 
             if (notificationSettings == null)
                 return Error.NotFound("notification.settings.not.found",

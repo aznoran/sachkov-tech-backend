@@ -6,7 +6,7 @@ using NotificationService.HelperClasses;
 
 namespace NotificationService.Api
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class NotificationSettingsController : ControllerBase
     {
@@ -26,7 +26,7 @@ namespace NotificationService.Api
         [HttpPatch("{id:Guid}")]
         public async Task<IActionResult> Patch(
             [FromRoute] Guid id,
-            [FromBody] PatchNotificationSettingsContract dto,
+            [FromBody] PatchNotificationSettingsRequest dto,
             [FromServices] PatchNotificationSettingsHandler handler,
             CancellationToken cancellationToken = default)
         {

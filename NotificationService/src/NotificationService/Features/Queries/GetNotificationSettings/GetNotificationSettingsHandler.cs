@@ -8,20 +8,19 @@ namespace NotificationService.Features.Queries
 {
     public class GetNotificationSettingsHandler
     {
-        private readonly DbSet<NotificationSettings> _notificationSettings;
+        private readonly ApplicationDbContext _dbContext;
 
         public GetNotificationSettingsHandler(ApplicationDbContext dbContext)
         {
-            _notificationSettings = dbContext.Set<NotificationSettings>();
+            _dbContext = dbContext;
         }
 
         public async Task<Result<NotificationSettings, Error>> Handle(
             GetNotificationSettingsQuery query,
             CancellationToken cancellationToken = default)
         {
-            var notificationSettings = await _notificationSettings.FirstOrDefaultAsync(
-                                        x => x.Id == query.Id,
-                                        cancellationToken);
+            var notificationSettings = await _dbContext.NotificationSettings
+                .FirstOrDefaultAsync(x => x.Id == query.Id,cancellationToken);
 
             if (notificationSettings == null)
                 return Error.NotFound("notification.settings.not.found",

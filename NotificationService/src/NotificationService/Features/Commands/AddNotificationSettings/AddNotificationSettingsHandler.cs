@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using NotificationService.Entities;
+using NotificationService.Extensions;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
@@ -16,8 +17,6 @@ namespace NotificationService.Features.Commands
             AddNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
-            var dbSet = _dbContext.Set<NotificationSettings>();
-
             var notificationSettings = new NotificationSettings()
             {
                 Id = command.Id,
@@ -29,7 +28,7 @@ namespace NotificationService.Features.Commands
                 telegram: command.Telegram,
                 web: command.Web);
 
-            await dbSet.AddAsync(notificationSettings);
+            await _dbContext.NotificationSettings.AddAsync(notificationSettings);
             await _dbContext.SaveChangesAsync();
 
             return Result.Success<Error>();
