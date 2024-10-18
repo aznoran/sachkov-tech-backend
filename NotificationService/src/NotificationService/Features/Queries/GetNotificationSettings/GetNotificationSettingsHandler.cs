@@ -19,14 +19,15 @@ namespace NotificationService.Features.Queries
             GetNotificationSettingsQuery query,
             CancellationToken cancellationToken = default)
         {
-            var userSettings = await _notificationSettings.FirstOrDefaultAsync(
+            var notificationSettings = await _notificationSettings.FirstOrDefaultAsync(
                                         x => x.Id == query.Id,
                                         cancellationToken);
 
-            if (userSettings == null)
-                return Error.NotFound("notification.settings.not.found", $"No settings were found with id: {query.Id}");
+            if (notificationSettings == null)
+                return Error.NotFound("notification.settings.not.found",
+                    $"No settings were found with id: {query.Id}");
 
-            return userSettings;
+            return notificationSettings;
         }
     }
 }

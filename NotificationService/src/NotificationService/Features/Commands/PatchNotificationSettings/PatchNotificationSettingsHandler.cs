@@ -13,26 +13,31 @@ namespace NotificationService.Features.Commands
         {
             _dbContext = dbContext;
         }
-        public async Task<Result<NotificationSettings, Error>> Handle(
+        public async Task<UnitResult<Error>> Handle(
             PatchNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
             var dbSet = _dbContext.Set<NotificationSettings>();
 
-            var userSettings = await dbSet.FirstOrDefaultAsync(
+            var notificationSettings = await dbSet.FirstOrDefaultAsync(
                             x => x.Id == command.Id,
                             cancellationToken);
 
-            if (userSettings == null)
-                return Error.NotFound("notification.settings.not.found", $"No settings were found with id: {command.Id}");
+            if (notificationSettings == null)
+                return Error.NotFound("notification.settings.not.found",
+                    $"No settings were found with id: {command.Id}");
 
-            var updateRes = UpdateSettings(command.NotificationType, command.Value, userSettings);
+            var updateRes = UpdateSettings(
+                command.NotificationType,
+                command.Value,
+                notificationSettings);
+
             if (updateRes.IsFailure)
                 return updateRes.Error;
 
             await _dbContext.SaveChangesAsync();
 
-            return userSettings;
+            return Result.Success<Error>();
         }
 
         private UnitResult<Error> UpdateSettings(string propertyName, bool value, NotificationSettings userSettings)
@@ -56,7 +61,7 @@ namespace NotificationService.Features.Commands
                     }
                 default:
                     {
-                        return Error.Validation("notification.type.not.found",
+                        return Error.Validation("invalid.value.notification.type",
                             $"No such notification method exists: {propertyName}");
                     }
             }
