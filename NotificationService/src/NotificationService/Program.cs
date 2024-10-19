@@ -9,6 +9,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<ApplicationDbContext>();
 
+builder.Services.AddHandlers();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

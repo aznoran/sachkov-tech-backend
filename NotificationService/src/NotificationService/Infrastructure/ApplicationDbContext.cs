@@ -7,6 +7,9 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
 {
     private const string DATABASE = "Database";
 
+    public DbSet<NotificationSettings> NotificationSettings 
+        => Set<NotificationSettings>();
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString(DATABASE));
