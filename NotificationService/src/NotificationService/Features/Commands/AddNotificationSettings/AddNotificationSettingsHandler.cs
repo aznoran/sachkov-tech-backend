@@ -23,10 +23,9 @@ namespace NotificationService.Features.Commands
                 UserId = command.UserId
             };
 
-            notificationSettings.UpdatePreferences(
-                email: command.Email,
-                telegram: command.Telegram,
-                web: command.Web);
+            notificationSettings.Email = command.Email ?? notificationSettings.Email;
+            notificationSettings.Telegram = command.Telegram ?? notificationSettings.Telegram;
+            notificationSettings.Web = command.Web ?? notificationSettings.Web;
 
             await _dbContext.NotificationSettings.AddAsync(notificationSettings);
             await _dbContext.SaveChangesAsync();

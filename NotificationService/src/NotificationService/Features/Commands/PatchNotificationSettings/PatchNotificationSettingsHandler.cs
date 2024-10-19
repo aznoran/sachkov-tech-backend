@@ -19,7 +19,7 @@ namespace NotificationService.Features.Commands
             CancellationToken cancellationToken = default)
         {
             var notificationSettings = await _dbContext.NotificationSettings
-                .FirstOrDefaultAsync(x => x.Id == command.Id,cancellationToken);
+                .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
             if (notificationSettings == null)
                 return Error.NotFound("notification.settings.not.found",
@@ -44,17 +44,17 @@ namespace NotificationService.Features.Commands
             {
                 case "email":
                     {
-                        userSettings.UpdatePreferences(email: value);
+                        userSettings.Email = value;
                         break;
                     }
                 case "telegram":
                     {
-                        userSettings.UpdatePreferences(telegram: value);
+                        userSettings.Telegram = value;
                         break;
                     }
                 case "web":
                     {
-                        userSettings.UpdatePreferences(web: value);
+                        userSettings.Web = value;
                         break;
                     }
                 default:
