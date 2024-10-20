@@ -17,8 +17,4 @@ public interface IIssuesReviewsContract
         Guid userId,
         CreateIssueReviewRequest request,
         CancellationToken cancellationToken = default);
-    
-    Task<Result<Guid,ErrorList>> SendIssueReviewForRevision(
-        Guid userIssueId,
-        CancellationToken cancellationToken = default);
 }

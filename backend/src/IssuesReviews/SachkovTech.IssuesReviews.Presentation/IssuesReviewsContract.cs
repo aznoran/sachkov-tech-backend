@@ -31,11 +31,4 @@ public class IssuesReviewsContract(
 
         return await createIssueReviewHandler.Handle(command, cancellationToken);
     }
-
-    public async Task<Result<Guid,ErrorList>> SendIssueReviewForRevision(Guid userIssueId, CancellationToken cancellationToken = default)
-    {
-        var command = new SendForRevisionCommand(userIssueId);
-
-        return await sendForRevisionHandler.Handle(command, cancellationToken);
-    }
 }

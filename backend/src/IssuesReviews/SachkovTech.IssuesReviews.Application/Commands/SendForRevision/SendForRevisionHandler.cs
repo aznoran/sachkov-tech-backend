@@ -47,7 +47,14 @@ public class SendForRevisionHandler : ICommandHandler<Guid, SendForRevisionComma
             .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)
+        {
             return issueReviewResult.Error.ToErrorList();
+        }
+
+        if (issueReviewResult.Value.ReviewerId!.Value != command.ReviewerId)
+        {
+            return Errors.User.InvalidCredentials().ToErrorList();
+        }
         
         issueReviewResult.Value.SendIssueForRevision();
 

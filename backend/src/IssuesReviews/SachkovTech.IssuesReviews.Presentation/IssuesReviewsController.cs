@@ -78,8 +78,13 @@ public class IssuesReviewsController : ApplicationController
         [FromRoute] Guid issueReviewId,
         CancellationToken cancellationToken)
     {
+        var userId = HttpContext.User.FindFirstValue(CustomClaims.Id);
+        
+        if (userId == null)
+            return Errors.User.InvalidCredentials().ToResponse();
+        
         var result = await handler.Handle(
-            new SendForRevisionCommand(issueReviewId), cancellationToken);
+            new SendForRevisionCommand(issueReviewId, Guid.Parse(userId)), cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -93,8 +98,13 @@ public class IssuesReviewsController : ApplicationController
         [FromRoute] Guid issueReviewId,
         CancellationToken cancellationToken)
     {
+        var userId = HttpContext.User.FindFirstValue(CustomClaims.Id);
+        
+        if (userId == null)
+            return Errors.User.InvalidCredentials().ToResponse();
+        
         var result = await handler.Handle(
-            new ApproveIssueReviewCommand(issueReviewId), cancellationToken);
+            new ApproveIssueReviewCommand(issueReviewId, Guid.Parse(userId)), cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
