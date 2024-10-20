@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9227B646-C84B-41D7-B2AC-28BD2AA4C6CF}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		dbscript.cmd = dbscript.cmd
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SachkovTech.Domain.UnitTests", "tests\SachkovTech.Domain.UnitTests\SachkovTech.Domain.UnitTests.csproj", "{EC9BCD7E-EF6A-4409-9987-7042788E4328}"
