@@ -5,7 +5,7 @@ using SachkovTech.Issues.Domain;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 
-public class IsssuesWriteDbContext(IConfiguration configuration) : DbContext
+public class IssuesWriteDbContext(IConfiguration configuration) : DbContext
 {
     public DbSet<Module> Modules => Set<Module>();
 
@@ -22,7 +22,7 @@ public class IsssuesWriteDbContext(IConfiguration configuration) : DbContext
         modelBuilder.HasDefaultSchema("issues");
 
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(IsssuesWriteDbContext).Assembly,
+            typeof(IssuesWriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Write") ?? false);
     }
 

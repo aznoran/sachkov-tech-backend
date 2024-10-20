@@ -99,12 +99,34 @@ public sealed class IssueReview : Entity<IssueReviewId>
 
     public UnitResult<Error> AddComment(Comment comment)
     {
-        if (comment.UserId != UserId || (ReviewerId != null && ReviewerId != comment.UserId))
+        if (comment.UserId != UserId && (ReviewerId != null && ReviewerId != comment.UserId))
         {
             return Errors.General.ValueIsInvalid("userId");
         }
 
         _comments.Add(comment);
+
+        return UnitResult.Success<Error>();
+    }
+    public UnitResult<Error> DeleteComment(CommentId commentId, UserId userId)
+    {
+        var comment = _comments.FirstOrDefault(c => c.Id == commentId);
+
+        if (comment is null)
+        {
+            return Errors.General.NotFound(commentId.Value, "comment_id");
+        }
+
+        var a = (UserId != userId && (ReviewerId != null && ReviewerId != userId));
+        var b = comment.UserId != userId;
+        
+        if ((UserId != userId && (ReviewerId != null && ReviewerId != userId))
+            || comment.UserId != userId)
+        {
+            return Errors.General.ValueIsInvalid("userId");
+        }
+
+        _comments.Remove(comment);
 
         return UnitResult.Success<Error>();
     }

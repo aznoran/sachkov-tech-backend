@@ -43,7 +43,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
     {
-        services.AddScoped<IsssuesWriteDbContext>();
+        services.AddScoped<IssuesWriteDbContext>();
         services.AddScoped<IReadDbContext, IssuesReadDbContext>();
 
         return services;

@@ -14,6 +14,7 @@ using SachkovTech.Core.Options;
 using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
+using SachkovTech.IssueSolving.Presentation;
 using SachkovTech.IssuesReviews.Infrastructure;
 using SachkovTech.IssuesReviews.Presentation;
 
@@ -61,6 +62,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddIssueSolvingInfrastructure(configuration);
+        services.AddIssueSolvingInfrastructure();
 
         return services;
     }
