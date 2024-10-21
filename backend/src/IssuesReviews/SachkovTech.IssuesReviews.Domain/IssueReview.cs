@@ -73,8 +73,13 @@ public sealed class IssueReview : Entity<IssueReviewId>
         }
     }
 
-    public UnitResult<Error> SendIssueForRevision()
+    public UnitResult<Error> SendIssueForRevision(UserId reviewerId)
     {
+        if (ReviewerId != reviewerId)
+        {
+            return Errors.User.InvalidCredentials();
+        }
+        
         if (IssueReviewStatus != IssueReviewStatus.OnReview)
         {
             return Errors.General.ValueIsInvalid("issue-review-status");
@@ -85,8 +90,13 @@ public sealed class IssueReview : Entity<IssueReviewId>
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> Approve()
+    public UnitResult<Error> Approve(UserId reviewerId)
     {
+        if (ReviewerId != reviewerId)
+        {
+            return Errors.User.InvalidCredentials();
+        }
+        
         if (IssueReviewStatus != IssueReviewStatus.OnReview)
         {
             return Errors.General.ValueIsInvalid("issue-review-status");
@@ -99,12 +109,34 @@ public sealed class IssueReview : Entity<IssueReviewId>
 
     public UnitResult<Error> AddComment(Comment comment)
     {
-        if (comment.UserId != UserId || (ReviewerId != null && ReviewerId != comment.UserId))
+        if (comment.UserId != UserId && (ReviewerId != null && ReviewerId != comment.UserId))
         {
             return Errors.General.ValueIsInvalid("userId");
         }
 
         _comments.Add(comment);
+
+        return UnitResult.Success<Error>();
+    }
+    public UnitResult<Error> DeleteComment(CommentId commentId, UserId userId)
+    {
+        var comment = _comments.FirstOrDefault(c => c.Id == commentId);
+
+        if (comment is null)
+        {
+            return Errors.General.NotFound(commentId.Value, "comment_id");
+        }
+
+        var a = (UserId != userId && (ReviewerId != null && ReviewerId != userId));
+        var b = comment.UserId != userId;
+        
+        if ((UserId != userId && (ReviewerId != null && ReviewerId != userId))
+            || comment.UserId != userId)
+        {
+            return Errors.General.ValueIsInvalid("userId");
+        }
+
+        _comments.Remove(comment);
 
         return UnitResult.Success<Error>();
     }

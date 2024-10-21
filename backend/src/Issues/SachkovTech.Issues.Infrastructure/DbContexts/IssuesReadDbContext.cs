@@ -26,7 +26,7 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
         modelBuilder.HasDefaultSchema("issues");
         
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(IsssuesWriteDbContext).Assembly,
+            typeof(IssuesWriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
 
         modelBuilder.Entity<IssueDto>().HasQueryFilter(i => !i.IsDeleted);

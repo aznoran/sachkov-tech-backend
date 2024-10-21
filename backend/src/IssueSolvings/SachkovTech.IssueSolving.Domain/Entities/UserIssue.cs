@@ -48,8 +48,6 @@ public class UserIssue : Entity<UserIssueId>
 
     public UnitResult<Error> SendOnReview(PullRequestUrl pullRequestUrl)
     {
-        EndDateOfExecution = DateTime.UtcNow;
-
         if (Status != IssueStatus.AtWork)
             return Error.Failure("issue.status.invalid", "issue not at work");
 
@@ -83,11 +81,12 @@ public class UserIssue : Entity<UserIssueId>
 
     }
 
-    public UnitResult<Error> CompleteTask()
+    public UnitResult<Error> CompleteIssue()
     {
         if (Status != IssueStatus.UnderReview)
             return Error.Failure("issue.invalid.status", "issue status should be under review");
 
+        EndDateOfExecution = DateTime.UtcNow;
         Status = IssueStatus.Completed;
 
         return new UnitResult<Error>();

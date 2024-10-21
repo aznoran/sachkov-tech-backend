@@ -6,13 +6,13 @@ namespace SachkovTech.IssuesReviews.Contracts;
 
 public interface IIssuesReviewsContract
 {
-    Task<UnitResult<ErrorList>> AddComment(
+    Task<Result<Guid,ErrorList>> AddComment(
         Guid issueReviewId,
         Guid userId,
         AddCommentRequest request,
         CancellationToken cancellationToken = default);
     
-    Task<UnitResult<ErrorList>> CreateIssueReview(
+    Task<Result<Guid,ErrorList>> CreateIssueReview(
         Guid userIssueId,
         Guid userId,
         CreateIssueReviewRequest request,
