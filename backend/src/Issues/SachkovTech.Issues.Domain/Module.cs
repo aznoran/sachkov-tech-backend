@@ -7,10 +7,8 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain;
 
-public class Module : Entity<ModuleId>
+public class Module : SoftDeletableEntity<ModuleId>
 {
-    private bool _isDeleted = false;
-
     private readonly List<Issue> _issues = [];
 
     // ef core
@@ -48,15 +46,6 @@ public class Module : Entity<ModuleId>
         Description = description;
     }
 
-    public void Delete()
-    {
-        if (_isDeleted == false)
-            _isDeleted = true;
-
-        foreach (var issue in _issues)
-            issue.Delete();
-    }
-
     public UnitResult<Error> DeleteIssue(IssueId issueId)
     {
         var issue = _issues.FirstOrDefault(i => i.Id == issueId);
@@ -77,12 +66,19 @@ public class Module : Entity<ModuleId>
 
         var result = RecalculatePositionOfOtherIssues(issue.Position);
         if (result.IsFailure)
-            return result.Error
-                ;
-        issue.Delete();
+            return result.Error;
+
+        issue.SoftDelete();
         return Result.Success<Error>();
     }
-    
+
+    public void DeleteExpiredIssues()
+    {
+        _issues.RemoveAll(i => i.DeletionDate != null
+                               && DateTime.UtcNow >= i.DeletionDate.Value
+                                   .AddDays(Constants.Issues.LIFETIME_AFTER_DELETION));
+    }
+
     public UnitResult<Error> RestoreIssue(IssueId issueId)
     {
         var issue = _issues.FirstOrDefault(i => i.Id == issueId);
@@ -90,19 +86,26 @@ public class Module : Entity<ModuleId>
             return Result.Success<Error>();
 
         issue.Restore();
-        
+
         var resultMove = MoveIssue(issue, Position.Create(_issues.Count).Value);
         if (resultMove.IsFailure)
             return resultMove.Error;
-        
+
         return Result.Success<Error>();
     }
 
-    public void Restore()
+    public override void SoftDelete()
     {
-        if (!_isDeleted) return;
+        base.SoftDelete();
 
-        _isDeleted = false;
+        foreach (var issue in _issues)
+            issue.SoftDelete();
+    }
+
+    public override void Restore()
+    {
+        base.Restore();
+
         foreach (var issue in _issues)
             issue.Restore();
     }
@@ -198,7 +201,7 @@ public class Module : Entity<ModuleId>
         if (newPosition.Value <= _issues.Count)
             return newPosition;
 
-        var lastPosition = Position.Create(_issues.Count - 1);
+        var lastPosition = Position.Create(_issues.Count);
         if (lastPosition.IsFailure)
             return lastPosition.Error;
 

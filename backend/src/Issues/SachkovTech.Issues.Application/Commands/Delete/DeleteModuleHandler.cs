@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
@@ -16,7 +17,7 @@ public class DeleteModuleHandler : ICommandHandler<Guid, DeleteModuleCommand>
 
     public DeleteModuleHandler(
         IModulesRepository modulesRepository,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteModuleCommand> validator,
         ILogger<DeleteModuleHandler> logger)
     {
@@ -40,7 +41,7 @@ public class DeleteModuleHandler : ICommandHandler<Guid, DeleteModuleCommand>
         if (moduleResult.IsFailure)
             return moduleResult.Error.ToErrorList();
 
-        moduleResult.Value.Delete();
+        moduleResult.Value.SoftDelete();
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

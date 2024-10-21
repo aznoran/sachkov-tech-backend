@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
@@ -19,7 +20,7 @@ public class CreateModuleHandler : ICommandHandler<Guid, CreateModuleCommand>
 
     public CreateModuleHandler(
         IModulesRepository modulesRepository,
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<CreateModuleCommand> validator,
         ILogger<CreateModuleHandler> logger)
     {
@@ -37,7 +38,7 @@ public class CreateModuleHandler : ICommandHandler<Guid, CreateModuleCommand>
         {
             return validationResult.ToList();
         }
-        
+
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Description).Value;
 
@@ -50,11 +51,15 @@ public class CreateModuleHandler : ICommandHandler<Guid, CreateModuleCommand>
 
         var moduleToCreate = new Module(moduleId, title, description);
 
+        await using var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+
         await _modulesRepository.Add(moduleToCreate, cancellationToken);
-        
+
         await _unitOfWork.SaveChanges(cancellationToken);
-        
+
         _logger.LogInformation("Created module {title} with id {moduleId}", title, moduleId);
+
+        await transaction.CommitAsync(cancellationToken);
 
         return (Guid)moduleToCreate.Id;
     }

@@ -11,9 +11,9 @@ namespace SachkovTech.Issues.Infrastructure.Repositories;
 
 public class ModulesRepository : IModulesRepository
 {
-    private readonly WriteDbContext _dbContext;
+    private readonly IssuesWriteDbContext _dbContext;
 
-    public ModulesRepository(WriteDbContext dbContext)
+    public ModulesRepository(IssuesWriteDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -30,9 +30,10 @@ public class ModulesRepository : IModulesRepository
         return module.Id.Value;
     }
 
-    public Guid Delete(Module module, CancellationToken cancellationToken = default)
+    public Guid Delete(Module module)
     {
         _dbContext.Modules.Remove(module);
+
         return module.Id;
     }
 

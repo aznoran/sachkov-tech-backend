@@ -1,32 +1,33 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Minio;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application;
+using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.Issues.Infrastructure.Options;
 using SachkovTech.Issues.Infrastructure.Repositories;
+using SachkovTech.Issues.Infrastructure.Services;
 
 namespace SachkovTech.Issues.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddIssuesManagementInfrastructure(
+    public static IServiceCollection AddIssuesInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
         services
             .AddDbContexts()
-            .AddMinio(configuration)
             .AddRepositories()
-            .AddDatabase();
+            .AddDatabase()
+            .AddHostedServices()
+            .AddServices();
 
-        return services;
+        return services;   
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(SharedKernel.Modules.Issues);
 
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -36,34 +37,28 @@ public static class DependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IModulesRepository, ModulesRepository>();
-
+        
         return services;
     }
 
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
     {
-        services.AddScoped<WriteDbContext>();
-        services.AddScoped<IReadDbContext, ReadDbContext>();
+        services.AddScoped<IssuesWriteDbContext>();
+        services.AddScoped<IReadDbContext, IssuesReadDbContext>();
 
         return services;
     }
 
-    private static IServiceCollection AddMinio(
-        this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddHostedServices(this IServiceCollection services)
     {
-        services.Configure<MinioOptions>(
-            configuration.GetSection(MinioOptions.MINIO));
+        services.AddHostedService<DeleteExpiredIssuesBackgroundService>();
 
-        services.AddMinio(options =>
-        {
-            var minioOptions = configuration.GetSection(MinioOptions.MINIO).Get<MinioOptions>()
-                               ?? throw new ApplicationException("Missing minio configuration");
+        return services;
+    }
 
-            options.WithEndpoint(minioOptions.Endpoint);
-
-            options.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey);
-            options.WithSSL(minioOptions.WithSsl);
-        });
+    private static IServiceCollection AddServices(this IServiceCollection services)
+    {
+        services.AddScoped<DeleteExpiredIssuesService>();
 
         return services;
     }

@@ -6,9 +6,9 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Entities;
 
-public class Issue : Entity<IssueId>, ISoftDeletable
+public class Issue : SoftDeletableEntity<IssueId>
 {
-    private bool _isDeleted = false;
+    private List<FileId> _files = [];
 
     //ef core navigation
     public Module Module { get; private set; }
@@ -23,12 +23,14 @@ public class Issue : Entity<IssueId>, ISoftDeletable
         Title title,
         Description description,
         LessonId lessonId,
-        Experience experience) : base(id)
+        Experience experience,
+        IEnumerable<FileId>? files = null) : base(id)
     {
         Title = title;
         Description = description;
         LessonId = lessonId;
         Experience = experience;
+        _files = files?.ToList() ?? [];
     }
 
     public Experience Experience { get; private set; } = default!;
@@ -39,20 +41,17 @@ public class Issue : Entity<IssueId>, ISoftDeletable
 
     public LessonId LessonId { get; private set; }
 
+    public IReadOnlyList<FileId> Files => _files;
+
+    public DateTime? DeletionDate { get; private set; }
+
+    public void UpdateFiles(IEnumerable<FileId> files)
+    {
+        _files = files.ToList();
+    }
+
     public void SetPosition(Position position) =>
         Position = position;
-
-    public void Delete()
-    {
-        if (_isDeleted == false)
-            _isDeleted = true;
-    }
-
-    public void Restore()
-    {
-        if (_isDeleted)
-            _isDeleted = false;
-    }
 
     public UnitResult<Error> MoveForward()
     {
