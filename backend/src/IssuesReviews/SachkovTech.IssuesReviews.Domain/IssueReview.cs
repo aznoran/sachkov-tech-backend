@@ -73,8 +73,13 @@ public sealed class IssueReview : Entity<IssueReviewId>
         }
     }
 
-    public UnitResult<Error> SendIssueForRevision()
+    public UnitResult<Error> SendIssueForRevision(UserId reviewerId)
     {
+        if (ReviewerId != reviewerId)
+        {
+            return Errors.User.InvalidCredentials();
+        }
+        
         if (IssueReviewStatus != IssueReviewStatus.OnReview)
         {
             return Errors.General.ValueIsInvalid("issue-review-status");
@@ -85,8 +90,13 @@ public sealed class IssueReview : Entity<IssueReviewId>
         return UnitResult.Success<Error>();
     }
 
-    public UnitResult<Error> Approve()
+    public UnitResult<Error> Approve(UserId reviewerId)
     {
+        if (ReviewerId != reviewerId)
+        {
+            return Errors.User.InvalidCredentials();
+        }
+        
         if (IssueReviewStatus != IssueReviewStatus.OnReview)
         {
             return Errors.General.ValueIsInvalid("issue-review-status");

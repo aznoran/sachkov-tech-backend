@@ -50,13 +50,8 @@ public class SendForRevisionHandler : ICommandHandler<Guid, SendForRevisionComma
         {
             return issueReviewResult.Error.ToErrorList();
         }
-
-        if (issueReviewResult.Value.ReviewerId!.Value != command.ReviewerId)
-        {
-            return Errors.User.InvalidCredentials().ToErrorList();
-        }
         
-        issueReviewResult.Value.SendIssueForRevision();
+        issueReviewResult.Value.SendIssueForRevision(UserId.Create(command.ReviewerId));
 
         var userIssueId = issueReviewResult.Value.UserIssueId;
 

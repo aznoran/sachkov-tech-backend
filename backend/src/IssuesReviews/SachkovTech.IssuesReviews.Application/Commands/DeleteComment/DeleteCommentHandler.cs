@@ -40,7 +40,7 @@ public class DeleteCommentHandler : ICommandHandler<Guid, DeleteCommentCommand>
         }
 
         var issueReviewResult = await _issueReviewRepository
-            .GetByIdWithComments(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
+            .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)
             return issueReviewResult.Error.ToErrorList();

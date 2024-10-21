@@ -21,18 +21,6 @@ public class IssueReviewRepository : IIssueReviewRepository
         CancellationToken cancellationToken = default)
     {
         var issueReview = await _dbContext.IssueReviews
-            .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
-
-        if (issueReview == null)
-            return Errors.General.NotFound(id);
-
-        return issueReview;
-    }
-    
-    public async Task<Result<IssueReview, Error>> GetByIdWithComments(IssueReviewId id,
-        CancellationToken cancellationToken = default)
-    {
-        var issueReview = await _dbContext.IssueReviews
             .Include(ir => ir.Comments)
             .FirstOrDefaultAsync(i => i.Id == id, cancellationToken);
 

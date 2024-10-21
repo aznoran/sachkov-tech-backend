@@ -17,7 +17,7 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<ApproveIssueReviewCommand> _validator;
     private readonly ILogger<ApproveIssueReviewHandler> _logger;
-    private readonly IIssueSolvingContract _contract;
+    private readonly IIssueSolvingContract _issueSolvingContract;
 
     public ApproveIssueReviewHandler(
         IIssueReviewRepository issueReviewRepository,
@@ -25,13 +25,13 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
         IUnitOfWork unitOfWork,
         IValidator<ApproveIssueReviewCommand> validator,
         ILogger<ApproveIssueReviewHandler> logger,
-        IIssueSolvingContract contract)
+        IIssueSolvingContract issueSolvingContract)
     {
         _issueReviewRepository = issueReviewRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
-        _contract = contract;
+        _issueSolvingContract = issueSolvingContract;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -50,12 +50,7 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
         if (issueReviewResult.IsFailure)
             return issueReviewResult.Error.ToErrorList();
         
-        if (issueReviewResult.Value.ReviewerId!.Value != command.ReviewerId)
-        {
-            return Errors.User.InvalidCredentials().ToErrorList();
-        }
-        
-        issueReviewResult.Value.Approve();
+        issueReviewResult.Value.Approve(UserId.Create(command.ReviewerId));
 
         var userIssueId = issueReviewResult.Value.UserIssueId;
 
@@ -64,7 +59,7 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
             return Errors.General.ValueIsInvalid("user_issue_id").ToErrorList();
         }
         
-        var sendIssueForRevisionContractRes = await _contract
+        var sendIssueForRevisionContractRes = await _issueSolvingContract
             .Approve(userIssueId,cancellationToken);
 
         if (sendIssueForRevisionContractRes.IsFailure)

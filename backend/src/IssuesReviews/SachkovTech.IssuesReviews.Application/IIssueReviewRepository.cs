@@ -11,9 +11,6 @@ public interface IIssueReviewRepository
         CancellationToken cancellationToken = default);
     Task<Result<IssueReview, Error>> GetByUserIssueId(UserIssueId id,
         CancellationToken cancellationToken = default);
-
-    Task<Result<IssueReview, Error>> GetByIdWithComments(IssueReviewId id,
-        CancellationToken cancellationToken = default);
     Task<UnitResult<Error>> Add(IssueReview issueReview, 
         CancellationToken cancellationToken = default);
 }
