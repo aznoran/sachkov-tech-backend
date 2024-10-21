@@ -1,15 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SachkovTech.Core.Dtos;
-using SachkovTech.Issues.Application;
+using SachkovTech.Accounts.Application;
+using SachkovTech.Accounts.Contracts.Dtos;
 
-namespace SachkovTech.Issues.Infrastructure.DbContexts;
+namespace SachkovTech.Accounts.Infrastructure.DbContexts;
 
-public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IReadDbContext
+public class AccountsReadDbContext(IConfiguration configuration) : DbContext, IReadDbContext
 {
-    public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
-    public IQueryable<IssueDto> Issues => Set<IssueDto>();
+    public IQueryable<UserDto> Users => Set<UserDto>();
+    public IQueryable<StudentAccountDto> StudentAccounts => Set<StudentAccountDto>();
+    public IQueryable<SupportAccountDto> SupportAccounts => Set<SupportAccountDto>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -23,13 +24,11 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.HasDefaultSchema("issues");
+        modelBuilder.HasDefaultSchema("accounts");
         
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(IssuesWriteDbContext).Assembly,
+            typeof(AccountsReadDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
-
-        modelBuilder.Entity<IssueDto>().HasQueryFilter(i => !i.IsDeleted);
     }
 
     private ILoggerFactory CreateLoggerFactory() =>
