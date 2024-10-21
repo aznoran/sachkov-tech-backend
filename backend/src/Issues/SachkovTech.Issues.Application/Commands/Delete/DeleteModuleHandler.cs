@@ -40,8 +40,8 @@ public class DeleteModuleHandler : ICommandHandler<Guid, DeleteModuleCommand>
         var moduleResult = await _modulesRepository.GetById(command.ModuleId, cancellationToken);
         if (moduleResult.IsFailure)
             return moduleResult.Error.ToErrorList();
-        
-        moduleResult.Value.Delete();
+
+        moduleResult.Value.SoftDelete();
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

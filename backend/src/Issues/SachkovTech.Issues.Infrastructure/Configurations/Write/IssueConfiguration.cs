@@ -27,7 +27,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                     .IsRequired(false)
                     .HasColumnName("lesson_id");
             });
-        
+
         builder.ComplexProperty(i => i.Experience,
             lb =>
             {
