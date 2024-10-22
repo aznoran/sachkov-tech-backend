@@ -55,9 +55,7 @@ public class NotificationSettings
     {
         var preferences = new NotificationSettings(id, userId, emailAddress);
 
-        UnitResult<Error> setFieldRes = null!;
-
-        setFieldRes = preferences
+        var setFieldRes = preferences
             .SetEmailNotifications(sendEmail, emailAddress);
         if (setFieldRes.IsFailure)
             return setFieldRes.Error;
@@ -78,12 +76,14 @@ public class NotificationSettings
     public UnitResult<Error> SetEmailNotifications(bool value, Email? email = null)
     {
         if (value)
+        {
             if (EmailAddress == null && email == null)
                 return Error.Validation("Can not use email notification method without email specified!",
                     "invalid.value.notification.setting.email");
 
-        if (email != null)
-            EmailAddress = email;
+            if (email != null)
+                EmailAddress = email;
+        }
 
         SendEmail = value;
         return Result.Success<Error>();
@@ -92,12 +92,14 @@ public class NotificationSettings
     public UnitResult<Error> SetTelegramNotifications(bool value, string? telegramId = null)
     {
         if (value)
+        {
             if (String.IsNullOrWhiteSpace(TelegramId) && String.IsNullOrWhiteSpace(telegramId))
                 return Error.Validation("Can not use telegram notification method without telegram id specified!",
                     "invalid.value.notification.setting.telegram");
 
-        if (telegramId != null)
-            TelegramId = telegramId;
+            if (telegramId != null)
+                TelegramId = telegramId;
+        }
 
         SendTelegram = value;
         return Result.Success<Error>();
@@ -106,12 +108,14 @@ public class NotificationSettings
     public UnitResult<Error> SetWebNotifications(bool value, string? webEndpoint = null)
     {
         if (value)
+        {
             if (String.IsNullOrWhiteSpace(WebEndpoint) && String.IsNullOrWhiteSpace(webEndpoint))
                 return Error.Validation("Can not use web notification method without web endpoint specified!",
                     "invalid.value.notification.setting.web");
 
-        if (webEndpoint != null)
-            WebEndpoint = webEndpoint;
+            if (webEndpoint != null)
+                WebEndpoint = webEndpoint;
+        }
 
         SendWeb = value;
         return Result.Success<Error>();

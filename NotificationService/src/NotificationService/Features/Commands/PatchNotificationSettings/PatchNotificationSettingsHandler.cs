@@ -22,8 +22,8 @@ namespace NotificationService.Features.Commands
                 .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
             if (notificationSettings == null)
-                return Error.NotFound("notification.settings.not.found",
-                    $"No settings were found with id: {command.Id}");
+                return Error.NotFound($"No settings were found with id: {command.Id}",
+                    "notification.settings.not.found");
 
             var updateRes = UpdateSettings(
                 notificationSettings,

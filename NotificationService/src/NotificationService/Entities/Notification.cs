@@ -8,7 +8,19 @@ public class Notification
 
     public List<Guid> UserIds { get; init; } = [];
 
-    public string Message { get; init; } = string.Empty;
+    public MessageData Message { get; init; } = null!;
 
     public bool IsSend { get; init; }
+
+    public DateTime CreatedAt { get; init; }
+
+    public NotificationStatusEnum Status { get; init; }
+}
+
+public enum NotificationStatusEnum
+{
+    Pending,
+    Processing,
+    Sent,
+    Failed
 }

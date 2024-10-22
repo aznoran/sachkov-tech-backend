@@ -12,7 +12,7 @@ namespace NotificationService.Features.Commands
         {
             _dbContext = dbContext;
         }
-        public async Task<UnitResult<Error>> Handle(
+        public async Task<Result<Guid,Error>> Handle(
             AddNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
@@ -23,10 +23,10 @@ namespace NotificationService.Features.Commands
                 return emailRes.Error;
 
             var notificationSettingsResult = NotificationSettings.Create(
-                command.Id,
+                Guid.NewGuid(),
                 command.UserId,
                 emailAddress: emailRes.Value,
-                webEndpoint: command.WebEndpoint);
+                webEndpoint: command.WebEndpoint!);
 
             if (notificationSettingsResult.IsFailure)
                 return notificationSettingsResult.Error;
@@ -34,7 +34,7 @@ namespace NotificationService.Features.Commands
             await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value);
             await _dbContext.SaveChangesAsync();
 
-            return Result.Success<Error>();
+            return notificationSettingsResult.Value.Id;
         }
     }
 }

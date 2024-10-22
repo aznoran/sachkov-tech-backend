@@ -20,7 +20,7 @@
         public static Error Validation(string message, string code = "value.is.invalid", string? invalidField = null) =>
             new(code, message, ErrorType.Validation, invalidField);
 
-        public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);
+        public static Error NotFound(string message, string code = "value.not.found") => new(code, message, ErrorType.NotFound);
 
         public static Error Failure(string code, string message) => new(code, message, ErrorType.Failure);
 

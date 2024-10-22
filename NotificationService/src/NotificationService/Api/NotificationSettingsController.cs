@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NotificationService.Entities;
 using NotificationService.Extensions;
 using NotificationService.Features.Commands;
 using NotificationService.Features.Queries;
@@ -20,7 +21,31 @@ namespace NotificationService.Api
             if (result.IsFailure)
                 return result.Error.ToResponse();
 
-            return Ok();
+            var envelope = Envelope.Ok(result.Value);
+            return Ok(envelope);
+        }
+
+        [HttpPost("push")] // todo test
+        public async Task<IActionResult> Push(
+            [FromBody] PushNotificationRequest request,
+            [FromServices] PushNotificationHandler handler,
+            CancellationToken cancellationToken = default)
+        {
+            var msg = new MessageData(
+                request.Title,
+                request.Message);
+
+            var command = new PushNotificationCommand(
+                msg,
+                request.UserIds,
+                request.Roles);
+
+            var result = await handler.Handle(command, cancellationToken);
+            if (result.IsFailure)
+                return result.Error.ToResponse();
+
+            var envelope = Envelope.Ok(result.Value);
+            return Ok(envelope);
         }
 
         [HttpPatch("{id:Guid}")]
