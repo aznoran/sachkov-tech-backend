@@ -7,4 +7,4 @@ public record RegisterUserCommand(
     string Email, 
     string UserName, 
     string Password,
-    FullNameDto FullName) : ICommand;
+    FullNameDto? FullName) : ICommand;

@@ -9,6 +9,7 @@ public class RegisterUserValidator : AbstractValidator<RegisterUserCommand>
     public RegisterUserValidator()
     {
         RuleFor(c => c.FullName)
-            .MustBeValueObject(f => FullName.Create(f.FirstName, f.SecondName));
+            .MustBeValueObject(f => FullName.Create(f.FirstName, f.SecondName))
+            .When(c => c.FullName != null);
     }
 }

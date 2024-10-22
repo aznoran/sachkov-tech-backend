@@ -9,6 +9,7 @@ namespace SachkovTech.Accounts.Infrastructure.DbContexts;
 public class AccountsReadDbContext(IConfiguration configuration) : DbContext, IReadDbContext
 {
     public IQueryable<UserDto> Users => Set<UserDto>();
+    public IQueryable<RoleDto> Roles => Set<RoleDto>();
     public IQueryable<StudentAccountDto> StudentAccounts => Set<StudentAccountDto>();
     public IQueryable<SupportAccountDto> SupportAccounts => Set<SupportAccountDto>();
 

@@ -17,7 +17,7 @@ public class SupportAccount
         string aboutSelf)
     {
         Id = Guid.NewGuid();
-        User = user; ;
+        User = user;
         SocialNetworks = socialNetworks;
         AboutSelf = aboutSelf;
     }

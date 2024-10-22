@@ -7,22 +7,22 @@ using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Accounts.Application.Commands.AddStudentRoleForParticipant;
+namespace SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 
-public class AddStudentRoleForParticipantHandler : ICommandHandler<AddStudentRoleForParticipantCommand>
+public class EnrollParticipantHandler : ICommandHandler<EnrollParticipantCommand>
 {
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
     private readonly IAccountsManager _accountsManager;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILogger<AddStudentRoleForParticipantHandler> _logger;
+    private readonly ILogger<EnrollParticipantHandler> _logger;
 
-    public AddStudentRoleForParticipantHandler(
+    public EnrollParticipantHandler(
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountsManager accountsManager,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
-        ILogger<AddStudentRoleForParticipantHandler> logger)
+        ILogger<EnrollParticipantHandler> logger)
     {
         _userManager = userManager;
         _roleManager = roleManager;
@@ -33,7 +33,7 @@ public class AddStudentRoleForParticipantHandler : ICommandHandler<AddStudentRol
     
     
     public async Task<UnitResult<ErrorList>> Handle(
-        AddStudentRoleForParticipantCommand command,
+        EnrollParticipantCommand command,
         CancellationToken cancellationToken = default)
     {
         var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
@@ -53,7 +53,7 @@ public class AddStudentRoleForParticipantHandler : ICommandHandler<AddStudentRol
             if (user is null)
                 return Errors.General.NotFound(null, "user").ToErrorList();
 
-            user.AddRole(role);
+            user.EnrollParticipant(role);
 
             var studentAccount = new StudentAccount(user);
 
@@ -67,10 +67,13 @@ public class AddStudentRoleForParticipantHandler : ICommandHandler<AddStudentRol
 
             return Result.Success<ErrorList>();
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Console.WriteLine(e);
-            throw;
+            _logger.LogError("Can not enroll participant with email {userEmail}", command.Email);
+            
+            transaction.Rollback();
+
+            return Error.Failure("enroll.participant", "Can not enroll participant").ToErrorList();
         }
     }
 }

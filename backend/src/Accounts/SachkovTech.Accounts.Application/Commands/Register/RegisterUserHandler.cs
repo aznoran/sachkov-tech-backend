@@ -54,10 +54,10 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
 
             if (role is null)
                 return Errors.General.NotFound(null, "role").ToErrorList();
-            
+
             var fullName = FullName.Create(
-                command.FullName.FirstName,
-                command.FullName.SecondName).Value;
+                command.FullName?.FirstName,
+                command.FullName?.SecondName).Value;
 
             var userResult = User.CreateParticipant(command.UserName, command.Email, fullName, role);
 

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using SachkovTech.Accounts.Application.Commands.AddStudentRoleForParticipant;
+using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
@@ -73,14 +73,14 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission("accounts.add.role")]
+    [Permission("accounts.enroll")]
     [HttpPut("student-role")]
-    public async Task<ActionResult> AddStudentRoleForParticipant(
-        [FromBody] AddStudentRoleForParticipantRequest request,
-        [FromServices] AddStudentRoleForParticipantHandler handler,
+    public async Task<ActionResult> EnrollParticipant(
+        [FromBody] EnrollParticipantRequest request,
+        [FromServices] EnrollParticipantHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var command = new AddStudentRoleForParticipantCommand(request.Email);
+        var command = new EnrollParticipantCommand(request.Email);
 
         var result = await handler.Handle(command, cancellationToken);
 

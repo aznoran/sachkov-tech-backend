@@ -57,8 +57,11 @@ public class User : IdentityUser<Guid>
         };
     }
 
-    public void AddRole(Role role)
+    public void EnrollParticipant(Role role)
     {
+        if (_roles.Contains(role))
+            return;
+        
         _roles.Add(role);
     }
 }

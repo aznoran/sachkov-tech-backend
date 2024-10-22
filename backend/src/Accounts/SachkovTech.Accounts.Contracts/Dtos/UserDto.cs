@@ -9,4 +9,6 @@ public class UserDto
     public string FirstName { get; init; } = default!;
 
     public string LastName { get; init; } = default!;
+
+    public List<RoleDto> Roles { get; init; } = [];
 }

@@ -9,7 +9,6 @@ public class AccountsManager(AccountsWriteDbContext accountsWriteContext) : IAcc
     public async Task CreateAdminAccount(AdminAccount adminAccount)
     {
         await accountsWriteContext.AdminAccounts.AddAsync(adminAccount);
-        await accountsWriteContext.SaveChangesAsync();
     }
 
     public async Task CreateParticipantAccount(

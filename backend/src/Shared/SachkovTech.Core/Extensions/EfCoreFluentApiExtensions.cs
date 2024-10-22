@@ -26,6 +26,9 @@ public static class EfCoreFluentApiExtensions
 
         return JsonSerializer.Serialize(dtos, JsonSerializerOptions.Default);
     }
+    
+    public static string SerializeValueObjectsCollection() =>
+        JsonSerializer.Serialize(string.Empty, JsonSerializerOptions.Default);
 
     private static IReadOnlyList<TValueObject> DeserializeDtoCollection<TValueObject, TDto>(
         string json, Func<TDto, TValueObject> selector)
@@ -33,6 +36,11 @@ public static class EfCoreFluentApiExtensions
         var dtos = JsonSerializer.Deserialize<IEnumerable<TDto>>(json, JsonSerializerOptions.Default) ?? [];
 
         return dtos.Select(selector).ToList();
+    }
+    
+    public static IEnumerable<TDto> DeserializeDtoCollection<TDto>(string json)
+    {
+        return JsonSerializer.Deserialize<IEnumerable<TDto>>(json, JsonSerializerOptions.Default) ?? [];
     }
 
     private static ValueComparer<IReadOnlyList<T>> CreateCollectionValueComparer<T>() =>
