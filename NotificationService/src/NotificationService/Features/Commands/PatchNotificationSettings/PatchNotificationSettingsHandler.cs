@@ -17,7 +17,6 @@ namespace NotificationService.Features.Commands
             PatchNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
-            // todo test depending on whatever method we enable, make sure we have the related communication method route set
             var notificationSettings = await _dbContext.NotificationSettings
                 .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 

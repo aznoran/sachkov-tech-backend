@@ -25,7 +25,7 @@ namespace NotificationService.Api
             return Ok(envelope);
         }
 
-        [HttpPost("push")] // todo test
+        [HttpPost("push")]
         public async Task<IActionResult> Push(
             [FromBody] PushNotificationRequest request,
             [FromServices] PushNotificationHandler handler,

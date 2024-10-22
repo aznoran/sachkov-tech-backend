@@ -16,8 +16,6 @@ namespace NotificationService.Features.Commands
             AddNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
-            // todo test make sure it sets correct settings by default
-
             var emailRes = Email.Create(command.Email);
             if (emailRes.IsFailure)
                 return emailRes.Error;
