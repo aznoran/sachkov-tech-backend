@@ -1,7 +1,7 @@
 using FluentAssertions;
-using SachkovTech.Issues.Domain;
-using SachkovTech.Issues.Domain.Entities;
-using SachkovTech.Issues.Domain.ValueObjects;
+using SachkovTech.Issues.Domain.Module;
+using SachkovTech.Issues.Domain.Module.Entities;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 

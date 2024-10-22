@@ -1,7 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using SachkovTech.Issues.Application;
-using SachkovTech.Issues.Domain;
+using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;

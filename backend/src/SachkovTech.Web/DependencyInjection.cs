@@ -6,7 +6,6 @@ using SachkovTech.Files.Presentation;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Infrastructure;
 using SachkovTech.Issues.Presentation;
-using SachkovTech.IssueSolving.Infrastructure;
 using Serilog.Events;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -14,9 +13,6 @@ using SachkovTech.Core.Options;
 using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
-using SachkovTech.IssueSolving.Presentation;
-using SachkovTech.IssuesReviews.Infrastructure;
-using SachkovTech.IssuesReviews.Presentation;
 
 namespace SachkovTech.Web;
 
@@ -31,14 +27,6 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddIssuesReviewsModule(
-        this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddIssuesReviewsPresentation();
-        services.AddIssuesReviewsInfrastructure(configuration);
-
-        return services;
-    }
 
     public static IServiceCollection AddFilesModule(
         this IServiceCollection services, IConfiguration configuration)
@@ -57,16 +45,6 @@ public static class DependencyInjection
 
         return services;
     }
-
-    public static IServiceCollection AddIssueSolvingModule(
-        this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddIssueSolvingInfrastructure(configuration);
-        services.AddIssueSolvingInfrastructure();
-
-        return services;
-    }
-
 
     public static IServiceCollection AddAuthServices(
         this IServiceCollection services, IConfiguration configuration)
@@ -119,8 +97,6 @@ public static class DependencyInjection
             typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly,
             typeof(SachkovTech.Files.Application.DependencyInjection).Assembly,
             typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.IssueSolving.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.IssuesReviews.Application.DependencyInjection).Assembly
         };
 
         services.Scan(scan => scan.FromAssemblies(assemblies)
