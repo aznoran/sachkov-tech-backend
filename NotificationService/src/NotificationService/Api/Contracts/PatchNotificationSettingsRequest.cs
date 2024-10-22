@@ -2,5 +2,6 @@
 {
     public record PatchNotificationSettingsRequest(
         string NotificationType,
-        bool Value);
+        bool Value,
+        string? ConnectionPath = null);
 }

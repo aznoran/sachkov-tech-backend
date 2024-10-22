@@ -3,7 +3,6 @@
     public record AddNotificationSettingsCommand(
         Guid Id,
         Guid UserId,
-        bool? Email = null,
-        bool? Telegram = null,
-        bool? Web = null);
+        string Email,
+        string WebEndpoint);
 }

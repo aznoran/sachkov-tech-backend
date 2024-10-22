@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Entities;
-using NotificationService.Extensions;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
@@ -18,6 +17,7 @@ namespace NotificationService.Features.Commands
             PatchNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
+            // todo test depending on whatever method we enable, make sure we have the related communication method route set
             var notificationSettings = await _dbContext.NotificationSettings
                 .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
@@ -26,9 +26,10 @@ namespace NotificationService.Features.Commands
                     $"No settings were found with id: {command.Id}");
 
             var updateRes = UpdateSettings(
+                notificationSettings,
                 command.NotificationType,
                 command.Value,
-                notificationSettings);
+                command.ConnectionPath!);
 
             if (updateRes.IsFailure)
                 return updateRes.Error;
@@ -38,24 +39,31 @@ namespace NotificationService.Features.Commands
             return Result.Success<Error>();
         }
 
-        private UnitResult<Error> UpdateSettings(string propertyName, bool value, NotificationSettings userSettings)
+        private UnitResult<Error> UpdateSettings(NotificationSettings userSettings, string propertyName, bool value, string? connectionPath = null)
         {
             switch (propertyName.Trim().ToLower())
             {
                 case "email":
                     {
-                        userSettings.Email = value;
-                        break;
+                        Email emailValue = null!;
+
+                        if (connectionPath != null)
+                        {
+                            var emailRes = Email.Create(connectionPath); 
+                            if (emailRes.IsFailure)
+                                return emailRes.Error;
+                            emailValue = emailRes.Value;
+                        }
+
+                        return userSettings.SetEmailNotifications(value, emailValue);
                     }
                 case "telegram":
                     {
-                        userSettings.Telegram = value;
-                        break;
+                        return userSettings.SetTelegramNotifications(value, connectionPath);
                     }
                 case "web":
                     {
-                        userSettings.Web = value;
-                        break;
+                        return userSettings.SetWebNotifications(value, connectionPath);
                     }
                 default:
                     {
@@ -63,8 +71,6 @@ namespace NotificationService.Features.Commands
                             "invalid.value.notification.type");
                     }
             }
-
-            return Result.Success<Error>();
         }
     }
 }

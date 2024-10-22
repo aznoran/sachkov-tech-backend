@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <Folder Include="Api\Requests\" />
+      <Folder Include="Features\Commands\PushNotification\" />
     </ItemGroup>
 
 </Project>

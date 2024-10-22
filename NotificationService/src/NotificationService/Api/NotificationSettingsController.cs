@@ -31,7 +31,7 @@ namespace NotificationService.Api
             CancellationToken cancellationToken = default)
         {
             var command = new PatchNotificationSettingsCommand(
-                id, dto.NotificationType, dto.Value);
+                id, dto.NotificationType, dto.Value, dto.ConnectionPath);
 
             var result = await handler.Handle(command, cancellationToken);
             if (result.IsFailure)

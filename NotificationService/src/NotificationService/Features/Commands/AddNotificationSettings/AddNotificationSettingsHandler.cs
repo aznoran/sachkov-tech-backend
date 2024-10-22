@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using NotificationService.Entities;
-using NotificationService.Extensions;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
@@ -17,17 +16,22 @@ namespace NotificationService.Features.Commands
             AddNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
-            var notificationSettings = new NotificationSettings()
-            {
-                Id = command.Id,
-                UserId = command.UserId
-            };
+            // todo test make sure it sets correct settings by default
 
-            notificationSettings.Email = command.Email ?? notificationSettings.Email;
-            notificationSettings.Telegram = command.Telegram ?? notificationSettings.Telegram;
-            notificationSettings.Web = command.Web ?? notificationSettings.Web;
+            var emailRes = Email.Create(command.Email);
+            if (emailRes.IsFailure)
+                return emailRes.Error;
 
-            await _dbContext.NotificationSettings.AddAsync(notificationSettings);
+            var notificationSettingsResult = NotificationSettings.Create(
+                command.Id,
+                command.UserId,
+                emailAddress: emailRes.Value,
+                webEndpoint: command.WebEndpoint);
+
+            if (notificationSettingsResult.IsFailure)
+                return notificationSettingsResult.Error;
+
+            await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value);
             await _dbContext.SaveChangesAsync();
 
             return Result.Success<Error>();
