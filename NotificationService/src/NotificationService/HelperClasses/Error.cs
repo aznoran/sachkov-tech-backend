@@ -17,7 +17,7 @@
             InvalidField = invalidField;
         }
 
-        public static Error Validation(string code, string message, string? invalidField = null) =>
+        public static Error Validation(string message, string code = "value.is.invalid", string? invalidField = null) =>
             new(code, message, ErrorType.Validation, invalidField);
 
         public static Error NotFound(string code, string message) => new(code, message, ErrorType.NotFound);

@@ -59,8 +59,8 @@ namespace NotificationService.Features.Commands
                     }
                 default:
                     {
-                        return Error.Validation("invalid.value.notification.type",
-                            $"No such notification method exists: {propertyName}");
+                        return Error.Validation($"No such notification method exists: {propertyName}",
+                            "invalid.value.notification.type");
                     }
             }
 
