@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Framework;
-using SachkovTech.Issues.Application.Queries.GetIssueById;
-using SachkovTech.Issues.Application.Queries.GetModulesWithPagination;
+using SachkovTech.Issues.Application.Features.Module.Queries.GetIssueById;
+using SachkovTech.Issues.Application.Features.Module.Queries.GetModulesWithPagination;
 using SachkovTech.Issues.Presentation.Issues.Requests;
 
 namespace SachkovTech.Issues.Presentation.Issues;
