@@ -14,11 +14,11 @@ public class IssuesReviewTests
     #region StartReview
 
     [Fact]
-    public void StartReview_should_update_reviewer_and_status_when_called_with_valid_reviewer_id()
+    public void Start_review_by_reviewer()
     {
         //Arrange
         var validReviewerId = UserId.NewUserId();
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
 
         //Act
         issueReview.StartReview(validReviewerId);
@@ -34,16 +34,15 @@ public class IssuesReviewTests
     #region SendIssueForRevision
 
     [Fact]
-    public void
-        SendIssueForRevision_should_update_status_to_asked_for_revision_when_called_with_valid_reviewer_and_status()
+    public void Send_issue_for_revision_by_reviewer()
     {
         //Arrange
-        var reviewerid = UserId.NewUserId();
-        var issueReview = CreateAndFillModule(5);
-        issueReview.StartReview(reviewerid);
+        var reviewerId = UserId.NewUserId();
+        var issueReview = CreateAndFillIssueReview();
+        issueReview.StartReview(reviewerId);
 
         //Act
-        var result = issueReview.SendIssueForRevision(reviewerid);
+        var result = issueReview.SendIssueForRevision(reviewerId);
 
         //Assert
         result.IsSuccess.Should().BeTrue();
@@ -51,12 +50,12 @@ public class IssuesReviewTests
     }
 
     [Fact]
-    public void SendIssueForRevision_should_return_invalid_credentials_when_reviewer_id_is_invalid()
+    public void Send_issue_for_revision_invalid_reviewer_id()
     {
         // Arrange
         var validReviewerId = UserId.NewUserId();
         var invalidReviewerId = UserId.NewUserId();
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
         issueReview.StartReview(validReviewerId);
 
         // Act
@@ -72,12 +71,12 @@ public class IssuesReviewTests
     #region Approve
 
     [Fact]
-    public void Approve_should_update_status_to_accepted_when_reviewer_id_is_valid()
+    public void Approve_with_valid_reviewer_id()
     {
         // Arrange
         var reviewerId = UserId.NewUserId();
 
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
         issueReview.StartReview(reviewerId);
 
         // Act
@@ -90,13 +89,13 @@ public class IssuesReviewTests
     }
 
     [Fact]
-    public void Approve_should_return_error_when_reviewer_id_is_invalid()
+    public void Approve_with_invalid_reviewer_id()
     {
         // Arrange
         var validReviewerId = UserId.NewUserId();
         var invalidReviewerId = UserId.NewUserId();
 
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
         issueReview.StartReview(validReviewerId);
 
         // Act
@@ -112,7 +111,7 @@ public class IssuesReviewTests
     #region AddComment
 
     [Fact]
-    public void AddComment_should_add_comment_when_user_is_author_or_reviewer()
+    public void Add_comment_from_author_or_reviewer()
     {
         // Arrange
         var authorId = UserId.NewUserId();
@@ -141,12 +140,12 @@ public class IssuesReviewTests
     }
 
     [Fact]
-    public void AddComment_should_return_error_when_user_is_not_author_or_reviewer()
+    public void Add_comment_invalid_user()
     {
         // Arrange
         var reviewerId = UserId.NewUserId();
         var invalidUserId = UserId.NewUserId();
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
         issueReview.StartReview(reviewerId);
 
         var invalidComment = Comment.Create(invalidUserId, Message.Create("Test").Value);
@@ -165,12 +164,12 @@ public class IssuesReviewTests
     #region DeleteComment
 
     [Fact]
-    public void DeleteComment_should_allow_user_to_delete_their_own_comment()
+    public void Delete_comment_by_author()
     {
         // Arrange
         var userId = UserId.NewUserId();
         var comment = Comment.Create(userId, Message.Create("Test1").Value);
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
         issueReview.AddComment(comment.Value);
 
         // Act
@@ -182,7 +181,7 @@ public class IssuesReviewTests
     }
 
     [Fact]
-    public void DeleteComment_should_return_error_when_user_is_not_author_or_reviewer_or_comment_author()
+    public void Delete_a_non_author_or_reviewer_comment()
     {
         // Arrange
         var authorId = UserId.NewUserId();
@@ -190,7 +189,7 @@ public class IssuesReviewTests
         var otherUserId = UserId.NewUserId();
         var comment = Comment.Create(authorId, Message.Create("Test1").Value);
 
-        var issueReview = CreateAndFillModule(5);
+        var issueReview = CreateAndFillIssueReview();
         issueReview.AddComment(comment.Value);
         issueReview.StartReview(reviewerId);
 
@@ -204,13 +203,11 @@ public class IssuesReviewTests
 
     #endregion
 
-    private IssueReview CreateAndFillModule(int issuesCount)
+    private IssueReview CreateAndFillIssueReview()
     {
-        var issueReview = IssueReview.Create(
+        return IssueReview.Create(
             UserIssueId.NewIssueId(),
             UserId.NewUserId(),
-            PullRequestUrl.Empty);
-
-        return issueReview.Value;
+            PullRequestUrl.Empty).Value;
     }
 }

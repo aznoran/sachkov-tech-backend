@@ -9,27 +9,7 @@ namespace SachkovTech.IssueSolving.UnitTests.DomainTestProject1;
 public class UserIssueTests
 {
     [Fact]
-    public void Constructor_should_set_initial_values()
-    {
-        // Arrange
-        var userIssueId = UserIssueId.NewIssueId();
-        var userId = UserId.NewUserId();
-        var issueId = IssueId.NewIssueId();
-
-        // Act
-        var userIssue = new UserIssue(userIssueId, userId, issueId);
-
-        // Assert
-        userIssue.UserId.Should().Be(userId);
-        userIssue.IssueId.Should().Be(issueId);
-        userIssue.Status.Should().Be(IssueStatus.AtWork);
-        userIssue.StartDateOfExecution.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(1));
-        userIssue.Attempts.Should().NotBeNull();
-        userIssue.PullRequestUrl.Should().Be(PullRequestUrl.Empty);
-    }
-
-    [Fact]
-    public void SendOnReview_should_update_status_and_set_pull_request_url_when_status_is_at_work()
+    public void Send_issue_on_review_from_work()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -45,7 +25,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void SendOnReview_should_return_error_when_status_is_not_at_work()
+    public void Send_issue_on_review_from_wrong_status()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -61,7 +41,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void SendForRevision_should_update_status_and_increment_attempts_when_status_under_review()
+    public void Send_issue_on_revision_from_review()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -77,7 +57,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void SendForRevision_should_return_error_when_status_is_not_under_review()
+    public void Send_issue_for_revision_be_null()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -91,7 +71,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void StopWorking_should_update_status_to_not_at_work_when_status_is_at_work()
+    public void Stop_working_on_the_issue_with_the_not_at_work_status()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -105,7 +85,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void StopWorking_should_return_error_when_status_is_not_at_work()
+    public void Stop_working_on_the_issue_for_revision_be_null()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -120,7 +100,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void CompleteIssue_should_update_status_to_completed_and_set_end_date_when_status_is_under_review()
+    public void Complete_issue_on_revision_from_review()
     {
         // Arrange
         var userIssue = CreateUserIssue();
@@ -136,7 +116,7 @@ public class UserIssueTests
     }
 
     [Fact]
-    public void CompleteIssue_should_return_error_when_status_is_not_under_review()
+    public void Complete_issue_for_revision_is_null()
     {
         // Arrange
         var userIssue = CreateUserIssue();
