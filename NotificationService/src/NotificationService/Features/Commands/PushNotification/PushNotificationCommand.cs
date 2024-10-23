@@ -1,9 +1,9 @@
-﻿using NotificationService.Entities;
+﻿using NotificationService.Api.Dto;
 
 namespace NotificationService.Features.Commands
 {
     public record PushNotificationCommand(
-        MessageData Msg,
+        MessageDto Msg,
         Guid[] UserIds,
         Guid[] Roles);
 }

@@ -27,42 +27,31 @@ namespace NotificationService.Features.Commands
             var updateRes = UpdateSettings(
                 notificationSettings,
                 command.NotificationType,
-                command.Value,
-                command.ConnectionPath!);
+                command.Value);
 
             if (updateRes.IsFailure)
                 return updateRes.Error;
 
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success<Error>();
         }
 
-        private UnitResult<Error> UpdateSettings(NotificationSettings userSettings, string propertyName, bool value, string? connectionPath = null)
+        private UnitResult<Error> UpdateSettings(NotificationSettings userSettings, string propertyName, bool value)
         {
             switch (propertyName.Trim().ToLower())
             {
                 case "email":
                     {
-                        Email emailValue = null!;
-
-                        if (connectionPath != null)
-                        {
-                            var emailRes = Email.Create(connectionPath); 
-                            if (emailRes.IsFailure)
-                                return emailRes.Error;
-                            emailValue = emailRes.Value;
-                        }
-
-                        return userSettings.SetEmailNotifications(value, emailValue);
+                        return userSettings.UseEmailNotifications(value);
                     }
                 case "telegram":
                     {
-                        return userSettings.SetTelegramNotifications(value, connectionPath);
+                        return userSettings.UseTelegramNotifications(value);
                     }
                 case "web":
                     {
-                        return userSettings.SetWebNotifications(value, connectionPath);
+                        return userSettings.UseWebNotifications(value);
                     }
                 default:
                     {

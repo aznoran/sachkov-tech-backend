@@ -1,8 +1,9 @@
-﻿namespace NotificationService.Api
+﻿using NotificationService.Api.Dto;
+
+namespace NotificationService.Api
 {
     public record PushNotificationRequest(
-        string Title,
-        string Message,
+        MessageDto msg,
         Guid[] UserIds,
-        Guid[] Roles);
+        Guid[] RoleIds);
 }

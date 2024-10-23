@@ -3,6 +3,5 @@
     public record PatchNotificationSettingsCommand(
         Guid Id,
         string NotificationType,
-        bool Value,
-        string? ConnectionPath = null);
+        bool Value);
 }

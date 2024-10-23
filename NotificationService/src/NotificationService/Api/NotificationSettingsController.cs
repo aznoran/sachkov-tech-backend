@@ -31,14 +31,10 @@ namespace NotificationService.Api
             [FromServices] PushNotificationHandler handler,
             CancellationToken cancellationToken = default)
         {
-            var msg = new MessageData(
-                request.Title,
-                request.Message);
-
             var command = new PushNotificationCommand(
-                msg,
+                request.msg,
                 request.UserIds,
-                request.Roles);
+                request.RoleIds);
 
             var result = await handler.Handle(command, cancellationToken);
             if (result.IsFailure)
@@ -56,7 +52,7 @@ namespace NotificationService.Api
             CancellationToken cancellationToken = default)
         {
             var command = new PatchNotificationSettingsCommand(
-                id, dto.NotificationType, dto.Value, dto.ConnectionPath);
+                id, dto.NotificationType, dto.Value);
 
             var result = await handler.Handle(command, cancellationToken);
             if (result.IsFailure)

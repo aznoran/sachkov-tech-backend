@@ -53,69 +53,53 @@ public class NotificationSettings
         string webEndpoint = DEFAULT_WEB_ENDPOINT,
         bool sendWeb = true)
     {
-        var preferences = new NotificationSettings(id, userId, emailAddress);
+        var preferences = new NotificationSettings(
+            id,
+            userId,
+            emailAddress: emailAddress,
+            telegramId: telegramId,
+            webEndpoint: webEndpoint);
 
-        var setFieldRes = preferences
-            .SetEmailNotifications(sendEmail, emailAddress);
-        if (setFieldRes.IsFailure)
-            return setFieldRes.Error;
+        var useNotificationsRes = preferences.UseEmailNotifications(sendEmail);
+        if (useNotificationsRes.IsFailure)
+            return useNotificationsRes.Error;
 
-        setFieldRes = preferences
-            .SetTelegramNotifications(sendTelegram, telegramId);
-        if (setFieldRes.IsFailure)
-            return setFieldRes.Error;
+        useNotificationsRes = preferences.UseTelegramNotifications(sendTelegram);
+        if (useNotificationsRes.IsFailure)
+            return useNotificationsRes.Error;
 
-        setFieldRes = preferences
-            .SetWebNotifications(sendWeb, webEndpoint);
-        if (setFieldRes.IsFailure)
-            return setFieldRes.Error;
+        useNotificationsRes = preferences.UseWebNotifications(sendWeb);
+        if (useNotificationsRes.IsFailure)
+            return useNotificationsRes.Error;
 
         return preferences;
     }
 
-    public UnitResult<Error> SetEmailNotifications(bool value, Email? email = null)
+    public UnitResult<Error> UseEmailNotifications(bool value)
     {
-        if (value)
-        {
-            if (EmailAddress == null && email == null)
-                return Error.Validation("Can not use email notification method without email specified!",
-                    "invalid.value.notification.setting.email");
-
-            if (email != null)
-                EmailAddress = email;
-        }
+        if (value && EmailAddress == null)
+            return Error.Validation("Can not use email notification method without email specified!",
+                "invalid.value.notification.setting.email");
 
         SendEmail = value;
         return Result.Success<Error>();
     }
 
-    public UnitResult<Error> SetTelegramNotifications(bool value, string? telegramId = null)
+    public UnitResult<Error> UseTelegramNotifications(bool value)
     {
-        if (value)
-        {
-            if (String.IsNullOrWhiteSpace(TelegramId) && String.IsNullOrWhiteSpace(telegramId))
-                return Error.Validation("Can not use telegram notification method without telegram id specified!",
-                    "invalid.value.notification.setting.telegram");
-
-            if (telegramId != null)
-                TelegramId = telegramId;
-        }
+        if (value && String.IsNullOrWhiteSpace(TelegramId))
+            return Error.Validation("Can not use telegram notification method without telegram id specified!",
+                "invalid.value.notification.setting.telegram");
 
         SendTelegram = value;
         return Result.Success<Error>();
     }
 
-    public UnitResult<Error> SetWebNotifications(bool value, string? webEndpoint = null)
+    public UnitResult<Error> UseWebNotifications(bool value)
     {
-        if (value)
-        {
-            if (String.IsNullOrWhiteSpace(WebEndpoint) && String.IsNullOrWhiteSpace(webEndpoint))
-                return Error.Validation("Can not use web notification method without web endpoint specified!",
-                    "invalid.value.notification.setting.web");
-
-            if (webEndpoint != null)
-                WebEndpoint = webEndpoint;
-        }
+        if (value && String.IsNullOrWhiteSpace(WebEndpoint))
+            return Error.Validation("Can not use web notification method without web endpoint specified!",
+                "invalid.value.notification.setting.web");
 
         SendWeb = value;
         return Result.Success<Error>();
