@@ -4,22 +4,27 @@ namespace SachkovTech.SharedKernel.ValueObjects;
 
 public record FullName
 {
-    private FullName(string firstName, string secondName)
+    private FullName()
+    {
+        
+    }
+    
+    private FullName(string? firstName, string? secondName)
     {
         FirstName = firstName;
         SecondName = secondName;
     }
 
-    public string FirstName { get; }
-    public string SecondName { get; }
+    public string? FirstName { get; }
+    public string? SecondName { get; }
 
-    public static Result<FullName, Error> Create(string firstName, string secondName)
+    public static Result<FullName, Error> Create(string? firstName, string? secondName)
     {
-        if (string.IsNullOrWhiteSpace(firstName))
-            return Errors.General.ValueIsInvalid("Title");
+        if (firstName?.Trim().Length == 0)
+            return Errors.General.ValueIsInvalid("first name");
 
-        if (string.IsNullOrWhiteSpace(firstName))
-            return Errors.General.ValueIsInvalid("Title");
+        if (secondName?.Trim().Length == 0)
+            return Errors.General.ValueIsInvalid("second name");
 
 
         return new FullName(firstName, secondName);

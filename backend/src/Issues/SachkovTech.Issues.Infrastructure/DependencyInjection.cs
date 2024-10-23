@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Issues.Application;
+using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Issues.Infrastructure.Repositories;
@@ -37,6 +37,8 @@ public static class DependencyInjection
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<IModulesRepository, ModulesRepository>();
+        services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
+        services.AddScoped<IUserIssueRepository, UserIssueRepository>();
         
         return services;
     }

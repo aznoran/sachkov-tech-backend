@@ -1,4 +1,4 @@
-using SachkovTech.Issues.Application.Commands.AddIssue;
+using SachkovTech.Issues.Application.Features.Module.Commands.AddIssue;
 
 namespace SachkovTech.Issues.Presentation.Modules.Requests;
 
