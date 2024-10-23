@@ -1,10 +1,10 @@
 using FluentAssertions;
-using SachkovTech.IssueSolving.Domain.Entities;
-using SachkovTech.IssueSolving.Domain.Enums;
+using SachkovTech.Issues.Domain.IssueSolving.Entities;
+using SachkovTech.Issues.Domain.IssueSolving.Enums;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
-namespace SachkovTech.IssueSolving.UnitTests.Domain;
+namespace SachkovTech.IssueSolving.UnitTests.DomainTestProject1;
 
 public class UserIssueTests
 {

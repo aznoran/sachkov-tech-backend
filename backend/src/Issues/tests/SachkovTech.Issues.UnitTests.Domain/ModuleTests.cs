@@ -100,7 +100,7 @@ public class ModuleTests
     }
 
     [Fact]
-    public void Restore_Should_mark_all_issues_as_not_deleted()
+    public void Restore_should_mark_all_issues_as_not_deleted()
     {
         var module = CreateAndFillModule(3);
         module.SoftDelete();
@@ -119,7 +119,7 @@ public class ModuleTests
     }
 
     [Fact]
-    public void GetIssueById_Should_ReturnIssue_When_IssueExists()
+    public void GetIssueById_should_return_issue_when_issue_exists()
     {
         // Arrange
         var module = CreateAndFillModule(0);
@@ -143,7 +143,7 @@ public class ModuleTests
     }
 
     [Fact]
-    public void GetIssueById_Should_ReturnNull_When_IssueDoesNotExist()
+    public void GetIssueById_should_return_null_when_issue_does_not_exist()
     {
         // Arrange
         var module = CreateAndFillModule(0);
@@ -157,7 +157,7 @@ public class ModuleTests
     }
 
     [Fact]
-    public void UpdateMainInfo_Should_UpdateIssueInfo_When_ValidDataIsProvided()
+    public void UpdateMainInfo_should_update_issue_info_when_valid_data_is_provided()
     {
         // Arrange
         var module = CreateAndFillModule(0);

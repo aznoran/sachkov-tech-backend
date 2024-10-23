@@ -117,12 +117,12 @@ public class IssuesReviewTests
         // Arrange
         var authorId = UserId.NewUserId();
         var reviewerId = UserId.NewUserId();
-        
+
         var issueReview = IssueReview.Create(
             UserIssueId.NewIssueId(),
             authorId,
             PullRequestUrl.Empty).Value;
-        
+
         issueReview.StartReview(reviewerId);
 
         var commentFromAuthor = Comment.Create(authorId, Message.Create("Test1").Value);
@@ -131,11 +131,11 @@ public class IssuesReviewTests
         // Act
         var resultFromReviewer = issueReview.AddComment(commentFromReviewer.Value);
         var resultFromAuthor = issueReview.AddComment(commentFromAuthor.Value);
-        
+
         // Assert
         resultFromReviewer.IsSuccess.Should().BeTrue();
         resultFromAuthor.IsSuccess.Should().BeTrue();
-        
+
         issueReview.Comments.Should().Contain(commentFromAuthor.Value);
         issueReview.Comments.Should().Contain(commentFromReviewer.Value);
     }
@@ -189,7 +189,7 @@ public class IssuesReviewTests
         var reviewerId = UserId.NewUserId();
         var otherUserId = UserId.NewUserId();
         var comment = Comment.Create(authorId, Message.Create("Test1").Value);
-        
+
         var issueReview = CreateAndFillModule(5);
         issueReview.AddComment(comment.Value);
         issueReview.StartReview(reviewerId);
