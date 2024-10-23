@@ -59,9 +59,7 @@ public class User : IdentityUser<Guid>
 
     public void EnrollParticipant(Role role)
     {
-        if (_roles.Contains(role))
-            return;
-        
-        _roles.Add(role);
+        if (!_roles.Contains(role) && role.Name == StudentAccount.STUDENT)
+            _roles.Add(role);
     }
 }
