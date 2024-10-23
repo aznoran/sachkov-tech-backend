@@ -20,5 +20,6 @@ public static class AppExtensions
         services.AddScoped<AddNotificationSettingsHandler>();
         services.AddScoped<PatchNotificationSettingsHandler>();
         services.AddScoped<GetNotificationSettingsHandler>();
+        services.AddScoped<PushNotificationHandler>();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Entities;
-using NotificationService.Extensions;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
@@ -22,49 +21,44 @@ namespace NotificationService.Features.Commands
                 .FirstOrDefaultAsync(x => x.Id == command.Id, cancellationToken);
 
             if (notificationSettings == null)
-                return Error.NotFound("notification.settings.not.found",
-                    $"No settings were found with id: {command.Id}");
+                return Error.NotFound($"No settings were found with id: {command.Id}",
+                    "notification.settings.not.found");
 
             var updateRes = UpdateSettings(
+                notificationSettings,
                 command.NotificationType,
-                command.Value,
-                notificationSettings);
+                command.Value);
 
             if (updateRes.IsFailure)
                 return updateRes.Error;
 
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success<Error>();
         }
 
-        private UnitResult<Error> UpdateSettings(string propertyName, bool value, NotificationSettings userSettings)
+        private UnitResult<Error> UpdateSettings(NotificationSettings userSettings, string propertyName, bool value)
         {
             switch (propertyName.Trim().ToLower())
             {
                 case "email":
                     {
-                        userSettings.Email = value;
-                        break;
+                        return userSettings.UseEmailNotifications(value);
                     }
                 case "telegram":
                     {
-                        userSettings.Telegram = value;
-                        break;
+                        return userSettings.UseTelegramNotifications(value);
                     }
                 case "web":
                     {
-                        userSettings.Web = value;
-                        break;
+                        return userSettings.UseWebNotifications(value);
                     }
                 default:
                     {
-                        return Error.Validation("invalid.value.notification.type",
-                            $"No such notification method exists: {propertyName}");
+                        return Error.Validation($"No such notification method exists: {propertyName}",
+                            "invalid.value.notification.type");
                     }
             }
-
-            return Result.Success<Error>();
         }
     }
 }

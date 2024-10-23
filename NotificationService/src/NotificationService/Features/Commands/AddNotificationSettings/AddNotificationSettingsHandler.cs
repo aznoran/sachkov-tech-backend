@@ -1,6 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
 using NotificationService.Entities;
-using NotificationService.Extensions;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
@@ -13,24 +12,27 @@ namespace NotificationService.Features.Commands
         {
             _dbContext = dbContext;
         }
-        public async Task<UnitResult<Error>> Handle(
+        public async Task<Result<Guid,Error>> Handle(
             AddNotificationSettingsCommand command,
             CancellationToken cancellationToken = default)
         {
-            var notificationSettings = new NotificationSettings()
-            {
-                Id = command.Id,
-                UserId = command.UserId
-            };
+            var emailRes = Email.Create(command.Email);
+            if (emailRes.IsFailure)
+                return emailRes.Error;
 
-            notificationSettings.Email = command.Email ?? notificationSettings.Email;
-            notificationSettings.Telegram = command.Telegram ?? notificationSettings.Telegram;
-            notificationSettings.Web = command.Web ?? notificationSettings.Web;
+            var notificationSettingsResult = NotificationSettings.Create(
+                Guid.NewGuid(),
+                command.UserId,
+                emailAddress: emailRes.Value,
+                webEndpoint: command.WebEndpoint!);
 
-            await _dbContext.NotificationSettings.AddAsync(notificationSettings);
+            if (notificationSettingsResult.IsFailure)
+                return notificationSettingsResult.Error;
+
+            await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value);
             await _dbContext.SaveChangesAsync();
 
-            return Result.Success<Error>();
+            return notificationSettingsResult.Value.Id;
         }
     }
 }

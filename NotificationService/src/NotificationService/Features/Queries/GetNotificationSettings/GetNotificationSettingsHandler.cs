@@ -23,8 +23,8 @@ namespace NotificationService.Features.Queries
                 .FirstOrDefaultAsync(x => x.Id == query.Id,cancellationToken);
 
             if (notificationSettings == null)
-                return Error.NotFound("notification.settings.not.found",
-                    $"No settings were found with id: {query.Id}");
+                return Error.NotFound($"No settings were found with id: {query.Id}",
+                    "notification.settings.not.found");
 
             return notificationSettings;
         }
