@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Domain.Entities;
+using SachkovTech.Issues.Domain.Module.Entities;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -27,7 +27,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                     .IsRequired(false)
                     .HasColumnName("lesson_id");
             });
-        
+
         builder.ComplexProperty(i => i.Experience,
             lb =>
             {

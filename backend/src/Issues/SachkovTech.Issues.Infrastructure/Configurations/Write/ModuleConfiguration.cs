@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Issues.Domain;
+using SachkovTech.Issues.Domain.Module;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -48,7 +48,5 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
         builder.Property(m => m.DeletionDate)
             .IsRequired(false)
             .HasColumnName("deletion_date");
-
-        // builder.HasQueryFilter(m => m.)
     }
 }
