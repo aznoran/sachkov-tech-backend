@@ -18,12 +18,16 @@ namespace NotificationService.Features.Commands
             PushNotificationCommand command,
             CancellationToken cancellationToken = default)
         {
+            var messageData = new MessageData(
+                command.Msg.Title,
+                command.Msg.Message);
+
             var notification = new Notification()
             {
                 Id = Guid.NewGuid(),
                 RoleIds = command.Roles.ToList(),
                 UserIds = command.UserIds.ToList(),
-                Message = command.Msg,
+                Message = messageData,
                 CreatedAt = DateTime.UtcNow,
                 Status = NotificationStatusEnum.Pending
             };

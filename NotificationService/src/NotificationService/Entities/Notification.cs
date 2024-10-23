@@ -1,6 +1,4 @@
-﻿using NotificationService.Api.Dto;
-
-namespace NotificationService.Entities;
+﻿namespace NotificationService.Entities;
 
 public class Notification
 {
@@ -10,7 +8,7 @@ public class Notification
 
     public List<Guid> UserIds { get; init; } = [];
 
-    public MessageDto Message { get; init; } = null!;
+    public MessageData Message { get; init; } = null!;
 
     public bool IsSend { get; init; }
 
