@@ -22,7 +22,7 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
     private readonly IValidator<RegisterUserCommand> _validator;
 
     public RegisterUserHandler(
-        UserManager<User> userManager, 
+        UserManager<User> userManager,
         RoleManager<Role> roleManager,
         IAccountsManager accountsManager,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
@@ -77,18 +77,18 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
             await _accountsManager.CreateParticipantAccount(participantAccount, cancellationToken);
 
             await _unitOfWork.SaveChanges(cancellationToken);
-            
-            transaction.Commit();
-            
+
+            await transaction.CommitAsync(cancellationToken);
+
             _logger.LogInformation("User was created with name {userName}", command.UserName);
 
             return Result.Success<ErrorList>();
         }
         catch (Exception ex)
         {
-            _logger.LogError("User registration was failed");
-            
-            transaction.Rollback();
+            _logger.LogError(ex, "User registration was failed");
+
+            await transaction.RollbackAsync(cancellationToken);
 
             return Error.Failure("register.user", "User registration was failed").ToErrorList();
         }

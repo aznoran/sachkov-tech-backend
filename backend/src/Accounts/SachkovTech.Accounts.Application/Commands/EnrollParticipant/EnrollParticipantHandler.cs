@@ -30,8 +30,8 @@ public class EnrollParticipantHandler : ICommandHandler<EnrollParticipantCommand
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
-    
-    
+
+
     public async Task<UnitResult<ErrorList>> Handle(
         EnrollParticipantCommand command,
         CancellationToken cancellationToken = default)
@@ -60,18 +60,18 @@ public class EnrollParticipantHandler : ICommandHandler<EnrollParticipantCommand
             await _accountsManager.CreateStudentAccount(studentAccount, cancellationToken);
 
             await _unitOfWork.SaveChanges(cancellationToken);
-            
-            transaction.Commit();
-            
+
+            await transaction.CommitAsync(cancellationToken);
+
             _logger.LogInformation("Student role was added for user {userName}", user.UserName);
 
             return Result.Success<ErrorList>();
         }
         catch (Exception ex)
         {
-            _logger.LogError("Can not enroll participant with email {userEmail}", command.Email);
-            
-            transaction.Rollback();
+            _logger.LogError(ex, "Can not enroll participant with email {userEmail}", command.Email);
+
+            await transaction.RollbackAsync(cancellationToken);
 
             return Error.Failure("enroll.participant", "Can not enroll participant").ToErrorList();
         }
