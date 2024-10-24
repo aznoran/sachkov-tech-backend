@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NotificationService.Features.Commands;
 using NotificationService.Features.Commands.AddNotificationSettings;
 using NotificationService.Features.Commands.PatchNotificationSettings;
 using NotificationService.Features.Commands.PushNotification;
-using NotificationService.Features.Queries;
 using NotificationService.Features.Queries.GetNotificationSettings;
 using NotificationService.Infrastructure;
 

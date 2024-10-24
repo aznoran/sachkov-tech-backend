@@ -3,6 +3,6 @@
 namespace NotificationService.Api.Contracts;
 
 public record PushNotificationRequest(
-    MessageDto msg,
+    MessageDto Message,
     Guid[] UserIds,
     Guid[] RoleIds);

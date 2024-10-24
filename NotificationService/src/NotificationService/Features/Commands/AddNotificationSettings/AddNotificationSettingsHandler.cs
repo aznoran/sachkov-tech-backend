@@ -30,8 +30,8 @@ public class AddNotificationSettingsHandler
         if (notificationSettingsResult.IsFailure)
             return notificationSettingsResult.Error;
 
-        await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return notificationSettingsResult.Value.Id;
     }
