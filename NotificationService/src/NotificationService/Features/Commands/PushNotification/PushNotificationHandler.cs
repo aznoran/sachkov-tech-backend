@@ -1,10 +1,9 @@
 ﻿using CSharpFunctionalExtensions;
-using Microsoft.EntityFrameworkCore;
 using NotificationService.Entities;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
-namespace NotificationService.Features.Commands
+namespace NotificationService.Features.Commands.PushNotification
 {
     public class PushNotificationHandler
     {
@@ -22,18 +21,13 @@ namespace NotificationService.Features.Commands
                 command.Msg.Title,
                 command.Msg.Message);
 
-            var notification = new Notification()
-            {
-                Id = Guid.NewGuid(),
-                RoleIds = command.Roles.ToList(),
-                UserIds = command.UserIds.ToList(),
-                Message = messageData,
-                CreatedAt = DateTime.UtcNow,
-                Status = NotificationStatusEnum.Pending
-            };
+            var notification = Notification.Create(
+                command.Roles.ToList(),
+                command.UserIds.ToList(),
+                messageData);
 
-            await _dbContext.Notifications.AddAsync(notification);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.Notifications.AddAsync(notification, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
             return notification.Id;
         }

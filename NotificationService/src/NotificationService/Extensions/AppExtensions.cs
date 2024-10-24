@@ -1,5 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NotificationService.BackgroundServices;
+using NotificationService.BackgroundServices.Services;
 using NotificationService.Features.Commands;
+using NotificationService.Features.Commands.PushNotification;
 using NotificationService.Features.Queries;
 using NotificationService.Infrastructure;
 
@@ -21,5 +24,11 @@ public static class AppExtensions
         services.AddScoped<PatchNotificationSettingsHandler>();
         services.AddScoped<GetNotificationSettingsHandler>();
         services.AddScoped<PushNotificationHandler>();
+    }
+    
+    public static void AddBackgroundService(this IServiceCollection services)
+    {
+        services.AddHostedService<SendNotificationsBackgroundService>();
+        services.AddScoped<SendNotificationsService>();
     }
 }

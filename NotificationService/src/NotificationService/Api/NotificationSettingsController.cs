@@ -2,6 +2,7 @@
 using NotificationService.Entities;
 using NotificationService.Extensions;
 using NotificationService.Features.Commands;
+using NotificationService.Features.Commands.PushNotification;
 using NotificationService.Features.Queries;
 using NotificationService.HelperClasses;
 
