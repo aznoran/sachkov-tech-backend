@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Features.Commands
+﻿namespace NotificationService.Features.Commands.PatchNotificationSettings
 {
     public record PatchNotificationSettingsCommand(
         Guid Id,

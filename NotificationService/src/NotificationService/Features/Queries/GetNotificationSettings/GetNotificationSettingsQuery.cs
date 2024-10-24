@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Features.Queries
+﻿namespace NotificationService.Features.Queries.GetNotificationSettings
 {
     public record GetNotificationSettingsQuery(
         Guid Id);

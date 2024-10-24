@@ -4,7 +4,7 @@ using NotificationService.Entities;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
-namespace NotificationService.Features.Commands
+namespace NotificationService.Features.Commands.PatchNotificationSettings
 {
     public class PatchNotificationSettingsHandler
     {

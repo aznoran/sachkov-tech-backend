@@ -1,8 +1,8 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Text.RegularExpressions;
+using CSharpFunctionalExtensions;
 using NotificationService.HelperClasses;
-using System.Text.RegularExpressions;
 
-namespace NotificationService.Entities
+namespace NotificationService.Entities.ValueObjects
 {
     public class Email : ValueObject
     {

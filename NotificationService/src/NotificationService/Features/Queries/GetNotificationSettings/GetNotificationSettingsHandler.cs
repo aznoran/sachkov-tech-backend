@@ -4,7 +4,7 @@ using NotificationService.Entities;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
-namespace NotificationService.Features.Queries
+namespace NotificationService.Features.Queries.GetNotificationSettings
 {
     public class GetNotificationSettingsHandler
     {

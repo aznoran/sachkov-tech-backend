@@ -1,6 +1,6 @@
 ﻿using NotificationService.Api.Dto;
 
-namespace NotificationService.Api
+namespace NotificationService.Api.Contracts
 {
     public record PushNotificationRequest(
         MessageDto msg,

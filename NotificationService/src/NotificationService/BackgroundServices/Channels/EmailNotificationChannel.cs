@@ -1,4 +1,5 @@
 ﻿using NotificationService.Entities;
+using NotificationService.Entities.ValueObjects;
 
 namespace NotificationService.BackgroundServices.Channels;
 

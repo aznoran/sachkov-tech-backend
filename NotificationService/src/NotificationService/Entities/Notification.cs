@@ -1,4 +1,6 @@
-﻿namespace NotificationService.Entities;
+﻿using NotificationService.Entities.ValueObjects;
+
+namespace NotificationService.Entities;
 
 public class Notification
 {

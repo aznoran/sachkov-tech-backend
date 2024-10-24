@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 
-namespace NotificationService.Entities
+namespace NotificationService.Entities.ValueObjects
 {
     public class MessageData : ValueObject
     {

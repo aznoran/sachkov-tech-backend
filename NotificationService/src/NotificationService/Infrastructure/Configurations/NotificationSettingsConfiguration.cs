@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NotificationService.Entities;
+using NotificationService.Entities.ValueObjects;
 
 namespace NotificationService.Infrastructure.Configurations
 {

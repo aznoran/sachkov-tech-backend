@@ -1,4 +1,4 @@
-﻿namespace NotificationService.Features.Commands
+﻿namespace NotificationService.Features.Commands.AddNotificationSettings
 {
     public record AddNotificationSettingsCommand(
         Guid UserId,
