@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using NotificationService.Entities.ValueObjects;
 using NotificationService.HelperClasses;
 
 namespace NotificationService.Entities;
