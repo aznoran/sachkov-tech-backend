@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option csharp_namespace = "NotificationService.Grpc";
+
+package NotificationServiceGrpc;
+
+message Guid
+{
+  string Guid = 1;
+}

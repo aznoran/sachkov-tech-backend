@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "NotificationService.Grpc";
+
+package NotificationServiceGrpc;
+
+import "Grpc/Protos/NotificationSettings/Contracts/Dto/MessageDto.proto";
+import "Grpc/Protos/Shared/Guid.proto";
+
+message PushNotificationRequest 
+{
+  MessageDto Message = 1;
+  repeated Guid UserIds = 2;
+  repeated Guid RoleIds = 3;
+}
+

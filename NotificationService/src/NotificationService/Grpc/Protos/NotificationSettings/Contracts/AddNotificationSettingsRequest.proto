@@ -1,0 +1,14 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "NotificationService.Grpc";
+
+package NotificationServiceGrpc;
+
+import "Grpc/Protos/Shared/Guid.proto";
+
+message AddNotificationSettingsRequest 
+{
+  Guid UserId = 1;
+  string Email = 2;
+  optional string WebEndpoint = 3;
+}
