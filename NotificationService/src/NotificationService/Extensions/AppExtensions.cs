@@ -9,12 +9,14 @@ namespace NotificationService.Extensions;
 
 public static class AppExtensions
 {
-    public static async Task AddMigrations(this WebApplication app)
+    public static async Task AddMigrations(
+        this WebApplication app,
+        CancellationToken cancellationToken = default)
     {
         await using var scoped = app.Services.CreateAsyncScope();
         var dbContext = scoped.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        await dbContext.Database.MigrateAsync();
+        await dbContext.Database.MigrateAsync(cancellationToken);
     }
 
     public static void AddHandlers(this IServiceCollection services)

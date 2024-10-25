@@ -32,8 +32,8 @@ public class PushNotificationHandler
             Status = NotificationStatusEnum.Pending
         };
 
-        await _dbContext.Notifications.AddAsync(notification);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.Notifications.AddAsync(notification, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return notification.Id;
     }
