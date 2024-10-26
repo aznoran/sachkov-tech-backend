@@ -134,6 +134,7 @@ public class UserIssueTests
         return new UserIssue(
             UserIssueId.NewIssueId(),
             UserId.NewUserId(),
-            IssueId.NewIssueId());
+            IssueId.NewIssueId(),
+            ModuleId.NewModuleId());
     }
 }
