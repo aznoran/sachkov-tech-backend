@@ -4,7 +4,7 @@ option csharp_namespace = "NotificationService.Grpc";
 
 package NotificationServiceGrpc;
 
-message Guid
+message GuidGrpc
 {
   string Guid = 1;
 }

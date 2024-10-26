@@ -1,7 +1,7 @@
 ﻿using Grpc.Core;
+using NotificationService.Extensions;
 using NotificationService.Features.Commands.AddNotificationSettings;
 using NotificationService.Features.Commands.PushNotification;
-using MessageDtoClass = NotificationService.Api.Dto.MessageDto;
 
 namespace NotificationService.Grpc.Services;
 
@@ -14,7 +14,7 @@ public class NotificationServiceGrpcImplementation : NotificationService.Notific
         _provider = provider;
     }
 
-    public async override Task<Guid> Add(
+    public async override Task<GuidGrpc> Add(
         AddNotificationSettingsRequest request,
         ServerCallContext context)
     {
@@ -23,35 +23,25 @@ public class NotificationServiceGrpcImplementation : NotificationService.Notific
         var scoped = _provider.CreateScope();
         var handler = scoped.ServiceProvider.GetRequiredService<AddNotificationSettingsHandler>();
 
+        if (request.UserId.IsValidGuid(out RpcException exception) == false)
+            throw exception;
+
         var command = new AddNotificationSettingsCommand
             (
-                new System.Guid(request.UserId.Guid_),
+                new Guid(request.UserId.Guid),
                 request.Email,
                 request.HasWebEndpoint ? request.WebEndpoint : null
             );
 
-        var result = await handler.Handle(command, cancellationToken); // todo error handling
-        //if (result.IsFailure)
-        //    return result.Error.ToResponse(); // todo
-        /*
-            response = new AddResponse()
-            {
-                result = null;
-            }
-        */
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            throw result.Error.ToGrpcResponse();
 
-        /*
-        response = new AddResponse()
-            {
-                result = handle.Result;
-            }
-        */
-
-        var response = new Guid() { Guid_ = result.Value.ToString() };
+        var response = new GuidGrpc() { Guid = result.Value.ToString() };
         return await Task.FromResult(response);
     }
 
-    public async override Task<Guid> Push(
+    public async override Task<GuidGrpc> Push(
         PushNotificationRequest request,
         ServerCallContext context)
     {
@@ -60,17 +50,22 @@ public class NotificationServiceGrpcImplementation : NotificationService.Notific
         var scoped = _provider.CreateScope();
         var handler = scoped.ServiceProvider.GetRequiredService<PushNotificationHandler>();
 
+        if (request.UserIds.IsValidGuid(out RpcException exceptionA, nameof(request.UserIds)) == false)
+            throw exceptionA;
+        if (request.RoleIds.IsValidGuid(out RpcException exceptionB, nameof(request.RoleIds)) == false)
+            throw exceptionB;
+
         var command = new PushNotificationCommand(
-            new MessageDtoClass(request.Message.Title, request.Message.Message),
-            request.UserIds.Select(x => new System.Guid(x.Guid_)).ToArray(),
-            request.RoleIds.Select(x => new System.Guid(x.Guid_)).ToArray());
+            request.Message,
+            request.UserIds.Select(x => new Guid(x.Guid)).ToArray(),
+            request.RoleIds.Select(x => new Guid(x.Guid)).ToArray());
 
         var result = await handler.Handle(command, cancellationToken);
 
-        //if (result.IsFailure) //todo
-        //    return result.Error.ToResponse();
+        if (result.IsFailure)
+            throw result.Error.ToGrpcResponse();
 
-        var response = new Guid() { Guid_ = result.Value.ToString() };
+        var response = new GuidGrpc() { Guid = result.Value.ToString() };
         return await Task.FromResult(response);
     }
 }

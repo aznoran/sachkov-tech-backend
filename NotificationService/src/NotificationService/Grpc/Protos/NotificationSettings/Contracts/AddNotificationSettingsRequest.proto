@@ -4,11 +4,11 @@ option csharp_namespace = "NotificationService.Grpc";
 
 package NotificationServiceGrpc;
 
-import "Grpc/Protos/Shared/Guid.proto";
+import "Grpc/Protos/Shared/GuidGrpc.proto";
 
 message AddNotificationSettingsRequest 
 {
-  Guid UserId = 1;
+  GuidGrpc UserId = 1;
   string Email = 2;
   optional string WebEndpoint = 3;
 }

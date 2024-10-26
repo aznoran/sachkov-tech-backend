@@ -1,8 +1,6 @@
-﻿using NotificationService.Api.Dto;
-
-namespace NotificationService.Features.Commands.PushNotification;
+﻿namespace NotificationService.Features.Commands.PushNotification;
 
 public record PushNotificationCommand(
-    MessageDto Msg,
+    Grpc.MessageDto Msg,
     Guid[] UserIds,
     Guid[] Roles);

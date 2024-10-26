@@ -6,17 +6,10 @@ package NotificationServiceGrpc;
 
 import "Grpc/Protos/NotificationSettings/Contracts/PushNotificationRequest.proto";
 import "Grpc/Protos/NotificationSettings/Contracts/AddNotificationSettingsRequest.proto";
-import "Grpc/Protos/Shared/Guid.proto";
-import "Grpc/Protos/Shared/Error.proto";
+import "Grpc/Protos/Shared/GuidGrpc.proto";
 
 service NotificationService {
-  rpc Add (AddNotificationSettingsRequest) returns (Guid); // todo change return to ResponseGuid if error handling is different
-  rpc Push (PushNotificationRequest) returns (Guid);
+  rpc Add (AddNotificationSettingsRequest) returns (GuidGrpc);
+  rpc Push (PushNotificationRequest) returns (GuidGrpc);
 }
 
-message ResponseGuid
-{
-	optional Guid Guid = 1;
-	repeated Error Errors = 2;
-	//datetime todo timegenerated
-}
