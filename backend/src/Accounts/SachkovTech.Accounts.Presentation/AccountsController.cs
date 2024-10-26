@@ -11,20 +11,6 @@ namespace SachkovTech.Accounts.Presentation;
 
 public class AccountsController : ApplicationController
 {
-    [Permission(Permissions.Issues.CreateIssue)]
-    [HttpPost("create")]
-    public IActionResult CreateIssue()
-    {
-        return Ok();
-    }
-
-    [Permission("update.create")]
-    [HttpPost("update")]
-    public IActionResult UpdateIssue()
-    {
-        return Ok();
-    }
-
     [HttpPost("registration")]
     public async Task<IActionResult> Register(
         [FromBody] RegisterUserRequest request,
@@ -73,7 +59,7 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission("accounts.enroll")]
+    [Permission(Permissions.Accounts.EnrollAccount)]
     [HttpPut("student-role")]
     public async Task<ActionResult> EnrollParticipant(
         [FromBody] EnrollParticipantRequest request,

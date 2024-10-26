@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Files.Contracts.Converters;
 using SachkovTech.Framework;
+using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Module.Commands.AddIssue;
 using SachkovTech.Issues.Application.Features.Module.Commands.Create;
 using SachkovTech.Issues.Application.Features.Module.Commands.Delete;
@@ -20,6 +21,7 @@ namespace SachkovTech.Issues.Presentation.Modules;
 
 public class ModulesController : ApplicationController
 {
+    [Permission(Permissions.Modules.CreateModule)]
     [HttpPost]
     public async Task<ActionResult> Create(
         [FromServices] CreateModuleHandler handler,
@@ -33,7 +35,8 @@ public class ModulesController : ApplicationController
 
         return Ok(result.Value);
     }
-
+    
+    [Permission(Permissions.Issues.CreateIssue)]
     [HttpPost("{id:guid}/issue")]
     public async Task<ActionResult> AddIssue(
         [FromRoute] Guid id,
@@ -51,6 +54,8 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Files.Upload)]
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPost("{moduleId:guid}/issue/{issueId:guid}/files")]
     public async Task<ActionResult> UploadFilesToIssue(
         [FromRoute] Guid moduleId,
@@ -74,6 +79,7 @@ public class ModulesController : ApplicationController
         return Ok(response);
     }
 
+    [Permission(Permissions.Modules.UpdateModule)]
     [HttpPut("{id:guid}/main-info")]
     public async Task<ActionResult> UpdateMainInfo(
         [FromRoute] Guid id,
@@ -90,6 +96,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
     
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{id:guid}/issue/{issueId:guid}/newPosition/{newPosition:int}")]
     public async Task<ActionResult> UpdateIssuePosition(
         [FromRoute] Guid id,
@@ -107,6 +114,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{id:guid}/issue/{issueId:guid}/main-info")]
     public async Task<ActionResult> UpdateIssueMainInfo(
         [FromRoute] Guid id,
@@ -124,6 +132,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{moduleId:guid}/issue/{issueId:guid}/restore")]
     public async Task<ActionResult> RestoreIssue(
         [FromRoute] Guid moduleId,
@@ -141,6 +150,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Modules.DeleteModule)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,
@@ -156,6 +166,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.DeleteIssue)]
     [HttpDelete("{id:guid}/issue/{issueId:guid}/soft")]
     public async Task<ActionResult> SoftDeleteIssue(
         [FromRoute] Guid id,
@@ -172,6 +183,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.DeleteIssue)]
     [HttpDelete("{id:guid}/issue/{issueId:guid}/force")]
     public async Task<ActionResult> ForceDeleteIssue(
         [FromRoute] Guid id,

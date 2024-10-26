@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Core.Models;
 using SachkovTech.Framework;
+using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.SendOnReview;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.StopWorking;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.TakeOnWork;
@@ -11,7 +12,7 @@ namespace SachkovTech.Issues.Presentation.IssueSolving;
 
 public class IssueSolvingController : ApplicationController
 {
-    //[Authorize]
+    [Permission(Permissions.SolvingIssues.CreateSolvingIssue)]
     [HttpPost("{issueId:guid}")]
     public async Task<ActionResult> TakeOnWork(
         [FromRoute] Guid issueId,
@@ -30,7 +31,7 @@ public class IssueSolvingController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Authorize]
+    [Permission(Permissions.SolvingIssues.UpdateSolvingIssue)]
     [HttpPost("{userIssueId:guid}/review")]
     public async Task<ActionResult> SendOnReview(
         [FromRoute] Guid userIssueId,
@@ -50,7 +51,7 @@ public class IssueSolvingController : ApplicationController
         return Ok();
     }
 
-    [Authorize]
+    [Permission(Permissions.SolvingIssues.UpdateSolvingIssue)]
     [HttpPost("{userIssueId:guid}/cancel")]
     public async Task<ActionResult> StopWorking(
         [FromRoute] Guid userIssueId,
