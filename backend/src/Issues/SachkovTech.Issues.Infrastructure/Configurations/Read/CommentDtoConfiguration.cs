@@ -8,7 +8,7 @@ public class CommentDtoConfiguration : IEntityTypeConfiguration<CommentDto>
 {
     public void Configure(EntityTypeBuilder<CommentDto> builder)
     {
-        builder.ToTable("issue_reviews");
+        builder.ToTable("comments");
 
         builder.HasKey(c => c.Id);
     }
