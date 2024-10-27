@@ -15,7 +15,7 @@ internal class SendNotificationsBackgroundService : BackgroundService
         _logger = logger;
         _scopeFactory = scopeFactory;
     }
-    
+
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("SendNotificationsBackgroundService is started");
@@ -23,14 +23,21 @@ internal class SendNotificationsBackgroundService : BackgroundService
         while (!cancellationToken.IsCancellationRequested)
         {
             await using var scope = _scopeFactory.CreateAsyncScope();
-            
+
             var sendNotificationsService = scope.ServiceProvider
                 .GetRequiredService<SendNotificationsService>();
-            
+
             _logger.LogInformation("SendNotificationsService is working");
-            
-            await sendNotificationsService.Process(cancellationToken);
-            
+
+            try
+            {
+                await sendNotificationsService.Process(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("SendNotificationsService failed with error: {exception}", ex.Message);
+            }
+
             await Task.Delay(
                 TimeSpan.FromSeconds(SEND_NOTIFICATIONS_SERVICE_REDUCTION_SECONDS),
                 cancellationToken);

@@ -1,6 +1,8 @@
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using NotificationService.BackgroundServices.Channels;
+using NotificationService.BackgroundServices.Factories;
 using NotificationService.Entities;
+using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
 namespace NotificationService.BackgroundServices.Services;
@@ -10,16 +12,18 @@ public class SendNotificationsService
     private const int NOTIFICATIONS_TO_PROCESS = 10;
     private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<SendNotificationsService> _logger;
-    private INotificationSender _notificationSender;
+    private readonly NotificationSettingsFactory _notificationSettingsFactory;
 
     public SendNotificationsService(
         ApplicationDbContext dbContext,
-        ILogger<SendNotificationsService> logger)
+        ILogger<SendNotificationsService> logger,
+        NotificationSettingsFactory notificationSettingsFactory)
     {
         _dbContext = dbContext;
         _logger = logger;
+        _notificationSettingsFactory = notificationSettingsFactory;
     }
-    
+
     public async Task Process(CancellationToken cancellationToken)
     {
         var notifications = await GetNotificationsWithPendingStatusAsync(cancellationToken);
@@ -30,59 +34,79 @@ public class SendNotificationsService
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
-        
-        foreach (var notification in notifications)
-        {
-            var notificationSettings = await 
-                GetNotificationSettingsAsync(notification, cancellationToken);
 
-            try
-            {
-                foreach (var notificationSetting in notificationSettings)
-                {
-                    if (notificationSetting.SendEmail)
-                    {
-                        _notificationSender = new EmailNotificationChannel();
+        await ProcessNotifications(notifications, cancellationToken);
 
-                        await TryToSend(notification, notificationSetting, cancellationToken);
-                    }
-
-                    if (notificationSetting.SendTelegram)
-                    {
-                        _notificationSender = new TelegramNotificationChannel();
-                        
-                        await TryToSend(notification, notificationSetting, cancellationToken);
-                    }
-
-                    if (notificationSetting.SendWeb)
-                    {
-                        _notificationSender = new WebNotificationChannel();
-                        
-                        await TryToSend(notification, notificationSetting, cancellationToken);
-                    }
-
-                    _logger.LogInformation("Notification with {Id} sent successful", notification.Id);
-                }
-                notification.SendingNotificationSuccedeed();
-            }
-            catch
-            {
-                _logger.LogError("Notification with {Id} failed to send", notification.Id);
-                notification.SendingNotificationFailed();
-            }
-        }
-        
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task TryToSend(Notification notification,
-        NotificationSettings notificationSettings,
+    private async Task ProcessNotifications(List<Notification> notifications,
         CancellationToken cancellationToken)
     {
-        if(_notificationSender.CanSend(notificationSettings, cancellationToken))
-            await _notificationSender.SendAsync(notification.Message, notificationSettings, cancellationToken);
+        foreach (var notification in notifications)
+        {
+            var notificationSettings = await
+                GetNotificationSettingsAsync(notification, cancellationToken);
+
+            var res = await
+                ProcessNotificationSettings(notification, notificationSettings, cancellationToken);
+
+            if (res.IsFailure)
+            {
+                _logger.LogError("Notification with {Id} failed to send", notification.Id);
+
+                notification.SendingNotificationFailed();
+            }
+
+            _logger.LogInformation("Notification with {Id} sent successful", notification.Id);
+
+            notification.SendingNotificationSuccedeed();
+        }
     }
-    
+
+    private async Task<UnitResult<Error>> ProcessNotificationSettings(Notification notification,
+        IEnumerable<NotificationSettings> notificationSettings,
+        CancellationToken cancellationToken)
+    {
+        foreach (var notificationSetting in notificationSettings)
+        {
+            var senders = _notificationSettingsFactory
+                .GetSenders(notificationSetting);
+
+            var processSendersRes =
+                await ProcessSenders(senders, notification, notificationSetting, cancellationToken);
+
+            if (processSendersRes.IsFailure)
+            {
+                return processSendersRes.Error;
+            }
+        }
+
+        return UnitResult.Success<Error>();
+    }
+
+    private async Task<UnitResult<Error>> ProcessSenders(IEnumerable<INotificationSender?> senders,
+        Notification notification,
+        NotificationSettings notificationSetting,
+        CancellationToken cancellationToken)
+    {
+        foreach (var sender in senders)
+        {
+            if (sender != null && sender.CanSend(notificationSetting, cancellationToken))
+            {
+                var sendingResult = await sender
+                    .SendAsync(notification.Message, notificationSetting, cancellationToken);
+                
+                if (sendingResult.IsFailure)
+                {
+                    return sendingResult.Error;
+                }
+            }
+        }
+
+        return UnitResult.Success<Error>();
+    }
+
     private async Task<List<Notification>> GetNotificationsWithPendingStatusAsync
         (CancellationToken cancellationToken)
     {
@@ -91,7 +115,7 @@ public class SendNotificationsService
             .Take(NOTIFICATIONS_TO_PROCESS)
             .ToListAsync(cancellationToken: cancellationToken);
     }
-    
+
     private async Task<IEnumerable<NotificationSettings>> GetNotificationSettingsAsync
         (Notification notification, CancellationToken cancellationToken)
     {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NotificationService.BackgroundServices;
+using NotificationService.BackgroundServices.Channels;
+using NotificationService.BackgroundServices.Factories;
 using NotificationService.BackgroundServices.Services;
 using NotificationService.Features.Commands;
 using NotificationService.Features.Commands.AddNotificationSettings;
@@ -33,5 +35,15 @@ public static class AppExtensions
     {
         services.AddHostedService<SendNotificationsBackgroundService>();
         services.AddScoped<SendNotificationsService>();
+
+        services.AddScoped<INotificationSender, TelegramNotificationChannel>();
+        services.AddScoped<INotificationSender, WebNotificationChannel>();
+        services.AddScoped<INotificationSender, EmailNotificationChannel>();
+        
+        services.AddSingleton<NotificationSettingsFactory>(provider =>
+        {
+            var senders = provider.GetServices<INotificationSender>();
+            return new NotificationSettingsFactory(senders);
+        });
     }
 }
