@@ -4,11 +4,11 @@ namespace SachkovTech.Accounts.Contracts.Dtos;
 
 public class StudentAccountDto
 {
-    public Guid Id { get; set; }
-    
-    public Guid UserId { get; set; }
+    public Guid Id { get; init; }
 
-    public IEnumerable<SocialNetworkDto>? SocialNetworks { get; set; } = [];
-    
-    public DateTime DateStartedStudying { get; set; }
+    public Guid UserId { get; init; }
+
+    public IEnumerable<SocialNetworkDto>? SocialNetworks { get; init; } = [];
+
+    public DateTime DateStartedStudying { get; init; }
 }

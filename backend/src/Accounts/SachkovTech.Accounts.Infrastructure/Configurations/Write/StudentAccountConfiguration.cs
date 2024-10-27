@@ -12,11 +12,11 @@ public class StudentAccountConfiguration : IEntityTypeConfiguration<StudentAccou
     public void Configure(EntityTypeBuilder<StudentAccount> builder)
     {
         builder.ToTable("student_accounts");
-        
+
         builder.HasOne(s => s.User)
-            .WithOne()
+            .WithOne(s => s.StudentAccount)
             .HasForeignKey<StudentAccount>(s => s.UserId);
-        
+
         builder.Property(s => s.SocialNetworks)
             .ValueObjectsCollectionJsonConversion(
                 input => new SocialNetworkDto(input.Name, input.Link),

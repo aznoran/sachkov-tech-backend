@@ -11,14 +11,26 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
     {
         builder.ToTable("users");
 
+        builder.HasKey(u => u.Id);
+
         builder.HasMany(u => u.Roles)
             .WithMany()
             .UsingEntity<IdentityUserRole<Guid>>();
-        
+
         builder.ComplexProperty(a => a.FullName, fb =>
         {
             fb.Property(a => a.FirstName).IsRequired(false).HasColumnName("first_name");
             fb.Property(a => a.SecondName).IsRequired(false).HasColumnName("second_name");
         });
+
+        builder.HasOne(u => u.StudentAccount)
+            .WithOne(s => s.User)
+            .HasForeignKey<User>("student_account_id")
+            .IsRequired(false);
+
+        builder.HasOne(u => u.SupportAccount)
+            .WithOne(s => s.User)
+            .HasForeignKey<User>("support_account_id")
+            .IsRequired(false);
     }
 }

@@ -19,6 +19,10 @@ public class User : IdentityUser<Guid>
 
     public IReadOnlyList<Role> Roles => _roles;
 
+    public StudentAccount? StudentAccount;
+    
+    public SupportAccount? SupportAccount;
+
     public static Result<User, Error> CreateAdmin(
         string userName, 
         string email, 

@@ -3,9 +3,11 @@ using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
+using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Contracts.Requests;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
+using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Accounts.Presentation;
 
@@ -88,5 +90,21 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUser(
+        [FromRoute] Guid userId,
+        [FromServices] GetUserByIdHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new GetUserByIdQuery(userId);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
 }
