@@ -80,15 +80,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "EmailNotificationService.API",
+              "Title": "EmailNotificationService.API.csproj",
               "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\EmailNotificationService.API.csproj",
               "RelativeDocumentMoniker": "EmailNotificationService.API\\EmailNotificationService.API.csproj",
               "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\EmailNotificationService.API.csproj",
               "RelativeToolTip": "EmailNotificationService.API\\EmailNotificationService.API.csproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-27T16:35:30.244Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-27T16:35:30.244Z"
             },
             {
               "$type": "Document",
@@ -100,8 +99,7 @@
               "RelativeToolTip": "docker-compose.yml",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
-              "WhenOpened": "2024-10-27T16:00:18.018Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-27T16:00:18.018Z"
             },
             {
               "$type": "Document",
@@ -113,8 +111,7 @@
               "RelativeToolTip": "docker-compose.dcproj",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-10-27T16:00:10.508Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-27T16:00:10.508Z"
             },
             {
               "$type": "Document",
@@ -126,8 +123,7 @@
               "RelativeToolTip": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-27T15:55:05.291Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-27T15:55:05.291Z"
             },
             {
               "$type": "Document",
@@ -139,8 +135,7 @@
               "RelativeToolTip": "EmailNotificationService.API\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAEAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-27T15:54:43.829Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-27T15:54:43.829Z"
             },
             {
               "$type": "Document",
@@ -152,8 +147,7 @@
               "RelativeToolTip": "EmailNotificationService.API\\Response.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAuwAYAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-26T19:15:57.518Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-26T19:15:57.518Z"
             },
             {
               "$type": "Document",
@@ -165,8 +159,7 @@
               "RelativeToolTip": "EmailNotificationService.API\\ExceptionHandler.cs",
               "ViewState": "AQIAAAUAAAAAAAAAAAAAwAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-26T18:55:32.987Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-26T18:55:32.987Z"
             },
             {
               "$type": "Document",
@@ -178,8 +171,7 @@
               "RelativeToolTip": "EmailNotificationService.API\\MailSender.cs",
               "ViewState": "AQIAACcAAAAAAAAAAAAYwDcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-26T12:31:56.281Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-26T12:31:56.281Z"
             },
             {
               "$type": "Document",
