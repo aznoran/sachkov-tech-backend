@@ -35,6 +35,7 @@
       <ProjectReference Include="..\Issues\SachkovTech.Issues.Infrastructure\SachkovTech.Issues.Infrastructure.csproj" />
       <ProjectReference Include="..\Issues\SachkovTech.Issues.Presentation\SachkovTech.Issues.Presentation.csproj" />
       <ProjectReference Include="..\Shared\SachkovTech.Core\SachkovTech.Core.csproj" />
+      <ProjectReference Include="..\TelegramBot\SachkovTech.TelegramBot.Infrastructure\SachkovTech.TelegramBot.Infrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
