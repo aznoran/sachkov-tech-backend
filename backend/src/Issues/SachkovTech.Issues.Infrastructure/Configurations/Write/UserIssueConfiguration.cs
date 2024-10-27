@@ -32,6 +32,13 @@ public class UserIssueConfiguration : IEntityTypeConfiguration<UserIssue>
                 .IsRequired()
                 .HasColumnName("issue_id");
         });
+        
+        builder.ComplexProperty(u => u.ModuleId, pb =>
+        {
+            pb.Property(a => a.Value)
+                .IsRequired()
+                .HasColumnName("module_id");
+        });
 
         builder.Property(u => u.Status)
             .IsRequired()

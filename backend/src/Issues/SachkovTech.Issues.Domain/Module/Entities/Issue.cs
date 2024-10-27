@@ -43,8 +43,6 @@ public class Issue : SoftDeletableEntity<IssueId>
 
     public IReadOnlyList<FileId> Files => _files;
 
-    public DateTime? DeletionDate { get; private set; }
-
     public void UpdateFiles(IEnumerable<FileId> files)
     {
         _files = files.ToList();

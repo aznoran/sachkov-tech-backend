@@ -1,9 +1,8 @@
-﻿using NotificationService.Api.Dto;
+using NotificationService.Api.Dto;
 
-namespace NotificationService.Api.Contracts
-{
-    public record PushNotificationRequest(
-        MessageDto msg,
-        Guid[] UserIds,
-        Guid[] RoleIds);
-}
+namespace NotificationService.Api.Contracts;
+
+public record PushNotificationRequest(
+    MessageDto Message,
+    Guid[] UserIds,
+    Guid[] RoleIds);

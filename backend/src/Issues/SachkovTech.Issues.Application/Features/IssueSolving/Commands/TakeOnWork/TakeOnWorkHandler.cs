@@ -77,7 +77,7 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         var userIssueId = UserIssueId.NewIssueId();
         var userId = UserId.Create(command.UserId);
 
-        var userIssue = new UserIssue(userIssueId, userId, command.IssueId);
+        var userIssue = new UserIssue(userIssueId, userId, command.IssueId, command.ModuleId);
 
         var result = await _userIssueRepository.Add(userIssue, cancellationToken);
 
