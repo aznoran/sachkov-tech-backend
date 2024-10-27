@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+
 using NotificationService.BackgroundServices;
 using NotificationService.BackgroundServices.Services;
 using NotificationService.Features.Commands;
