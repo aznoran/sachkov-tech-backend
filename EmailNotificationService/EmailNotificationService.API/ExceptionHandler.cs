@@ -3,10 +3,13 @@
 public class ExceptionHandler
 {
     private readonly RequestDelegate _next;
+    private readonly ILogger _logger;
 
-    public ExceptionHandler(RequestDelegate next)
+    public ExceptionHandler(
+        RequestDelegate next, ILogger<ExceptionHandler> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task Invoke(HttpContext httpContext)
@@ -15,13 +18,16 @@ public class ExceptionHandler
         {
             await _next(httpContext);
         }
-        catch (Exception ex) 
+        catch (Exception ex)
         {
-            await HandleException(ex, httpContext);
+            _logger.LogError(ex, ex.Message);
+
+            var response = new Response { Success = false, Message = ex.Message };
+
+            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await httpContext.Response.WriteAsJsonAsync(response);
         }
     }
-    private async Task HandleException(Exception ex, HttpContext httpContext)
-    {
 
-    }
 }

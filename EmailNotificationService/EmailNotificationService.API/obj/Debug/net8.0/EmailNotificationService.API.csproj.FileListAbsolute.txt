@@ -34,3 +34,15 @@ C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNo
 C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\obj\Debug\net8.0\EmailNotificationService.API.pdb
 C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\obj\Debug\net8.0\EmailNotificationService.API.genruntimeconfig.cache
 C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\obj\Debug\net8.0\ref\EmailNotificationService.API.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Microsoft.Extensions.DependencyModel.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.AspNetCore.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Extensions.Hosting.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Extensions.Logging.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Formatting.Compact.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Settings.Configuration.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Sinks.Console.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Sinks.Debug.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Sinks.File.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\Serilog.Sinks.Seq.dll
+C:\Users\Ilya\source\repos\sachkov-tech-backend\EmailNotificationService\EmailNotificationService.API\bin\Debug\net8.0\CSharpFunctionalExtensions.dll

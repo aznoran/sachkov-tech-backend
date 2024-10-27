@@ -2,7 +2,7 @@
 
 public record Response
 {
-    public bool Success { get; set; }
-    public string Message { get; set; } = string.Empty;
-    public int StatusCode { get; set; }
+    public bool Success { get; init; }
+    public string Message { get; init; } = string.Empty;
+    public int StatusCode { get; init; }
 }

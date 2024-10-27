@@ -3,20 +3,36 @@
   "WorkspaceRootPath": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\exceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\exceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\response.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\response.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CEEDAF20-13C6-4550-BCB1-4F5DB034C6D5}|docker-compose.dcproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{CEEDAF20-13C6-4550-BCB1-4F5DB034C6D5}|docker-compose.dcproj|solutionrelative:docker-compose.yml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{CEEDAF20-13C6-4550-BCB1-4F5DB034C6D5}|docker-compose.dcproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\docker-compose.dcproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{CEEDAF20-13C6-4550-BCB1-4F5DB034C6D5}|docker-compose.dcproj|solutionrelative:docker-compose.dcproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\emailnotificationservice.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\emailnotificationservice.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
     {
       "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\mailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\mailsender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\exceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\exceptionhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|c:\\users\\ilya\\source\\repos\\sachkov-tech-backend\\emailnotificationservice\\emailnotificationservice.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{0305AFE9-99C0-4A32-8746-840E5B01B3FE}|EmailNotificationService.API\\EmailNotificationService.API.csproj|solutionrelative:emailnotificationservice.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Ilya\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
@@ -33,46 +49,20 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\Program.cs",
               "RelativeDocumentMoniker": "EmailNotificationService.API\\Program.cs",
               "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\Program.cs",
               "RelativeToolTip": "EmailNotificationService.API\\Program.cs",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAABUAAAAHAAAA",
+              "ViewState": "AQIAABIAAAAAAAAAAAAAAAMAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-26T12:16:28.451Z",
               "IsPinned": true,
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Response.cs",
-              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\Response.cs",
-              "RelativeDocumentMoniker": "EmailNotificationService.API\\Response.cs",
-              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\Response.cs",
-              "RelativeToolTip": "EmailNotificationService.API\\Response.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-26T19:15:57.518Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ExceptionHandler.cs",
-              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\ExceptionHandler.cs",
-              "RelativeDocumentMoniker": "EmailNotificationService.API\\ExceptionHandler.cs",
-              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\ExceptionHandler.cs",
-              "RelativeToolTip": "EmailNotificationService.API\\ExceptionHandler.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAMAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-26T18:55:32.987Z",
               "EditorCaption": ""
             },
             {
@@ -90,32 +80,110 @@
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "secrets.json",
-              "DocumentMoniker": "C:\\Users\\Ilya\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
-              "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
-              "ToolTip": "C:\\Users\\Ilya\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
-              "RelativeToolTip": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAABAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-10-26T13:16:26.7Z",
+              "Title": "EmailNotificationService.API",
+              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\EmailNotificationService.API.csproj",
+              "RelativeDocumentMoniker": "EmailNotificationService.API\\EmailNotificationService.API.csproj",
+              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\EmailNotificationService.API.csproj",
+              "RelativeToolTip": "EmailNotificationService.API\\EmailNotificationService.API.csproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-10-27T16:35:30.244Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "docker-compose.yml",
+              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\docker-compose.yml",
+              "RelativeDocumentMoniker": "docker-compose.yml",
+              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\docker-compose.yml",
+              "RelativeToolTip": "docker-compose.yml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003775|",
+              "WhenOpened": "2024-10-27T16:00:18.018Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "docker-compose.dcproj",
+              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\docker-compose.dcproj",
+              "RelativeDocumentMoniker": "docker-compose.dcproj",
+              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\docker-compose.dcproj",
+              "RelativeToolTip": "docker-compose.dcproj",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-27T16:00:10.508Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "secrets.json",
+              "DocumentMoniker": "C:\\Users\\Ilya\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
+              "ToolTip": "C:\\Users\\Ilya\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
+              "RelativeToolTip": "..\\..\\..\\..\\AppData\\Roaming\\Microsoft\\UserSecrets\\0d424e12-bcfe-42d9-bc57-c346723d2af9\\secrets.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-10-27T15:55:05.291Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\appsettings.json",
+              "RelativeDocumentMoniker": "EmailNotificationService.API\\appsettings.json",
+              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\appsettings.json",
+              "RelativeToolTip": "EmailNotificationService.API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAEAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2024-10-27T15:54:43.829Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Response.cs",
+              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\Response.cs",
+              "RelativeDocumentMoniker": "EmailNotificationService.API\\Response.cs",
+              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\Response.cs",
+              "RelativeToolTip": "EmailNotificationService.API\\Response.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAuwAYAAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-26T19:15:57.518Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ExceptionHandler.cs",
+              "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\ExceptionHandler.cs",
+              "RelativeDocumentMoniker": "EmailNotificationService.API\\ExceptionHandler.cs",
+              "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\ExceptionHandler.cs",
+              "RelativeToolTip": "EmailNotificationService.API\\ExceptionHandler.cs",
+              "ViewState": "AQIAAAUAAAAAAAAAAAAAwAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-26T18:55:32.987Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "MailSender.cs",
               "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\MailSender.cs",
               "RelativeDocumentMoniker": "EmailNotificationService.API\\MailSender.cs",
               "ToolTip": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\MailSender.cs",
               "RelativeToolTip": "EmailNotificationService.API\\MailSender.cs",
-              "ViewState": "AQIAABsAAAAAAAAAAAAYwDMAAAAqAAAA",
+              "ViewState": "AQIAACcAAAAAAAAAAAAYwDcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-26T12:31:56.281Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 9,
               "Title": "MailOptions.cs",
               "DocumentMoniker": "C:\\Users\\Ilya\\source\\repos\\sachkov-tech-backend\\EmailNotificationService\\EmailNotificationService.API\\MailOptions.cs",
               "RelativeDocumentMoniker": "EmailNotificationService.API\\MailOptions.cs",
@@ -123,8 +191,7 @@
               "RelativeToolTip": "EmailNotificationService.API\\MailOptions.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAkAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-26T12:34:40.387Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-26T12:34:40.387Z"
             }
           ]
         },
