@@ -1,6 +1,8 @@
-﻿namespace NotificationService.Api.Contracts;
+﻿using NotificationService.Grpc;
+
+namespace NotificationService.Api.Contracts;
 
 public record PushNotificationRequest(
-    Grpc.MessageDto Message,
+    MessageDto Message,
     Guid[] UserIds,
     Guid[] RoleIds);

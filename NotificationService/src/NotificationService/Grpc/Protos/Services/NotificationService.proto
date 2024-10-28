@@ -4,12 +4,32 @@ option csharp_namespace = "NotificationService.Grpc";
 
 package NotificationServiceGrpc;
 
-import "Grpc/Protos/NotificationSettings/Contracts/PushNotificationRequest.proto";
-import "Grpc/Protos/NotificationSettings/Contracts/AddNotificationSettingsRequest.proto";
 import "Grpc/Protos/Shared/GuidGrpc.proto";
 
-service NotificationService {
+service NotificationService
+{
   rpc Add (AddNotificationSettingsRequest) returns (GuidGrpc);
   rpc Push (PushNotificationRequest) returns (GuidGrpc);
 }
 
+message AddNotificationSettingsRequest 
+{
+  GuidGrpc UserId = 1;
+  string Email = 2;
+  optional string WebEndpoint = 3;
+}
+
+message PushNotificationRequest 
+{
+  MessageDto Message = 1;
+  repeated GuidGrpc UserIds = 2;
+  repeated GuidGrpc RoleIds = 3;
+  string Type = 4;
+  string Data = 5;
+}
+
+message MessageDto 
+{
+  string Title = 1;
+  string Message = 2;
+}

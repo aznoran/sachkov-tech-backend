@@ -1,5 +1,5 @@
+using NotificationService.Api;
 using NotificationService.Extensions;
-using NotificationService.Grpc.Services;
 using NotificationService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,7 +15,7 @@ builder.Services.AddHandlers();
 
 var app = builder.Build();
 
-app.MapGrpcService<NotificationServiceGrpcImplementation>();
+app.MapGrpcService<NotificationServiceGrpc>();
 
 if (app.Environment.IsDevelopment())
 {

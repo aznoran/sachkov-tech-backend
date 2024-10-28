@@ -1,6 +1,8 @@
-﻿namespace NotificationService.Features.Commands.PushNotification;
+﻿using NotificationService.Grpc;
+
+namespace NotificationService.Features.Commands.PushNotification;
 
 public record PushNotificationCommand(
-    Grpc.MessageDto Msg,
+    MessageDto Msg,
     Guid[] UserIds,
     Guid[] Roles);

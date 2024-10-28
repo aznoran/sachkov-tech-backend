@@ -2,14 +2,15 @@
 using NotificationService.Extensions;
 using NotificationService.Features.Commands.AddNotificationSettings;
 using NotificationService.Features.Commands.PushNotification;
+using NotificationService.Grpc;
 
-namespace NotificationService.Grpc.Services;
+namespace NotificationService.Api;
 
-public class NotificationServiceGrpcImplementation : NotificationService.NotificationServiceBase
+public class NotificationServiceGrpc : Grpc.NotificationService.NotificationServiceBase
 {
     private readonly IServiceProvider _provider;
 
-    public NotificationServiceGrpcImplementation(IServiceProvider provider)
+    public NotificationServiceGrpc(IServiceProvider provider)
     {
         _provider = provider;
     }

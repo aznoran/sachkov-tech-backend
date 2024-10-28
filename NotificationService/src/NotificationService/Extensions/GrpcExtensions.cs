@@ -14,13 +14,13 @@ public static class GrpcExtensions
     }
     private static StatusCode GetStatusCodeForErrorTypeGrpc(ErrorType errorType) =>
         errorType switch
-    {
-        ErrorType.Validation => StatusCode.InvalidArgument,
-        ErrorType.NotFound => StatusCode.NotFound,
-        ErrorType.Conflict => StatusCode.FailedPrecondition,
-        ErrorType.Failure => StatusCode.Internal,
-        _ => StatusCode.Internal
-    };
+        {
+            ErrorType.Validation => StatusCode.InvalidArgument,
+            ErrorType.NotFound => StatusCode.NotFound,
+            ErrorType.Conflict => StatusCode.FailedPrecondition,
+            ErrorType.Failure => StatusCode.Internal,
+            _ => StatusCode.Internal
+        };
 
     public static bool IsValidGuid(this GuidGrpc guid, out RpcException exception)
     {
