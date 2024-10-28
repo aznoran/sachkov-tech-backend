@@ -1,50 +1,43 @@
 ﻿using Microsoft.Extensions.Options;
 using MimeKit;
 using MailKit.Net.Smtp;
-using System.Text.RegularExpressions;
 using CSharpFunctionalExtensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace EmailNotificationService.API;
 
-public partial class MailSender
+public class MailSender
 {
-    private const string EMAIL_REGEX_PATTERN = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
-    private const string INVALID_EMAIL_ERR = "Request doesn't contain any valid reciever's adress. Aborting sending.";
-
     private readonly MailOptions _options;
     private readonly ILogger<MailSender> _logger;
+    private readonly EmailValidator _validator;
 
     public MailSender(
         IOptions<MailOptions> options,
-        ILogger<MailSender> logger)
+        ILogger<MailSender> logger,
+        EmailValidator validator)
     {
         _options = options.Value;
         _logger = logger;
+        _validator = validator;
     }
 
     public async Task<UnitResult<string>> Send(MailData mailData) 
     {
+        var validationResult = _validator.Execute(mailData.To);
+        if (validationResult.IsFailure)
+            return validationResult.Error;
+
+        mailData.To = validationResult.Value;
+
         var mail = new MimeMessage();
 
         mail.From.Add(new MailboxAddress(_options.FromDisplayName, _options.From));
 
         foreach (var address in mailData.To)
         {
-            if (EmailRegex().IsMatch(address))
-            {
-                MailboxAddress.TryParse(address, out var mailAddress);
-                mail.To.Add(mailAddress!);
-            }
-            else 
-            {
-                _logger.LogError("Incorrect email address: {address}", address);
-            }
-        }
-
-        if (mail.To.Count == 0)
-        {
-            _logger.LogError(INVALID_EMAIL_ERR);
-            return INVALID_EMAIL_ERR;
+            MailboxAddress.TryParse(address, out var mailAddress);
+            mail.To.Add(mailAddress!);
         }
             
         var body = new BodyBuilder { HtmlBody = mailData.Body };
@@ -63,7 +56,4 @@ public partial class MailSender
 
         return UnitResult.Success<string>();
     }
-
-    [GeneratedRegex(EMAIL_REGEX_PATTERN)]
-    private static partial Regex EmailRegex();
 }
