@@ -21,7 +21,7 @@ public static class AppExtensions
         await using var scoped = app.Services.CreateAsyncScope();
         var dbContext = scoped.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        //await dbContext.Database.MigrateAsync();
+        await dbContext.Database.MigrateAsync();
     }
 
     public static void AddHandlers(this IServiceCollection services)
