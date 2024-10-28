@@ -11,6 +11,10 @@ public class UserDto
     public StudentAccountDto StudentAccount { get; init; } = default!;
 
     public SupportAccountDto SupportAccount { get; init; } = default!;
+    
+    // public AdminAccountDto AdminAccount { get; init; } = default!;
+    
+    public List<UserRolesDto> UserRoles { get; init; } = default!;
 
     public List<RoleDto> Roles { get; init; } = [];
 }

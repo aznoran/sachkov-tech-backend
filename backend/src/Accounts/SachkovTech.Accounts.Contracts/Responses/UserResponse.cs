@@ -19,6 +19,10 @@ public record SupportAccountResponse(
     Guid UserId,
     SocialNetworkResponse[] SocialNetworks,
     string AboutSelf);
+
+// public record AdminAccountResponse(
+//     Guid Id,
+//     Guid UserId);
     
 public record SocialNetworkResponse(
     string Name, 

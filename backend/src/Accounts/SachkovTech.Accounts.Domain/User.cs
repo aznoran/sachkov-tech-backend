@@ -22,6 +22,8 @@ public class User : IdentityUser<Guid>
     public StudentAccount? StudentAccount;
     
     public SupportAccount? SupportAccount;
+    
+    // public AdminAccount? AdminAccount;
 
     public static Result<User, Error> CreateAdmin(
         string userName, 

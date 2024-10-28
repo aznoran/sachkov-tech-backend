@@ -23,5 +23,28 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
         builder.Property(u => u.SecondName)
             .HasColumnName("second_name")
             .IsRequired(false);
+        
+        builder.HasMany(u => u.Roles)
+            .WithMany(r => r.Users)
+            .UsingEntity<UserRolesDto>(
+                e => 
+                    e.HasOne<RoleDto>(e => e.Role)
+                        .WithMany(u => u.UserRoles),
+                e => 
+                    e.HasOne<UserDto>(e => e.User)
+                        .WithMany(u => u.UserRoles)
+            );
+
+        builder.HasOne(u => u.StudentAccount)
+            .WithOne()
+            .HasForeignKey<StudentAccountDto>(s => s.UserId);
+
+        builder.HasOne(u => u.SupportAccount)
+            .WithOne()
+            .HasForeignKey<SupportAccountDto>(s => s.UserId);
+        
+        // builder.HasOne(u => u.AdminAccount)
+        //     .WithOne()
+        //     .HasForeignKey<SupportAccountDto>(s => s.UserId);
     }
 }

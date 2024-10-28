@@ -13,9 +13,9 @@ public class StudentAccountConfiguration : IEntityTypeConfiguration<StudentAccou
     {
         builder.ToTable("student_accounts");
 
-        builder.HasOne(s => s.User)
-            .WithOne(s => s.StudentAccount)
-            .HasForeignKey<StudentAccount>(s => s.UserId);
+        // builder.HasOne(s => s.User)
+        //     .WithOne(s => s.StudentAccount)
+        //     .HasForeignKey<StudentAccount>(s => s.UserId);
 
         builder.Property(s => s.SocialNetworks)
             .ValueObjectsCollectionJsonConversion(

@@ -10,6 +10,6 @@ public class AdminAccountConfiguration : IEntityTypeConfiguration<AdminAccount>
     {
         builder.HasOne(a => a.User)
             .WithOne()
-            .HasForeignKey<AdminAccount>(a => a.UserId);
+            .HasForeignKey<AdminAccount>(a => a.Id);
     }
 }

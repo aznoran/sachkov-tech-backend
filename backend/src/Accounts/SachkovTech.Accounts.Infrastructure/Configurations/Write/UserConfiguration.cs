@@ -25,12 +25,17 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.HasOne(u => u.StudentAccount)
             .WithOne(s => s.User)
-            .HasForeignKey<User>("student_account_id")
-            .IsRequired(false);
+            .HasForeignKey<StudentAccount>("user_id")
+            .IsRequired(true);
 
         builder.HasOne(u => u.SupportAccount)
             .WithOne(s => s.User)
-            .HasForeignKey<User>("support_account_id")
-            .IsRequired(false);
+            .HasForeignKey<SupportAccount>("user_id")
+            .IsRequired(true);
+        
+        // builder.HasOne(u => u.AdminAccount)
+        //     .WithOne(s => s.User)
+        //     .HasForeignKey<AdminAccount>("user_id")
+        //     .IsRequired(true);
     }
 }

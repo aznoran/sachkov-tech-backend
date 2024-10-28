@@ -92,7 +92,7 @@ public class AccountsController : ApplicationController
         return Ok();
     }
 
-    [HttpGet]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser(
         [FromRoute] Guid userId,
         [FromServices] GetUserByIdHandler handler,
