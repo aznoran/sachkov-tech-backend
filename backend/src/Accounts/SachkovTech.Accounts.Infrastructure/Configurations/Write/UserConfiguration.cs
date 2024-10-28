@@ -33,9 +33,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey<SupportAccount>("user_id")
             .IsRequired(true);
         
-        // builder.HasOne(u => u.AdminAccount)
-        //     .WithOne(s => s.User)
-        //     .HasForeignKey<AdminAccount>("user_id")
-        //     .IsRequired(true);
+        builder.HasOne(u => u.AdminAccount)
+            .WithOne(s => s.User)
+            .HasForeignKey<AdminAccount>("user_id")
+            .IsRequired(true);
     }
 }

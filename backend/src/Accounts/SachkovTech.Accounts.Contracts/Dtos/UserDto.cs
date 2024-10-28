@@ -12,7 +12,7 @@ public class UserDto
 
     public SupportAccountDto SupportAccount { get; init; } = default!;
     
-    // public AdminAccountDto AdminAccount { get; init; } = default!;
+    public AdminAccountDto AdminAccount { get; init; } = default!;
     
     public List<UserRolesDto> UserRoles { get; init; } = default!;
 

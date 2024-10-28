@@ -6,6 +6,7 @@ public record UserResponse(
     string SecondName,
     StudentAccountResponse StudentAccount,
     SupportAccountResponse SupportAccount,
+    AdminAccountResponse AdminAccount,
     RoleResponse[] Roles);
 
 public record StudentAccountResponse(
@@ -20,9 +21,9 @@ public record SupportAccountResponse(
     SocialNetworkResponse[] SocialNetworks,
     string AboutSelf);
 
-// public record AdminAccountResponse(
-//     Guid Id,
-//     Guid UserId);
+public record AdminAccountResponse(
+    Guid Id,
+    Guid UserId);
     
 public record SocialNetworkResponse(
     string Name, 

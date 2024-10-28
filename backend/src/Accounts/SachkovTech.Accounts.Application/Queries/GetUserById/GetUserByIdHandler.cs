@@ -28,6 +28,7 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserResponse, GetUserB
             .Include(u => u.StudentAccount)
             .Include(u => u.SupportAccount)
             .Include(u => u.Roles)
+            .Include(u => u.AdminAccount)
             .FirstOrDefaultAsync(u => u.Id == query.UserId, cancellationToken);
 
         if (user is null)
@@ -55,6 +56,12 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserResponse, GetUserB
                 user.SupportAccount.SocialNetworks.Select(
                     x => new SocialNetworkResponse(x.Name, x.Link)).ToArray(),
                 user.SupportAccount.AboutSelf);
+        
+        var adminAccountResponse = user.AdminAccount == null
+            ? null
+            : new AdminAccountResponse(
+                user.AdminAccount.Id,
+                user.AdminAccount.UserId);
 
         var response = new UserResponse(
             user.Id,
@@ -62,6 +69,7 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserResponse, GetUserB
             user.SecondName,
             studentAccountResponse,
             supportAccountResponse,
+            adminAccountResponse,
             user.Roles.Select(x => new RoleResponse(x.Id, x.Name)).ToArray());
 
         return response;

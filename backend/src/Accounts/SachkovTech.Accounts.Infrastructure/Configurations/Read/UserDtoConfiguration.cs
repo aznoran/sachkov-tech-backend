@@ -43,8 +43,8 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
             .WithOne()
             .HasForeignKey<SupportAccountDto>(s => s.UserId);
         
-        // builder.HasOne(u => u.AdminAccount)
-        //     .WithOne()
-        //     .HasForeignKey<SupportAccountDto>(s => s.UserId);
+        builder.HasOne(u => u.AdminAccount)
+            .WithOne()
+            .HasForeignKey<AdminAccountDto>(s => s.UserId);
     }
 }

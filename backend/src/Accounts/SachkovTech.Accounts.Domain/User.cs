@@ -23,7 +23,7 @@ public class User : IdentityUser<Guid>
     
     public SupportAccount? SupportAccount;
     
-    // public AdminAccount? AdminAccount;
+    public AdminAccount? AdminAccount;
 
     public static Result<User, Error> CreateAdmin(
         string userName, 
