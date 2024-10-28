@@ -1,7 +1,6 @@
-using Microsoft.Extensions.Logging;
-using SachkovTech.TelegramBot.Infrastructure.Abstractions;
+using TelegramBotService.Abstractions;
 
-namespace SachkovTech.TelegramBot.Infrastructure.Services;
+namespace TelegramBotService.Services;
 
 public class PollingService(IServiceProvider serviceProvider, ILogger<PollingService> logger)
     : PollingServiceBase<ReceiverService>(serviceProvider, logger);

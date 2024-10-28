@@ -1,8 +1,7 @@
-using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 
-namespace SachkovTech.TelegramBot.Infrastructure.Abstractions;
+namespace TelegramBotService.Abstractions;
 
 public abstract class ReceiverServiceBase<TUpdateHandler> : IReceiverService
     where TUpdateHandler : IUpdateHandler

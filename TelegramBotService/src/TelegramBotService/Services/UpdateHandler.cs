@@ -1,11 +1,9 @@
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
-namespace SachkovTech.TelegramBot.Infrastructure.Services;
+namespace TelegramBotService.Services;
 
 public class UpdateHandler : IUpdateHandler
 {
@@ -38,7 +36,7 @@ public class UpdateHandler : IUpdateHandler
     {
         _logger.LogInformation("Receive message type: {MessageType}", message.Type);
 
-        if (message.Text.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(message.Text))
             return;
 
         await _botClient.SendTextMessageAsync(message.Chat, $"Сообщение было получено: {message.Text}");

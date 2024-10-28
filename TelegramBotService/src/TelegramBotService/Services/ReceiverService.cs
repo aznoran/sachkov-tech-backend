@@ -1,8 +1,7 @@
-using Microsoft.Extensions.Logging;
-using SachkovTech.TelegramBot.Infrastructure.Abstractions;
 using Telegram.Bot;
+using TelegramBotService.Abstractions;
 
-namespace SachkovTech.TelegramBot.Infrastructure.Services;
+namespace TelegramBotService.Services;
 
 public class ReceiverService(
     ITelegramBotClient botClient, 

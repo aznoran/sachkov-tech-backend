@@ -44,7 +44,6 @@ builder.Services.AddLogging(builder.Configuration);
 builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
-builder.Services.AddTelegramBotModule(builder.Configuration);
 builder.Services.AddApplicationLayers();
 
 builder.Services.AddControllers();

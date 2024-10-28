@@ -1,6 +1,7 @@
-namespace SachkovTech.TelegramBot.Infrastructure.Abstractions;
+namespace TelegramBotService.Abstractions;
 
 public interface IReceiverService
 {
     Task Receive(CancellationToken cancellationToken = default);
+
 }

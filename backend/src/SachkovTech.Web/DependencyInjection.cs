@@ -13,7 +13,6 @@ using SachkovTech.Core.Options;
 using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
-using SachkovTech.TelegramBot.Infrastructure;
 
 namespace SachkovTech.Web;
 
@@ -43,14 +42,6 @@ public static class DependencyInjection
     {
         services.AddIssuesInfrastructure(configuration);
         services.AddIssuesPresentation();
-
-        return services;
-    }
-
-    public static IServiceCollection AddTelegramBotModule(
-        this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddTelegramBotInfrastructure(configuration);
 
         return services;
     }
