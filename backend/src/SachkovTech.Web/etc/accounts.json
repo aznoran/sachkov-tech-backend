@@ -6,23 +6,46 @@
       "issues.update",
       "issues.delete",
       "solving.issues.read",
-      "solving.issues.send.on.review",
-      "accounts.add.role"
+      "solving.issues.create",
+      "solving.issues.update",
+      "review.issues.read",
+      "review.issues.create",
+      "review.issues.update",
+      "review.issues.comment",
+      "files.read",
+      "files.upload",
+      "accounts.enroll"
     ],
     "Student": [
       "issues.read",
       "solving.issues.read",
-      "solving.issues.send.on.review"
+      "solving.issues.create",
+      "solving.issues.update",
+      "review.issues.read",
+      "review.issues.comment",
+      "files.read",
+      "files.upload"
     ],
     "Participant": [
       "issues.read"
     ],
     "Support": [
       "issues.read",
-      "solving.issues.read"
+      "review.issues.read",
+      "review.issues.create",
+      "review.issues.update",
+      "review.issues.comment",
+      "files.read",
+      "files.upload"
     ]
   },
   "Permissions": {
+    "Modules": [
+      "modules.read",
+      "modules.create",
+      "modules.update",
+      "modules.delete"
+    ],
     "Issues": [
       "issues.read",
       "issues.create",
@@ -31,10 +54,21 @@
     ],
     "SolvingIssues": [
       "solving.issues.read",
-      "solving.issues.send.on.review"
+      "solving.issues.create",
+      "solving.issues.update"
+    ],
+    "IssuesReview": [
+      "review.issues.read",
+      "review.issues.create",
+      "review.issues.update",
+      "review.issues.comment"
+    ],
+    "Files": [
+      "files.read",
+      "files.upload"
     ],
     "Accounts": [
-      "accounts.add.role"
+      "accounts.enroll"
     ]
   }
 }

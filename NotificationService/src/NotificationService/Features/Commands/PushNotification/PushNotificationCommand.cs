@@ -1,4 +1,4 @@
-﻿using NotificationService.Api.Dto;
+using NotificationService.Api.Dto;
 
 namespace NotificationService.Features.Commands.PushNotification;
 
