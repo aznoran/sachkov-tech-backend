@@ -71,7 +71,7 @@ public class SendNotificationsService
         foreach (var notificationSetting in notificationSettings)
         {
             var senders = _notificationSettingsFactory
-                .GetSenders(notificationSetting);
+                .GetSenders(notificationSetting, cancellationToken);
 
             var processSendersRes =
                 await ProcessSenders(senders, notification, notificationSetting, cancellationToken);
@@ -85,25 +85,23 @@ public class SendNotificationsService
         return UnitResult.Success<Error>();
     }
 
-    private async Task<UnitResult<Error>> ProcessSenders(IEnumerable<INotificationSender?> senders,
+    private async Task<UnitResult<Error>> ProcessSenders(IEnumerable<INotificationSender> senders,
         Notification notification,
         NotificationSettings notificationSetting,
         CancellationToken cancellationToken)
     {
-        foreach (var sender in senders)
-        {
-            if (sender != null && sender.CanSend(notificationSetting, cancellationToken))
-            {
-                var sendingResult = await sender
-                    .SendAsync(notification.Message, notificationSetting, cancellationToken);
-                
-                if (sendingResult.IsFailure)
-                {
-                    return sendingResult.Error;
-                }
-            }
-        }
+        var sendTasks = senders.Select(sender => 
+            sender.SendAsync(notification.Message, notificationSetting, cancellationToken)).ToList();
 
+        var sendingResults = await Task.WhenAll(sendTasks);
+
+        var failureResult = sendingResults.FirstOrDefault(result => result.IsFailure);
+
+        if (failureResult.IsFailure)
+        {
+            return failureResult.Error;
+        }
+        
         return UnitResult.Success<Error>();
     }
 

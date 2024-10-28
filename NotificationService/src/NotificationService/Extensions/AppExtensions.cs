@@ -21,7 +21,7 @@ public static class AppExtensions
         await using var scoped = app.Services.CreateAsyncScope();
         var dbContext = scoped.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        await dbContext.Database.MigrateAsync();
+        //await dbContext.Database.MigrateAsync();
     }
 
     public static void AddHandlers(this IServiceCollection services)
@@ -41,10 +41,10 @@ public static class AppExtensions
         services.AddScoped<INotificationSender, WebNotificationChannel>();
         services.AddScoped<INotificationSender, EmailNotificationChannel>();
         
-        services.AddSingleton<NotificationSettingsFactory>(provider =>
+        services.AddScoped<NotificationSettingsFactory>(provider =>
         {
-            var senders = provider.GetServices<INotificationSender>();
-            return new NotificationSettingsFactory(senders);
+            var senders = provider.GetService<IEnumerable<INotificationSender>>();
+            return new NotificationSettingsFactory(senders!);
         });
     }
 }

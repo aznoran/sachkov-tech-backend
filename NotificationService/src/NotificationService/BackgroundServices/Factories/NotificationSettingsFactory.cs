@@ -12,23 +12,36 @@ public class NotificationSettingsFactory
         _senders = senders.ToList();
     }
 
-    public IEnumerable<INotificationSender?> GetSenders(NotificationSettings notificationSetting)
+    public IEnumerable<INotificationSender> GetSenders(NotificationSettings notificationSetting
+        , CancellationToken cancellationToken)
     {
-        var resultSenders = new List<INotificationSender?>();
+        var resultSenders = new List<INotificationSender>();
 
         if (notificationSetting.SendEmail)
         {
-            resultSenders.Add(_senders.OfType<EmailNotificationChannel>().FirstOrDefault());
+            var sender = _senders.OfType<EmailNotificationChannel>().FirstOrDefault();
+            if (sender is not null && sender.CanSend(notificationSetting, cancellationToken))
+            {
+                resultSenders.Add(sender);
+            }
         }
 
         if (notificationSetting.SendTelegram)
         {
-            resultSenders.Add(_senders.OfType<TelegramNotificationChannel>().FirstOrDefault());
+            var sender = _senders.OfType<TelegramNotificationChannel>().FirstOrDefault();
+            if (sender is not null && sender.CanSend(notificationSetting, cancellationToken))
+            {
+                resultSenders.Add(sender);
+            }
         }
 
         if (notificationSetting.SendWeb)
         {
-            resultSenders.Add(_senders.OfType<WebNotificationChannel>().FirstOrDefault());
+            var sender = _senders.OfType<WebNotificationChannel>().FirstOrDefault();
+            if (sender is not null && sender.CanSend(notificationSetting, cancellationToken))
+            {
+                resultSenders.Add(sender);
+            }
         }
 
         return resultSenders;
