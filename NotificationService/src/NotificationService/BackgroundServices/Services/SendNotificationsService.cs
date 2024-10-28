@@ -35,12 +35,12 @@ public class SendNotificationsService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        await ProcessNotifications(notifications, cancellationToken);
+        await HandleNotificationsAsync(notifications, cancellationToken);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task ProcessNotifications(List<Notification> notifications,
+    private async Task HandleNotificationsAsync(List<Notification> notifications,
         CancellationToken cancellationToken)
     {
         foreach (var notification in notifications)
@@ -49,7 +49,7 @@ public class SendNotificationsService
                 GetNotificationSettingsAsync(notification, cancellationToken);
 
             var res = await
-                ProcessNotificationSettings(notification, notificationSettings, cancellationToken);
+                ApplyNotificationSettingsAsync(notification, notificationSettings, cancellationToken);
 
             if (res.IsFailure)
             {
@@ -64,7 +64,7 @@ public class SendNotificationsService
         }
     }
 
-    private async Task<UnitResult<Error>> ProcessNotificationSettings(Notification notification,
+    private async Task<UnitResult<Error>> ApplyNotificationSettingsAsync(Notification notification,
         IEnumerable<NotificationSettings> notificationSettings,
         CancellationToken cancellationToken)
     {
@@ -74,7 +74,11 @@ public class SendNotificationsService
                 .GetSenders(notificationSetting, cancellationToken);
 
             var processSendersRes =
-                await ProcessSenders(senders, notification, notificationSetting, cancellationToken);
+                await HandleSendersForNotificationSettingsAsync(
+                    senders, 
+                    notification, 
+                    notificationSetting,
+                    cancellationToken);
 
             if (processSendersRes.IsFailure)
             {
@@ -85,7 +89,8 @@ public class SendNotificationsService
         return UnitResult.Success<Error>();
     }
 
-    private async Task<UnitResult<Error>> ProcessSenders(IEnumerable<INotificationSender> senders,
+    private async Task<UnitResult<Error>> HandleSendersForNotificationSettingsAsync(
+        IEnumerable<INotificationSender> senders,
         Notification notification,
         NotificationSettings notificationSetting,
         CancellationToken cancellationToken)
