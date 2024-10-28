@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using NotificationService.HelperClasses;
 using System.Text.RegularExpressions;
 

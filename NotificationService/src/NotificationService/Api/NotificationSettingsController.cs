@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using NotificationService.Api.Contracts;
 using NotificationService.Extensions;
 using NotificationService.Features.Commands.PatchNotificationSettings;

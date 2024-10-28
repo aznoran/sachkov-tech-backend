@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<ApplicationDbContext>();
 
 builder.Services.AddHandlers();
+builder.Services.AddBackgroundService();
 
 var app = builder.Build();
 

@@ -1,4 +1,4 @@
-﻿using NotificationService.Grpc;
+using NotificationService.Grpc;
 
 namespace NotificationService.Features.Commands.PushNotification;
 
