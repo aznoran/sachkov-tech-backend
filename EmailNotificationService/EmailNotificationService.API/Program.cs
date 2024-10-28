@@ -11,6 +11,7 @@ var config = builder.Configuration;
 
 services.Configure<MailOptions>(
     config.GetSection(MailOptions.SECTION_NAME));
+services.AddScoped<EmailValidator>();
 services.AddScoped<MailSender>();
 
 Log.Logger = new LoggerConfiguration()
