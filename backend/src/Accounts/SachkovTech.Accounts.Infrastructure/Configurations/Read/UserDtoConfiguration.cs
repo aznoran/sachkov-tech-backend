@@ -10,8 +10,7 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
     {
         builder.ToTable("users");
 
-        builder.HasKey(u => u.Id)
-            .HasName("PK_users_id");
+        builder.HasKey(u => u.Id);
 
         builder.Property(u => u.Id)
             .HasColumnName("id");
@@ -25,14 +24,11 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
             .IsRequired(false);
         
         builder.HasMany(u => u.Roles)
-            .WithMany(r => r.Users)
+            .WithMany()
             .UsingEntity<UserRolesDto>(
-                e => 
-                    e.HasOne<RoleDto>(e => e.Role)
-                        .WithMany(u => u.UserRoles),
-                e => 
-                    e.HasOne<UserDto>(e => e.User)
-                        .WithMany(u => u.UserRoles)
+                e => e.HasOne<UserDto>()
+                    .WithMany(u => u.UserRoles)
+                    .HasForeignKey("UserId") // Замените "UserId" на фактическое имя свойства в UserRolesDto, если необходимо
             );
 
         builder.HasOne(u => u.StudentAccount)

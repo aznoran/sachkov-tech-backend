@@ -38,7 +38,7 @@ public static class DependencyInjection
     private static IServiceCollection AddDbContexts(this IServiceCollection services)
     {
         services.AddScoped<AccountsWriteDbContext>();
-        services.AddScoped<IReadDbContext, AccountsReadDbContext>();
+        services.AddScoped<IAccountsReadDbContext, AccountsAccountsReadDbContext>();
 
         return services;
     }

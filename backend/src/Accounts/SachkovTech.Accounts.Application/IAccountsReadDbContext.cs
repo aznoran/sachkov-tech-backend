@@ -2,7 +2,7 @@ using SachkovTech.Accounts.Contracts.Dtos;
 
 namespace SachkovTech.Accounts.Application;
 
-public interface IReadDbContext
+public interface IAccountsReadDbContext
 {
     IQueryable<UserDto> Users { get; }
     

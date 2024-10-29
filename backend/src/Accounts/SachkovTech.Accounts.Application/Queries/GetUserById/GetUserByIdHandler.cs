@@ -1,30 +1,31 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SachkovTech.Accounts.Contracts.Responses;
+using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Abstractions;
+using SachkovTech.Core.Dtos;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUserById;
 
-public class GetUserByIdHandler : IQueryHandlerWithResult<UserResponse, GetUserByIdQuery>
+public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQuery>
 {
     private readonly ILogger<GetUserByIdHandler> _logger;
-    private readonly IReadDbContext _readDbContext;
+    private readonly IAccountsReadDbContext _accountsReadDbContext;
 
     public GetUserByIdHandler(
         ILogger<GetUserByIdHandler> logger,
-        IReadDbContext readDbContext)
+        IAccountsReadDbContext accountsReadDbContext)
     {
         _logger = logger;
-        _readDbContext = readDbContext;
+        _accountsReadDbContext = accountsReadDbContext;
     }
 
-    public async Task<Result<UserResponse, ErrorList>> Handle(
+    public async Task<Result<UserDto, ErrorList>> Handle(
         GetUserByIdQuery query,
         CancellationToken cancellationToken = default)
     {
-        var user = await _readDbContext.Users
+        var user = await _accountsReadDbContext.Users
             .Include(u => u.StudentAccount)
             .Include(u => u.SupportAccount)
             .Include(u => u.Roles)
@@ -34,44 +35,65 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserResponse, GetUserB
         if (user is null)
         {
             _logger.LogWarning("User with ID {UserId} not found", query.UserId);
-            
-            return Result.Failure<UserResponse, ErrorList>(
+
+            return Result.Failure<UserDto, ErrorList>(
                 Errors.General.NotFound(query.UserId).ToErrorList());
         }
-
-        var studentAccountResponse = user.StudentAccount == null
-            ? null
-            : new StudentAccountResponse(
-                user.StudentAccount.Id,
-                user.StudentAccount.UserId,
-                user.StudentAccount.SocialNetworks.Select(
-                    x => new SocialNetworkResponse(x.Name, x.Link)).ToArray(),
-                user.StudentAccount.DateStartedStudying);
-
-        var supportAccountResponse = user.SupportAccount == null
-            ? null
-            : new SupportAccountResponse(
-                user.SupportAccount.Id,
-                user.SupportAccount.UserId,
-                user.SupportAccount.SocialNetworks.Select(
-                    x => new SocialNetworkResponse(x.Name, x.Link)).ToArray(),
-                user.SupportAccount.AboutSelf);
         
-        var adminAccountResponse = user.AdminAccount == null
-            ? null
-            : new AdminAccountResponse(
-                user.AdminAccount.Id,
-                user.AdminAccount.UserId);
+        var userDto = new UserDto
+        {
+            Id = user.Id,
+            FirstName = user.FirstName,
+            SecondName = user.SecondName,
 
-        var response = new UserResponse(
-            user.Id,
-            user.FirstName,
-            user.SecondName,
-            studentAccountResponse,
-            supportAccountResponse,
-            adminAccountResponse,
-            user.Roles.Select(x => new RoleResponse(x.Id, x.Name)).ToArray());
+            StudentAccount = user.StudentAccount is null
+                ? null
+                : new StudentAccountDto
+                {
+                    Id = user.StudentAccount.Id,
+                    UserId = user.StudentAccount.UserId,
+                    SocialNetworks = user.StudentAccount.SocialNetworks
+                        .Select(sn => new SocialNetworkDto(sn.Name, sn.Link))
+                        .ToList(),
+                    DateStartedStudying = user.StudentAccount.DateStartedStudying
+                },
 
-        return response;
+            SupportAccount = user.SupportAccount is null
+                ? null
+                : new SupportAccountDto
+                {
+                    Id = user.SupportAccount.Id,
+                    UserId = user.SupportAccount.UserId,
+                    SocialNetworks = user.SupportAccount.SocialNetworks
+                        .Select(sn => new SocialNetworkDto(sn.Name, sn.Link))
+                        .ToList(),
+                    AboutSelf = user.SupportAccount.AboutSelf
+                },
+
+            AdminAccount = user.AdminAccount is null
+                ? null
+                : new AdminAccountDto
+                {
+                    Id = user.AdminAccount.Id,
+                    UserId = user.AdminAccount.UserId
+                },
+
+            Roles = user.Roles is null
+                ? null
+                : user.Roles    
+                .Select(r => new RoleDto
+                {
+                    Id = r.Id,
+                    Name = r.Name,
+                    Permissions = r.Permissions is null ? null : r.Permissions.Select(p => new PermissionDto
+                    {
+                        Id = p.Id,
+                        Code = p.Code
+                    }).ToList()
+                })
+                .ToList()
+        };
+
+        return Result.Success<UserDto, ErrorList>(userDto);
     }
 }

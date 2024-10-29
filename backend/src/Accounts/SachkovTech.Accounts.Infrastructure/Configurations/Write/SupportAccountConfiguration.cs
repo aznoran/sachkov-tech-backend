@@ -14,10 +14,6 @@ public class SupportAccountConfiguration : IEntityTypeConfiguration<SupportAccou
     {
         builder.ToTable("support_accounts");
 
-        // builder.HasOne(s => s.User)
-        //     .WithOne(s => s.SupportAccount)
-        //     .HasForeignKey<SupportAccount>(s => s.UserId);
-
         builder.Property(s => s.AboutSelf)
             .HasMaxLength(Constants.Default.MAX_HIGH_TEXT_LENGTH)
             .IsRequired();
