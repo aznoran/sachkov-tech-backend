@@ -1,7 +1,9 @@
 ﻿using FileService.Application.Interfaces;
 using FileService.Data.Options;
 using FileService.Infrastrucure.Providers;
+using FileService.Infrastrucure.Repositories;
 using Minio;
+using MongoDB.Driver;
 
 namespace FileService
 {
@@ -14,7 +16,9 @@ namespace FileService
 
         public static IServiceCollection AddInfrastrucure(this IServiceCollection services, ConfigurationManager configurations)
         {
+            services.AddSingleton(new MongoClient(configurations.GetConnectionString("MongoConnection")));
 
+            services.AddScoped<FileRepository>();
 
             return services;
         }

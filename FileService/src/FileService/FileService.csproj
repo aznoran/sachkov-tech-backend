@@ -13,12 +13,11 @@
     <PackageReference Include="CSharpFunctionalExtensions" Version="3.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
     <PackageReference Include="Minio.AspNetCore" Version="6.0.1" />
+    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Api\" />
-    <Folder Include="Api\Controllers\" />
     <Folder Include="Data\Entities\" />
   </ItemGroup>
 

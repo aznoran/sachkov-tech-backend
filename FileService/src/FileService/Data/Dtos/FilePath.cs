@@ -33,6 +33,9 @@ public class FilePath
     public static implicit operator string(FilePath filePath) =>
         filePath.FullPath;
 
+    public static implicit operator FilePath(string filePath) =>
+        new FilePath(filePath);
+
     private string GetBucketName()
     {
         var filePathParts = FullPath.Split('/');
