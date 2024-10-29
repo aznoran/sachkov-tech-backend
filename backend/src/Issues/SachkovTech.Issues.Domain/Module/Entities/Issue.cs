@@ -11,7 +11,7 @@ public class Issue : SoftDeletableEntity<IssueId>
     private List<FileId> _files = [];
 
     //ef core navigation
-    public Module Module { get; private set; }
+    public Module Module { get; private set; } = null!;
 
     //ef core
     private Issue(IssueId id) : base(id)
@@ -32,14 +32,14 @@ public class Issue : SoftDeletableEntity<IssueId>
         Experience = experience;
         _files = files?.ToList() ?? [];
     }
-
+    
     public Experience Experience { get; private set; } = default!;
     public Title Title { get; private set; } = default!;
     public Description Description { get; private set; } = default!;
 
-    public Position Position { get; private set; }
+    public Position Position { get; private set; } = null!;
 
-    public LessonId LessonId { get; private set; }
+    public LessonId LessonId { get; private set; } = null!;
 
     public IReadOnlyList<FileId> Files => _files;
 
