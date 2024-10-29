@@ -14,7 +14,7 @@ public class PushNotificationHandler
         _dbContext = dbContext;
     }
 
-    public async Task<Result<Guid,Error>> Handle(
+    public async Task<Result<Guid, Error>> Handle(
         PushNotificationCommand command,
         CancellationToken cancellationToken = default)
     {

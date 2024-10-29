@@ -1,4 +1,4 @@
-using NotificationService.Api.Dto;
+﻿using NotificationService.Grpc;
 
 namespace NotificationService.Api.Contracts;
 

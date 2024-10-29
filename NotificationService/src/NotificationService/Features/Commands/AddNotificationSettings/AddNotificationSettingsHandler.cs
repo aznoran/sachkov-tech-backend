@@ -14,7 +14,7 @@ public class AddNotificationSettingsHandler
     {
         _dbContext = dbContext;
     }
-    public async Task<Result<Guid,Error>> Handle(
+    public async Task<Result<Guid, Error>> Handle(
         AddNotificationSettingsCommand command,
         CancellationToken cancellationToken = default)
     {
