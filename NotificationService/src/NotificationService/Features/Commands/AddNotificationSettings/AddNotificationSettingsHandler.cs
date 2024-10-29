@@ -1,8 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using NotificationService.Entities;
 using NotificationService.Entities.ValueObjects;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
+
 
 namespace NotificationService.Features.Commands.AddNotificationSettings;
 
@@ -13,7 +14,7 @@ public class AddNotificationSettingsHandler
     {
         _dbContext = dbContext;
     }
-    public async Task<Result<Guid,Error>> Handle(
+    public async Task<Result<Guid, Error>> Handle(
         AddNotificationSettingsCommand command,
         CancellationToken cancellationToken = default)
     {

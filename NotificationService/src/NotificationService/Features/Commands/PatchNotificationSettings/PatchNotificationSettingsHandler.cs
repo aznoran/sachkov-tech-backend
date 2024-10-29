@@ -1,8 +1,9 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Entities;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
+
 
 namespace NotificationService.Features.Commands.PatchNotificationSettings;
 
@@ -42,22 +43,22 @@ public class PatchNotificationSettingsHandler
         switch (propertyName.Trim().ToLower())
         {
             case "email":
-            {
-                return userSettings.UseEmailNotifications(value);
-            }
+                {
+                    return userSettings.UseEmailNotifications(value);
+                }
             case "telegram":
-            {
-                return userSettings.UseTelegramNotifications(value);
-            }
+                {
+                    return userSettings.UseTelegramNotifications(value);
+                }
             case "web":
-            {
-                return userSettings.UseWebNotifications(value);
-            }
+                {
+                    return userSettings.UseWebNotifications(value);
+                }
             default:
-            {
-                return Error.Validation($"No such notification method exists: {propertyName}",
-                    "invalid.value.notification.type");
-            }
+                {
+                    return Error.Validation($"No such notification method exists: {propertyName}",
+                        "invalid.value.notification.type");
+                }
         }
     }
 }

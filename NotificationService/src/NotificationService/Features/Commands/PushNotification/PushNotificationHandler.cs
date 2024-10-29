@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using NotificationService.Entities;
 using NotificationService.Entities.ValueObjects;
 using NotificationService.HelperClasses;
@@ -14,7 +14,7 @@ public class PushNotificationHandler
         _dbContext = dbContext;
     }
 
-    public async Task<Result<Guid,Error>> Handle(
+    public async Task<Result<Guid, Error>> Handle(
         PushNotificationCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -22,18 +22,13 @@ public class PushNotificationHandler
             command.Msg.Title,
             command.Msg.Message);
 
-        var notification = new Notification()
-        {
-            Id = Guid.NewGuid(),
-            RoleIds = command.Roles.ToList(),
-            UserIds = command.UserIds.ToList(),
-            Message = messageData,
-            CreatedAt = DateTime.UtcNow,
-            Status = NotificationStatusEnum.Pending
-        };
+        var notification = Notification.Create(
+            command.Roles.ToList(),
+            command.UserIds.ToList(),
+            messageData);
 
-        await _dbContext.Notifications.AddAsync(notification);
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.Notifications.AddAsync(notification, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         return notification.Id;
     }

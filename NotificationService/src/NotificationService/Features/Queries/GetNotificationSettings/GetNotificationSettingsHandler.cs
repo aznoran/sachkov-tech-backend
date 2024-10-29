@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using NotificationService.Entities;
 using NotificationService.HelperClasses;
@@ -20,7 +20,7 @@ public class GetNotificationSettingsHandler
         CancellationToken cancellationToken = default)
     {
         var notificationSettings = await _dbContext.NotificationSettings
-            .FirstOrDefaultAsync(x => x.Id == query.Id,cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == query.Id, cancellationToken);
 
         if (notificationSettings == null)
             return Error.NotFound($"No settings were found with id: {query.Id}",

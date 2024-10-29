@@ -7,7 +7,7 @@ public class ApplicationDbContext(IConfiguration configuration) : DbContext
 {
     private const string DATABASE = "Database";
 
-    public DbSet<NotificationSettings> NotificationSettings 
+    public DbSet<NotificationSettings> NotificationSettings
         => Set<NotificationSettings>();
 
     public DbSet<Notification> Notifications
