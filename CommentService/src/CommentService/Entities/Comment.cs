@@ -40,9 +40,6 @@ public class Comment : Entity<Guid>
         if (string.IsNullOrWhiteSpace(text) || text.Length > 5000)
             return Error.Validation("Text is invalid");
 
-        if (rating < 0)
-            return Error.Validation("Rating is negative");
-
         return new Comment(Guid.NewGuid(), relationId, userId, repliedId, text, rating);
     }
 
