@@ -55,7 +55,6 @@ public class Comment : Entity<Guid>
 
     public void RatingDecrease()
     {
-        if (Rating > 0)
-            Rating--;
+        Rating--;
     }
 }
