@@ -11,6 +11,13 @@ namespace SachkovTech.Accounts.Presentation;
 
 public class AccountsController : ApplicationController
 {
+    [HttpPost("test")]
+    [Permission(Permissions.Issues.ReadIssue)]
+    public async Task<IActionResult> Test(CancellationToken cancellationToken)
+    {
+        return Ok("test");
+    }
+    
     [HttpPost("registration")]
     public async Task<IActionResult> Register(
         [FromBody] RegisterUserRequest request,
@@ -39,24 +46,38 @@ public class AccountsController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
+        
+        HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
 
         return Ok(result.Value);
     }
 
     [HttpPost("refresh")]
-    public async Task<IActionResult> RefreshTokens(
-        [FromBody] RefreshTokensRequest request,
-        [FromServices] RefreshTokensHandler handler,
-        CancellationToken cancellationToken)
+    public async Task<IActionResult> RefreshTokens([FromServices] RefreshTokensHandler handler, CancellationToken cancellationToken)
     {
+        if (!HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+        {
+            return Unauthorized();
+        }
+        
         var result = await handler.Handle(
-            new RefreshTokensCommand(request.AccessToken, request.RefreshToken),
+            new RefreshTokensCommand(Guid.Parse(refreshToken)),
             cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
+        
+        HttpContext.Response.Cookies.Append("refreshToken", result.Value.RefreshToken.ToString());
 
         return Ok(result.Value);
+    }
+    
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    {
+        HttpContext.Response.Cookies.Delete("refreshToken");
+        //TODO почистить рефреш токен из базы данных
+        return Ok("");
     }
 
     [Permission(Permissions.Accounts.EnrollAccount)]

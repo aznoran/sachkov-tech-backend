@@ -68,6 +68,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors(config =>
+{
+    config.WithOrigins("http://localhost:5173")
+        .AllowCredentials()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
