@@ -4,6 +4,7 @@ namespace SachkovTech.SharedKernel.ValueObjects;
 
 public record FullName
 {
+    public static FullName Empty = new FullName(null, null);
     private FullName()
     {
         

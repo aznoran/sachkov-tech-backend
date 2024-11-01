@@ -7,7 +7,6 @@ using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Contracts.Requests;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
-using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Accounts.Presentation;
 
@@ -37,9 +36,7 @@ public class AccountsController : ApplicationController
             new RegisterUserCommand(
                 request.Email, 
                 request.UserName, 
-                request.Password, 
-                request.FullName, 
-                request.SocialNetwork),
+                request.Password),
             cancellationToken);
     
         if (result.IsFailure)

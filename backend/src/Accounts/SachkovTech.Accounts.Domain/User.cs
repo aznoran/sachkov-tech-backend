@@ -29,8 +29,7 @@ public class User : IdentityUser<Guid>
         string userName, 
         string email, 
         FullName fullName, 
-        Role role,
-        List<SocialNetwork> socialNetwork)
+        Role role)
     {
         if (role.Name != AdminAccount.ADMIN)
             return Errors.User.InvalidRole();
@@ -48,10 +47,8 @@ public class User : IdentityUser<Guid>
 
     public static Result<User, Error> CreateParticipant(
         string userName, 
-        string email, 
-        FullName fullName, 
-        Role role,
-        List<SocialNetwork> socialNetwork)
+        string email,
+        Role role)
     {
         if (role.Name != ParticipantAccount.PARTICIPANT)
             return Errors.User.InvalidRole();
@@ -61,7 +58,7 @@ public class User : IdentityUser<Guid>
             UserName = userName,
             Email = email,
             RegistrationDate = DateTime.UtcNow,
-            FullName = fullName,
+            FullName = FullName.Empty,
             _roles = [role],
             _socialNetworks = []
         };

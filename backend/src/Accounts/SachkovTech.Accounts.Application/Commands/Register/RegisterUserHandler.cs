@@ -54,15 +54,8 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
 
             if (role is null)
                 return Errors.General.NotFound(null, "role").ToErrorList();
-
-            var fullName = FullName.Create(
-                command.FullName?.FirstName,
-                command.FullName?.SecondName).Value;
             
-            var socialNetwork = command.SocialNetwork
-                .Select(sn => SocialNetwork.Create(sn.Link, sn.Name).Value).ToList();
-
-            var userResult = User.CreateParticipant(command.UserName, command.Email, fullName, role, socialNetwork);
+            var userResult = User.CreateParticipant(command.UserName, command.Email, role);
 
             if (userResult.IsFailure)
                 return userResult.Error.ToErrorList();
