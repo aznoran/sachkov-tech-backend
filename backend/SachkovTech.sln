@@ -65,10 +65,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SachkovTech.IssueSolving.Un
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SachkovTech.IssueReviews.UnitTests.Domain", "src\Issues\tests\SachkovTech.IssueReviews.UnitTests.Domain\SachkovTech.IssueReviews.UnitTests.Domain.csproj", "{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmailNotificationService", "EmailNotificationService", "{C9A2F9A7-7F1D-4203-8B12-ED790B081879}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailNotificationService.API", "EmailNotificationService.API\EmailNotificationService.API.csproj", "{379F22E4-71ED-4FA3-B0F6-345C0FA96F5B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -163,10 +159,6 @@ Global
 		{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{379F22E4-71ED-4FA3-B0F6-345C0FA96F5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{379F22E4-71ED-4FA3-B0F6-345C0FA96F5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{379F22E4-71ED-4FA3-B0F6-345C0FA96F5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{379F22E4-71ED-4FA3-B0F6-345C0FA96F5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -199,8 +191,6 @@ Global
 		{C05ECE0D-33EF-49E2-A9FC-4B2110708813} = {1955B47D-2627-4897-9AF0-863F215DA712}
 		{4311673E-8A2E-45A9-A573-649BFB9666BC} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
 		{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
-		{C9A2F9A7-7F1D-4203-8B12-ED790B081879} = {696505DF-F3E6-478B-AA1E-A35BECBB3AF1}
-		{379F22E4-71ED-4FA3-B0F6-345C0FA96F5B} = {C9A2F9A7-7F1D-4203-8B12-ED790B081879}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {06591CB3-5D76-4012-AA6A-ACA4A8D2D8DF}
