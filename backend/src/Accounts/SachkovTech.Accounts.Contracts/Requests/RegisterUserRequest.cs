@@ -6,4 +6,5 @@ public record RegisterUserRequest(
     string Email, 
     string UserName, 
     string Password,
-    FullNameDto? FullName);
+    FullNameDto? FullName,
+    List<SocialNetworkDto> SocialNetwork);

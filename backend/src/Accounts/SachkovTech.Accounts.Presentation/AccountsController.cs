@@ -34,7 +34,12 @@ public class AccountsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(
-            new RegisterUserCommand(request.Email, request.UserName, request.Password, request.FullName),
+            new RegisterUserCommand(
+                request.Email, 
+                request.UserName, 
+                request.Password, 
+                request.FullName, 
+                request.SocialNetwork),
             cancellationToken);
     
         if (result.IsFailure)

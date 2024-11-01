@@ -13,12 +13,10 @@ public class SupportAccount
 
     public SupportAccount(
         User user, 
-        List<SocialNetwork> socialNetworks, 
         string aboutSelf)
     {
         Id = Guid.NewGuid();
         User = user;
-        SocialNetworks = socialNetworks;
         AboutSelf = aboutSelf;
     }
     
@@ -28,7 +26,5 @@ public class SupportAccount
     
     public User User { get; set; }
     
-    public IReadOnlyList<SocialNetwork> SocialNetworks { get; set; }
-
     public string AboutSelf { get; set; }
 }

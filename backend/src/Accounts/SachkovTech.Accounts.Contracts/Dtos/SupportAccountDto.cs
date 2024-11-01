@@ -8,7 +8,5 @@ public class SupportAccountDto
 
     public Guid UserId { get; init; }
 
-    public IEnumerable<SocialNetworkDto> SocialNetworks { get; init; } = [];
-
     public string AboutSelf { get; init; } = default!;
 }

@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
 using SachkovTech.SharedKernel;
+using SocialNetworkDto = SachkovTech.Accounts.Contracts.Dtos.SocialNetworkDto;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUserById;
 
@@ -39,7 +39,7 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQu
             return Result.Failure<UserDto, ErrorList>(
                 Errors.General.NotFound(query.UserId).ToErrorList());
         }
-        
+
         var userDto = new UserDto
         {
             Id = user.Id,
@@ -52,9 +52,6 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQu
                 {
                     Id = user.StudentAccount.Id,
                     UserId = user.StudentAccount.UserId,
-                    SocialNetworks = user.StudentAccount.SocialNetworks
-                        .Select(sn => new SocialNetworkDto(sn.Name, sn.Link))
-                        .ToList(),
                     DateStartedStudying = user.StudentAccount.DateStartedStudying
                 },
 
@@ -64,9 +61,6 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQu
                 {
                     Id = user.SupportAccount.Id,
                     UserId = user.SupportAccount.UserId,
-                    SocialNetworks = user.SupportAccount.SocialNetworks
-                        .Select(sn => new SocialNetworkDto(sn.Name, sn.Link))
-                        .ToList(),
                     AboutSelf = user.SupportAccount.AboutSelf
                 },
 
@@ -78,20 +72,32 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQu
                     UserId = user.AdminAccount.UserId
                 },
 
+            SocialNetworks = user.SocialNetworks is null
+                ? null
+                : user.SocialNetworks
+                    .Select(s => new SocialNetworkDto()
+                    {
+                        Name = s.Name,
+                        Link = s.Link,
+                    })
+                    .ToList(),
+
             Roles = user.Roles is null
                 ? null
-                : user.Roles    
-                .Select(r => new RoleDto
-                {
-                    Id = r.Id,
-                    Name = r.Name,
-                    Permissions = r.Permissions is null ? null : r.Permissions.Select(p => new PermissionDto
+                : user.Roles
+                    .Select(r => new RoleDto
                     {
-                        Id = p.Id,
-                        Code = p.Code
-                    }).ToList()
-                })
-                .ToList()
+                        Id = r.Id,
+                        Name = r.Name,
+                        Permissions = r.Permissions is null
+                            ? null
+                            : r.Permissions.Select(p => new PermissionDto
+                            {
+                                Id = p.Id,
+                                Code = p.Code
+                            }).ToList()
+                    })
+                    .ToList()
         };
 
         return Result.Success<UserDto, ErrorList>(userDto);

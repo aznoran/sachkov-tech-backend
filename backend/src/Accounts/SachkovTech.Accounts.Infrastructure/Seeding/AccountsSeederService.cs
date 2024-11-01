@@ -98,7 +98,15 @@ public class AccountsSeederService(
         {
             var fullName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
 
-            var adminUser = User.CreateAdmin(_adminOptions.UserName, _adminOptions.Email, fullName, adminRole);
+            var socialNetwork = _adminOptions.SocialNetworks
+                .Select(sn => SocialNetwork.Create(sn.Link, sn.Name).Value).ToList();
+
+            var adminUser = User.CreateAdmin(
+                _adminOptions.UserName, 
+                _adminOptions.Email, 
+                fullName, 
+                adminRole,
+                socialNetwork);
 
             if (adminUser.IsFailure)
                 throw new ApplicationException(adminUser.Error.Message);

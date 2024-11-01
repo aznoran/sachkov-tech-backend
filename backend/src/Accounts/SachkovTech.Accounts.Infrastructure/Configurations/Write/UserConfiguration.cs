@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Accounts.Domain;
+using SachkovTech.Core.Extensions;
 
 namespace SachkovTech.Accounts.Infrastructure.Configurations.Write;
 
@@ -37,5 +38,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(s => s.User)
             .HasForeignKey<AdminAccount>("user_id")
             .IsRequired(false);
+        
+        builder.Property(s => s.SocialNetworks)
+            .ValueObjectsCollectionJsonConversion(
+                input => input, 
+                output => output)
+            .HasColumnName("social_networks");
     }
 }

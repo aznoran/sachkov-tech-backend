@@ -1,3 +1,5 @@
+using SachkovTech.SharedKernel.ValueObjects;
+
 namespace SachkovTech.Accounts.Contracts.Dtos;
 
 public class UserDto
@@ -17,4 +19,6 @@ public class UserDto
     public List<UserRolesDto> UserRoles { get; init; } = default!;
 
     public List<RoleDto> Roles { get; init; } = [];
+    
+    public IReadOnlyList<SocialNetworkDto> SocialNetworks { get; init; } = [];
 }

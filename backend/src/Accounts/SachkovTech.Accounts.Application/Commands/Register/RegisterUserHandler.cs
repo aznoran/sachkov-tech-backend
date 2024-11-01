@@ -58,8 +58,11 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
             var fullName = FullName.Create(
                 command.FullName?.FirstName,
                 command.FullName?.SecondName).Value;
+            
+            var socialNetwork = command.SocialNetwork
+                .Select(sn => SocialNetwork.Create(sn.Link, sn.Name).Value).ToList();
 
-            var userResult = User.CreateParticipant(command.UserName, command.Email, fullName, role);
+            var userResult = User.CreateParticipant(command.UserName, command.Email, fullName, role, socialNetwork);
 
             if (userResult.IsFailure)
                 return userResult.Error.ToErrorList();

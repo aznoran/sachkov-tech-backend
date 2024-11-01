@@ -17,11 +17,5 @@ public class SupportAccountConfiguration : IEntityTypeConfiguration<SupportAccou
         builder.Property(s => s.AboutSelf)
             .HasMaxLength(Constants.Default.MAX_HIGH_TEXT_LENGTH)
             .IsRequired();
-
-        builder.Property(s => s.SocialNetworks)
-            .ValueObjectsCollectionJsonConversion(
-                input => new SocialNetworkDto(input.Name, input.Link),
-                output => SocialNetwork.Create(output.Name, output.Link).Value)
-            .HasColumnName("social_networks");
     }
 }
