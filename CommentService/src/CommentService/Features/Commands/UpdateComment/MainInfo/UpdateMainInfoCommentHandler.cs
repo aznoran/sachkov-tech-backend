@@ -15,7 +15,9 @@ public class UpdateMainInfoCommentHandler(ApplicationDbContext dbContext)
         if (comment is null)
             return Error.NotFound("Comment not found");
         
-        comment.UpdateMainInfo(command.Text);
+        var result = comment.Edit(command.Text);
+        if (result.IsFailure)
+            return result.Error;
         
         dbContext.Comments.Attach(comment);
         await dbContext.SaveChangesAsync(cancellationToken);

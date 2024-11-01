@@ -38,7 +38,7 @@ public static class ActionMapper
                 : Results.Ok();
         });
 
-        app.MapPatch("/comment/{id:guid}/update-main-info/", async (
+        app.MapPatch("/comment/{id:guid}/edit/", async (
             [FromRoute] Guid id,
             [FromBody] UpdateMainInfoCommentRequest request,
             [FromServices] UpdateMainInfoCommentHandler handler,
@@ -51,7 +51,7 @@ public static class ActionMapper
                 : Results.Ok(Envelope.Ok(result.Value));
         });
 
-        app.MapPatch("/comment/{id:guid}/update-rating-increase/", async (
+        app.MapPatch("/comment/{id:guid}/rating-increase/", async (
             [FromRoute] Guid id,
             [FromServices] UpdateRatingIncreaseCommentHandler handler,
             CancellationToken cancellationToken) =>
@@ -63,7 +63,7 @@ public static class ActionMapper
                 : Results.Ok(Envelope.Ok(result.Value));
         });
 
-        app.MapPatch("/comment/{id:guid}/update-rating-decrease/", async (
+        app.MapPatch("/comment/{id:guid}/rating-decrease/", async (
             [FromRoute] Guid id,
             [FromServices] UpdateRatingDecreaseCommentHandler handler,
             CancellationToken cancellationToken) =>
@@ -78,12 +78,11 @@ public static class ActionMapper
         app.MapGet("/comments/{relationId}", async (
             [FromRoute] Guid relationId,
             [FromQuery] Guid? cursor,
-            [FromQuery] string? sortDirection,
             [FromQuery] int limit,
             [FromServices] GetCommentByRelationIdWithPaginationHandler handler,
             CancellationToken cancellationToken) =>
         {
-            var query = new GetCommentByRelationIdWithPaginationQuery(relationId, cursor, sortDirection, limit);
+            var query = new GetCommentByRelationIdWithPaginationQuery(relationId, cursor, limit);
             var result = await handler.Handle(query, cancellationToken);
 
             return Results.Ok(Envelope.Ok(result));

@@ -1,7 +1,6 @@
 namespace CommentService.Extensions;
 
-public class CursorPagedList<T>
-    // where T : Entity<Guid>
+public class CursorList<T>
 {
     public IReadOnlyList<T> Items { get; init; } = [];
 
@@ -13,9 +12,9 @@ public class CursorPagedList<T>
 
     public Guid? NextCursor { get; init; }
 
-    public bool HasNextPage => NextCursor.HasValue;
+    public bool HasNextCursor => NextCursor.HasValue;
 
-    public CursorPagedList(
+    public CursorList(
         IReadOnlyList<T> items, 
         Guid? cursor, 
         Guid? nextCursor, 
@@ -26,5 +25,6 @@ public class CursorPagedList<T>
         Cursor = cursor;
         Limit = limit;
         TotalCount = totalCount;
+        NextCursor = nextCursor;
     }
 }

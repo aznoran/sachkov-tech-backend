@@ -6,18 +6,16 @@ namespace CommentService.Features.Queries.GetCommentByRelationId;
 
 public class GetCommentByRelationIdWithPaginationHandler(ApplicationDbContext dbContext)
 {
-    public async Task<CursorPagedList<Comment>> Handle(
+    public async Task<CursorList<Comment>> Handle(
         GetCommentByRelationIdWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
         var commentsQuery = dbContext.Comments.AsQueryable();
 
-        commentsQuery = query.SortDirection?.ToLower() == "desc"
-            ? commentsQuery.OrderByDescending(c => c.Id)
-            : commentsQuery.OrderBy(c => c.Id);
+        commentsQuery = commentsQuery.OrderBy(c => c.CreatedAt);
 
         commentsQuery = commentsQuery.Where(x => x.RelationId == query.RelationId);
 
-        return await commentsQuery.ToPagedList(query.Cursor, query.Limit, cancellationToken);
+        return await commentsQuery.ToCursorList(query.Cursor, query.Limit, cancellationToken);
     }
 }

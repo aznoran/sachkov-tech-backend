@@ -6,7 +6,7 @@ namespace CommentService.Extensions;
 
 public static class CursorPaginationQueriesExtensions
 {
-    public static async Task<CursorPagedList<T>> ToPagedList<T>(
+    public static async Task<CursorList<T>> ToCursorList<T>(
         this IQueryable<T> source,
         Guid? cursor,
         int limit,
@@ -22,7 +22,7 @@ public static class CursorPaginationQueriesExtensions
         
         Guid? nextCursor = items.Any() ? items.Last().Id : null;
         
-        return new CursorPagedList<T>(
+        return new CursorList<T>(
             items,
             cursor,
             nextCursor,
