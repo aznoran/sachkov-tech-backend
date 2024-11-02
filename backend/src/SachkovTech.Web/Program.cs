@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Accounts.Infrastructure.Seeding;
+using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;
@@ -53,6 +56,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthServices(builder.Configuration);
 
 var app = builder.Build();
+
+// await using var scope = app.Services.CreateAsyncScope();
+//
+// var dbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
+//
+// await dbContext.Database.MigrateAsync();
 
 var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
