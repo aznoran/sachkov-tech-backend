@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SachkovTech.Core.Dtos;
 using SachkovTech.Files.Contracts.Converters;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
@@ -21,6 +22,86 @@ namespace SachkovTech.Issues.Presentation.Modules;
 
 public class ModulesController : ApplicationController
 {
+    [HttpGet]
+    public ActionResult Get()
+    {
+        List<ModuleDto> response =
+        [
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 1",
+                Description = "Description 1",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 2",
+                Description = "Description 2",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 3",
+                Description = "Description 3",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 4",
+                Description = "Description 4",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 5",
+                Description = "Description 5",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 6",
+                Description = "Description 6",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 7",
+                Description = "Description 7",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 8",
+                Description = "Description 8",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 9",
+                Description = "Description 9",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 10",
+                Description = "Description 10",
+                Issues = []
+            }
+        ];
+
+        return Ok(response);
+    }
+
     [Permission(Permissions.Modules.CreateModule)]
     [HttpPost]
     public async Task<ActionResult> Create(
@@ -35,7 +116,7 @@ public class ModulesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [Permission(Permissions.Issues.CreateIssue)]
     [HttpPost("{id:guid}/issue")]
     public async Task<ActionResult> AddIssue(
@@ -95,7 +176,7 @@ public class ModulesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{id:guid}/issue/{issueId:guid}/newPosition/{newPosition:int}")]
     public async Task<ActionResult> UpdateIssuePosition(
