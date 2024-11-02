@@ -14,7 +14,6 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
     public IQueryable<CommentDto> Comments => Set<CommentDto>();
     public IQueryable<UserIssueDto> UserIssues => Set<UserIssueDto>();
 
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseNpgsql(configuration.GetConnectionString("Database"));

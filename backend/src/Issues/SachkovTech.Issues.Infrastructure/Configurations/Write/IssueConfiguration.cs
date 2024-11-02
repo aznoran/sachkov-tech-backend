@@ -15,6 +15,13 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
 
         builder.HasKey(i => i.Id);
 
+        builder.ComplexProperty(b => b.Experience, eb =>
+        {
+            eb.Property(e => e.Value)
+                .HasColumnName("experience")
+                .IsRequired(true);
+        });
+
         builder.Property(i => i.Id)
             .HasConversion(
                 id => id.Value,
@@ -63,7 +70,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
         builder.Property(i => i.Files)
             .ValueObjectsCollectionJsonConversion(
                 fileId => fileId.Value,
-                fileGuid => FileId.Create(fileGuid))
+                FileId.Create)
             .HasColumnName("files");
 
         builder.Property<bool>("_isDeleted")

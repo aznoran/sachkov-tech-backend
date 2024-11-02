@@ -77,11 +77,11 @@ public class GetIssuesWithPaginationHandlerDapper
 
         var parameters = new DynamicParameters();
 
-        var totalCount = await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM issues");
+        var totalCount = await connection.ExecuteScalarAsync<long>("SELECT COUNT(*) FROM issues.issues");
 
         var sql = new StringBuilder(
             """
-              SELECT id, title, position, files FROM issues
+              SELECT id, title, position, files FROM issues.issues
             """);
 
         if (!string.IsNullOrWhiteSpace(query.Title))

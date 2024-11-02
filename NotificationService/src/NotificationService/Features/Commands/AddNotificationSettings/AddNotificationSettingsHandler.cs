@@ -1,38 +1,39 @@
-﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions;
 using NotificationService.Entities;
+using NotificationService.Entities.ValueObjects;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
 
-namespace NotificationService.Features.Commands
+
+namespace NotificationService.Features.Commands.AddNotificationSettings;
+
+public class AddNotificationSettingsHandler
 {
-    public class AddNotificationSettingsHandler
+    private readonly ApplicationDbContext _dbContext;
+    public AddNotificationSettingsHandler(ApplicationDbContext dbContext)
     {
-        private readonly ApplicationDbContext _dbContext;
-        public AddNotificationSettingsHandler(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-        public async Task<Result<Guid,Error>> Handle(
-            AddNotificationSettingsCommand command,
-            CancellationToken cancellationToken = default)
-        {
-            var emailRes = Email.Create(command.Email);
-            if (emailRes.IsFailure)
-                return emailRes.Error;
+        _dbContext = dbContext;
+    }
+    public async Task<Result<Guid, Error>> Handle(
+        AddNotificationSettingsCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var emailRes = Email.Create(command.Email);
+        if (emailRes.IsFailure)
+            return emailRes.Error;
 
-            var notificationSettingsResult = NotificationSettings.Create(
-                Guid.NewGuid(),
-                command.UserId,
-                emailAddress: emailRes.Value,
-                webEndpoint: command.WebEndpoint!);
+        var notificationSettingsResult = NotificationSettings.Create(
+            Guid.NewGuid(),
+            command.UserId,
+            emailAddress: emailRes.Value,
+            webEndpoint: command.WebEndpoint!);
 
-            if (notificationSettingsResult.IsFailure)
-                return notificationSettingsResult.Error;
+        if (notificationSettingsResult.IsFailure)
+            return notificationSettingsResult.Error;
 
-            await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value);
-            await _dbContext.SaveChangesAsync();
+        await _dbContext.NotificationSettings.AddAsync(notificationSettingsResult.Value, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
-            return notificationSettingsResult.Value.Id;
-        }
+        return notificationSettingsResult.Value.Id;
     }
 }

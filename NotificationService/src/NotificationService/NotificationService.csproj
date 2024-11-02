@@ -1,14 +1,26 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <UserSecretsId>28877b9e-d392-4dd4-8c89-6cd2af27a10d</UserSecretsId>
     </PropertyGroup>
 
-    <ItemGroup>
+	<ItemGroup>
+	    <Protobuf Include="Grpc\Protos\**\*.proto" GrpcServices="None" />
+		<Protobuf Update="Grpc\Protos\Services\**\*.proto" GrpcServices="Server" />
+    </ItemGroup>
+
+	<ItemGroup>
         <PackageReference Include="CSharpFunctionalExtensions" Version="3.1.0" />
+        <PackageReference Include="Google.Protobuf" Version="3.28.3" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.66.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.67.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.10">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,10 +33,6 @@
       <Content Include="..\..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Api\Requests\" />
     </ItemGroup>
 
 </Project>

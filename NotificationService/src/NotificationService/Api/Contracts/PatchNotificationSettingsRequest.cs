@@ -1,6 +1,5 @@
-﻿namespace NotificationService.Api
-{
-    public record PatchNotificationSettingsRequest(
-        string NotificationType,
-        bool Value);
-}
+namespace NotificationService.Api.Contracts;
+
+public record PatchNotificationSettingsRequest(
+    string NotificationType,
+    bool Value);

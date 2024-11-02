@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using SachkovTech.Core.Dtos;
+using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Module.Queries.GetIssueById;
 using SachkovTech.Issues.Application.Features.Module.Queries.GetIssueByPosition;
 using SachkovTech.Issues.Contracts;
@@ -20,7 +21,6 @@ public class IssuesContract : IIssuesContract
         _getIssueByIdHandler = getIssueByIdHandler;
         _getIssueByPositionHandler = getIssueByPositionHandler;
     }
-
     public async Task<Result<IssueResponse, ErrorList>> GetIssueById(
         Guid issueId,
         CancellationToken cancellationToken = default)
@@ -29,7 +29,6 @@ public class IssuesContract : IIssuesContract
 
         return await _getIssueByIdHandler.Handle(query, cancellationToken);
     }
-
     public async Task<Result<IssueDto, ErrorList>> GetIssueByPosition(
         int position,
         CancellationToken cancellationToken = default)

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Core.Models;
 using SachkovTech.Framework;
+using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.IssuesReviews.Commands.SendForRevision;
 using SachkovTech.Issues.Application.Features.IssuesReviews.Commands.AddComment;
 using SachkovTech.Issues.Application.Features.IssuesReviews.Commands.Approve;
@@ -15,6 +16,8 @@ namespace SachkovTech.Issues.Presentation.IssuesReviews;
 
 public class IssuesReviewsController : ApplicationController
 {
+    [Permission(Permissions.IssuesReview.ReadReviewIssue)]
+    [Permission(Permissions.IssuesReview.CommentReviewIssue)]
     [HttpGet("{issueReviewId:guid}/comments")]
     public async Task<ActionResult> GetByIssueReviewId(
         [FromServices] GetCommentsWithPaginationHandler handler,
@@ -28,6 +31,7 @@ public class IssuesReviewsController : ApplicationController
         return Ok(result);
     }
 
+    [Permission(Permissions.IssuesReview.CommentReviewIssue)]
     [HttpPost("{issueReviewId:guid}/comment")]
     public async Task<ActionResult> Comment(
         [FromServices] AddCommentHandler handler,
@@ -51,6 +55,7 @@ public class IssuesReviewsController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.IssuesReview.CreateReviewIssue)]
     [HttpPut("{issueReviewId:guid}/start-review")]
     public async Task<ActionResult> StartReview(
         [FromServices] StartReviewHandler handler,
@@ -72,6 +77,7 @@ public class IssuesReviewsController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.IssuesReview.UpdateReviewIssue)]
     [HttpPut("{issueReviewId:guid}/revision")]
     public async Task<ActionResult> SendForRevision(
         [FromServices] SendForRevisionHandler handler,
@@ -92,6 +98,7 @@ public class IssuesReviewsController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.IssuesReview.UpdateReviewIssue)]
     [HttpPut("{issueReviewId:guid}/approval")]
     public async Task<ActionResult> Approve(
         [FromServices] ApproveIssueReviewHandler handler,
@@ -112,6 +119,7 @@ public class IssuesReviewsController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.IssuesReview.CommentReviewIssue)]
     [HttpDelete("{issueReviewId:guid}/comment/{commentId:guid}")]
     public async Task<ActionResult> DeleteComment(
         [FromServices] DeleteCommentHandler handler,

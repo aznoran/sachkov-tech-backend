@@ -1,0 +1,3 @@
+namespace CommentService.Features.Commands.UpdateComment.RatingIncrease;
+
+public record UpdateRatingIncreaseCommentCommand(Guid IdComment);

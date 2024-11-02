@@ -1,80 +1,46 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using NotificationService.Entities;
+using Microsoft.AspNetCore.Mvc;
+using NotificationService.Api.Contracts;
 using NotificationService.Extensions;
-using NotificationService.Features.Commands;
-using NotificationService.Features.Queries;
+using NotificationService.Features.Commands.PatchNotificationSettings;
+using NotificationService.Features.Queries.GetNotificationSettings;
 using NotificationService.HelperClasses;
 
-namespace NotificationService.Api
+namespace NotificationService.Api;
+
+[Route("[controller]")]
+[ApiController]
+public class NotificationSettingsController : ControllerBase
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class NotificationSettingsController : ControllerBase
+    [HttpPatch("{id:Guid}")]
+    public async Task<IActionResult> Patch(
+        [FromRoute] Guid id,
+        [FromBody] PatchNotificationSettingsRequest dto,
+        [FromServices] PatchNotificationSettingsHandler handler,
+        CancellationToken cancellationToken = default)
     {
-        [HttpPost]
-        public async Task<IActionResult> Add(
-            [FromBody] AddNotificationSettingsCommand command,
-            [FromServices] AddNotificationSettingsHandler handler,
-            CancellationToken cancellationToken = default)
-        {
-            var result = await handler.Handle(command, cancellationToken);
-            if (result.IsFailure)
-                return result.Error.ToResponse();
+        var command = new PatchNotificationSettingsCommand(
+            id, dto.NotificationType, dto.Value);
 
-            var envelope = Envelope.Ok(result.Value);
-            return Ok(envelope);
-        }
+        var result = await handler.Handle(command, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
 
-        [HttpPost("push")]
-        public async Task<IActionResult> Push(
-            [FromBody] PushNotificationRequest request,
-            [FromServices] PushNotificationHandler handler,
-            CancellationToken cancellationToken = default)
-        {
-            var command = new PushNotificationCommand(
-                request.msg,
-                request.UserIds,
-                request.RoleIds);
+        return Ok();
+    }
 
-            var result = await handler.Handle(command, cancellationToken);
-            if (result.IsFailure)
-                return result.Error.ToResponse();
+    [HttpGet("{id:Guid}")]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid id,
+        [FromServices] GetNotificationSettingsHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetNotificationSettingsQuery(id);
 
-            var envelope = Envelope.Ok(result.Value);
-            return Ok(envelope);
-        }
+        var result = await handler.Handle(query, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
 
-        [HttpPatch("{id:Guid}")]
-        public async Task<IActionResult> Patch(
-            [FromRoute] Guid id,
-            [FromBody] PatchNotificationSettingsRequest dto,
-            [FromServices] PatchNotificationSettingsHandler handler,
-            CancellationToken cancellationToken = default)
-        {
-            var command = new PatchNotificationSettingsCommand(
-                id, dto.NotificationType, dto.Value);
-
-            var result = await handler.Handle(command, cancellationToken);
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            return Ok();
-        }
-
-        [HttpGet("{id:Guid}")]
-        public async Task<IActionResult> Get(
-            [FromRoute] Guid id,
-            [FromServices] GetNotificationSettingsHandler handler,
-            CancellationToken cancellationToken = default)
-        {
-            var query = new GetNotificationSettingsQuery(id);
-
-            var result = await handler.Handle(query,cancellationToken);
-            if (result.IsFailure)
-                return result.Error.ToResponse();
-
-            var envelope = Envelope.Ok(result.Value);
-            return Ok(envelope);
-        }
+        var envelope = Envelope.Ok(result.Value);
+        return Ok(envelope);
     }
 }
