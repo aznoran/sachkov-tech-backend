@@ -13,10 +13,5 @@ public class SupportAccountDtoConfiguration : IEntityTypeConfiguration<SupportAc
         builder.ToTable("support_accounts");
 
         builder.HasKey(s => s.Id);
-        
-        builder.Property(v => v.SocialNetworks)
-            .HasConversion(
-                values => EfCoreFluentApiExtensions.SerializeValueObjectsCollection(),
-                json => EfCoreFluentApiExtensions.DeserializeDtoCollection<SocialNetworkDto>(json));
     }
 }

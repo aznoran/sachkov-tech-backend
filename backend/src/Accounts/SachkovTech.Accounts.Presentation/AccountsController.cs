@@ -3,6 +3,7 @@ using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
+using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Contracts.Requests;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
@@ -25,7 +26,10 @@ public class AccountsController : ApplicationController
         CancellationToken cancellationToken)
     {
         var result = await handler.Handle(
-            new RegisterUserCommand(request.Email, request.UserName, request.Password, request.FullName),
+            new RegisterUserCommand(
+                request.Email, 
+                request.UserName, 
+                request.Password),
             cancellationToken);
     
         if (result.IsFailure)
@@ -95,5 +99,21 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok();
+    }
+
+    [HttpGet("{userId}")]
+    public async Task<IActionResult> GetUser(
+        [FromRoute] Guid userId,
+        [FromServices] GetUserByIdHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new GetUserByIdQuery(userId);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
     }
 }

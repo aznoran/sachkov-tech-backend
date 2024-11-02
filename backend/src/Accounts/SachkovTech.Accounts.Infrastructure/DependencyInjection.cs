@@ -25,12 +25,21 @@ public static class DependencyInjection
 
         services.RegisterIdentity();
 
-        services.AddScoped<AccountsWriteDbContext>();
+        services.AddDbContexts();
 
         services.AddSingleton<AccountsSeeder>();
         services.AddScoped<AccountsSeederService>();
         
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Accounts);
+        
+        return services;
+    }
+    
+    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    {
+        services.AddScoped<AccountsWriteDbContext>();
+        services.AddScoped<IAccountsReadDbContext, AccountsAccountsReadDbContext>();
+
         return services;
     }
 

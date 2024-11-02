@@ -7,17 +7,23 @@ namespace SachkovTech.Accounts.Domain;
 
 public class User : IdentityUser<Guid>
 {
-    private User()
-    {
-    }
+    private User() { }
 
-    private List<Role> _roles = [];
-    
     public DateTime RegistrationDate { get; set; }
     
     public FullName FullName { get; set; }
 
     public IReadOnlyList<Role> Roles => _roles;
+    private List<Role> _roles = [];
+    
+    public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks;
+    private List<SocialNetwork> _socialNetworks = [];
+
+    public StudentAccount? StudentAccount;
+    
+    public SupportAccount? SupportAccount;
+    
+    public AdminAccount? AdminAccount;
 
     public static Result<User, Error> CreateAdmin(
         string userName, 
@@ -34,14 +40,14 @@ public class User : IdentityUser<Guid>
             Email = email,
             RegistrationDate = DateTime.UtcNow,
             FullName = fullName,
-            _roles = [role]
+            _roles = [role],
+            _socialNetworks = []
         };
     }
 
     public static Result<User, Error> CreateParticipant(
         string userName, 
-        string email, 
-        FullName fullName, 
+        string email,
         Role role)
     {
         if (role.Name != ParticipantAccount.PARTICIPANT)
@@ -52,8 +58,9 @@ public class User : IdentityUser<Guid>
             UserName = userName,
             Email = email,
             RegistrationDate = DateTime.UtcNow,
-            FullName = fullName,
-            _roles = [role]
+            FullName = FullName.Empty,
+            _roles = [role],
+            _socialNetworks = []
         };
     }
 

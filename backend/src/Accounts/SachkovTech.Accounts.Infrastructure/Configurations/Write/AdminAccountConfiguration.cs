@@ -8,8 +8,6 @@ public class AdminAccountConfiguration : IEntityTypeConfiguration<AdminAccount>
 {
     public void Configure(EntityTypeBuilder<AdminAccount> builder)
     {
-        builder.HasOne(a => a.User)
-            .WithOne()
-            .HasForeignKey<AdminAccount>(a => a.UserId);
+        builder.ToTable("admin_accounts");
     }
 }

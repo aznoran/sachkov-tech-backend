@@ -27,7 +27,6 @@ public static class DependencyInjection
         return services;
     }
 
-
     public static IServiceCollection AddFilesModule(
         this IServiceCollection services, IConfiguration configuration)
     {

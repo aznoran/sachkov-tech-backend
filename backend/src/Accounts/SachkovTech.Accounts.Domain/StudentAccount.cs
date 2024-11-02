@@ -11,11 +11,10 @@ public class StudentAccount
         
     }
 
-    public StudentAccount(User user, List<SocialNetwork>? socialNetworks = null)
+    public StudentAccount(User user)
     {
         Id = Guid.NewGuid();
         User = user;
-        SocialNetworks = socialNetworks;
         DateStartedStudying = DateTime.UtcNow;
     }
     
@@ -24,8 +23,6 @@ public class StudentAccount
     public Guid UserId { get; set; }
     
     public User User { get; set; }
-    
-    public IReadOnlyList<SocialNetwork>? SocialNetworks { get; set; }
     
     public DateTime DateStartedStudying { get; set; }
 }
