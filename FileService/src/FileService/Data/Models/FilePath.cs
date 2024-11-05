@@ -1,4 +1,4 @@
-﻿namespace FileService.Data.Dtos;
+﻿namespace FileService.Data.Models;
 
 public class FilePath
 {

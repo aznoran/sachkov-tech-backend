@@ -1,5 +1,6 @@
 ﻿using FileService.Application.Interfaces;
 using FileService.Data.Dtos;
+using FileService.Data.Models;
 using FileService.Infrastrucure.Abstractions;
 using FileService.Infrastrucure.Repositories;
 

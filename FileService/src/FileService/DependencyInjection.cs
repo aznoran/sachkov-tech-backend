@@ -40,6 +40,8 @@ public static class DependencyInjection
             options.WithSSL(minioOptions.WithSsl);
         });
 
+        services.Configure<MinioLimitations>(configuration.GetSection(nameof(MinioLimitations)));
+
         services.AddScoped<IFileProvider, MinioProvider>();
 
         return services;

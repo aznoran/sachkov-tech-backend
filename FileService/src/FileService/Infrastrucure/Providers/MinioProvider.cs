@@ -2,6 +2,8 @@
 using FileService.Application.Interfaces;
 using FileService.Data.Dtos;
 using FileService.Data.Models;
+using FileService.Data.Options;
+using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
 using System.Runtime.CompilerServices;
@@ -9,23 +11,22 @@ using System.Runtime.CompilerServices;
 namespace FileService.Infrastrucure.Providers;
 public class MinioProvider : IFileProvider
 {
-    private const int MAX_DEGREE_OF_PARALLELISM = 10;
-    private const int LINK_EXPIRY = 604800;
-
     private readonly IMinioClient _minioClient;
     private readonly ILogger<MinioProvider> _logger;
+    private readonly MinioLimitations _limitations;
 
-    public MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logger)
+    public MinioProvider(IMinioClient minioClient, ILogger<MinioProvider> logger, IOptions<MinioLimitations> limitations)
     {
         _minioClient = minioClient;
         _logger = logger;
+        _limitations = limitations.Value;
     }
 
     public async IAsyncEnumerable<Result<UploadFilesResult, Error>> UploadFiles(
         IEnumerable<UploadFileData> filesData,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
+        var semaphoreSlim = new SemaphoreSlim(_limitations.MaxDegreeOfParallelism);
 
         List<UploadFilesResult> results = [];
 
@@ -62,7 +63,7 @@ public class MinioProvider : IFileProvider
             IEnumerable<FilePath> filePaths,
             CancellationToken cancellationToken = default)
     {
-        var semaphoreSlim = new SemaphoreSlim(MAX_DEGREE_OF_PARALLELISM);
+        var semaphoreSlim = new SemaphoreSlim(_limitations.MaxDegreeOfParallelism);
 
         var bucketsExistResult = await IfBucketsNotExistCreateBucket(
             filePaths.Select(file => file.BucketName).Distinct(),
@@ -191,7 +192,7 @@ public class MinioProvider : IFileProvider
         var getLinkArgs = new PresignedGetObjectArgs()
             .WithBucket(filePath.BucketName)
             .WithObject(objectName)
-            .WithExpiry(LINK_EXPIRY);
+            .WithExpiry(_limitations.LinkExpiry);
 
         try
         {
