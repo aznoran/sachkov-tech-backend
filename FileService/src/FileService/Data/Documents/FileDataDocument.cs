@@ -14,7 +14,7 @@ namespace FileService.Data.Documents
         public string Name { get; init; }
 
         [BsonElement("storage_path")]
-        public FilePath StoragePath { get; init; }
+        public string StoragePath { get; init; }
 
         [BsonElement("upload_date")]
         public DateTime UploadDate { get; init; } = DateTime.Now;
@@ -44,7 +44,7 @@ namespace FileService.Data.Documents
 
         public FileDataDocument(
             string name,
-            FilePath storagePath,
+            string storagePath,
             bool isUploaded,
             long fileSize,
             string mimeType,

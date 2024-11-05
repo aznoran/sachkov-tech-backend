@@ -17,11 +17,11 @@ namespace FileService.Infrastrucure.Repositories
             _logger = logger;
         }
 
-        public async Task<Result<IEnumerable<Guid>,Error>> Add(IEnumerable<FileDataDocument> filesData)
+        public async Task<Result<IEnumerable<Guid>,Error>> Add(IEnumerable<FileDataDocument> filesData, CancellationToken cancellationToken)
         {
             try
             {
-                await _fileCollection.InsertManyAsync(filesData);
+                await _fileCollection.InsertManyAsync(filesData, cancellationToken: cancellationToken);
 
                 return filesData.Select(f => f.Id).ToList();
             }
@@ -33,11 +33,11 @@ namespace FileService.Infrastrucure.Repositories
             }
         }
 
-        public async Task<Result<IEnumerable<FileDataDocument>, Error>> Get(IEnumerable<Guid> fileIds)
+        public async Task<Result<IEnumerable<FileDataDocument>, Error>> Get(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
         {
             try
             {
-                var files = await _fileCollection.Find(f => fileIds.Contains(f.Id)).ToListAsync();
+                var files = await _fileCollection.Find(f => fileIds.Contains(f.Id)).ToListAsync(cancellationToken);
 
                 if(files.Count == 0)
                     return Error.NotFound("Repository.Get.File", "The file with this id was not found.");
@@ -52,11 +52,11 @@ namespace FileService.Infrastrucure.Repositories
             }
         }
 
-        public async Task<UnitResult<Error>> Remove(IEnumerable<Guid> fileIds)
+        public async Task<UnitResult<Error>> Remove(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _fileCollection.DeleteManyAsync(f => fileIds.Contains(f.Id));
+                var result = await _fileCollection.DeleteManyAsync(f => fileIds.Contains(f.Id), cancellationToken);
 
                 if(result.DeletedCount == 0)
                     return Error.NotFound("Repository.Remove.File", "The file with this id was not found.");
