@@ -15,7 +15,7 @@ public class NotificationServiceGrpc : Grpc.NotificationService.NotificationServ
         _provider = provider;
     }
 
-    public async override Task<GuidGrpc> Add(
+    public async override Task<GuidGrpc> AddNotificationSettings(
         AddNotificationSettingsRequest request,
         ServerCallContext context)
     {
@@ -42,7 +42,7 @@ public class NotificationServiceGrpc : Grpc.NotificationService.NotificationServ
         return await Task.FromResult(response);
     }
 
-    public async override Task<GuidGrpc> Push(
+    public async override Task<GuidGrpc> PushNotification(
         PushNotificationRequest request,
         ServerCallContext context)
     {

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "NotificationService.Grpc";
+option csharp_namespace = "SachkovTech.Issues.Grpc.Protos";
 
 package SachkovTech.Grpc;
 
