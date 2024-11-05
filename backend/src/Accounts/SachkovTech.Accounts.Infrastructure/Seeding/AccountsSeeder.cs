@@ -17,6 +17,6 @@ public class AccountsSeeder
 
         var service = scope.ServiceProvider.GetRequiredService<AccountsSeederService>();
 
-        //await service.SeedAsync();
+        await service.SeedAsync();
     }
 }
