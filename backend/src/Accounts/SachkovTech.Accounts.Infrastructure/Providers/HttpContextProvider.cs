@@ -6,6 +6,7 @@ namespace SachkovTech.Accounts.Infrastructure.Providers;
 
 public class HttpContextProvider
 {
+    private const string REFRESH_TOKEN = "refreshToken";
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public HttpContextProvider(IHttpContextAccessor httpContextAccessor)
@@ -20,9 +21,9 @@ public class HttpContextProvider
             return Errors.General.Failure();
         }
         
-        if (!_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+        if (!_httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(REFRESH_TOKEN, out var refreshToken))
         {
-            return Errors.General.NotFound(null, "refresh token");
+            return Errors.General.NotFound(null, REFRESH_TOKEN);
         }
 
         return Guid.Parse(refreshToken);
@@ -35,7 +36,7 @@ public class HttpContextProvider
             return Errors.General.Failure();
         }
         
-        _httpContextAccessor.HttpContext.Response.Cookies.Append("refreshToken", refreshToken.ToString());
+        _httpContextAccessor.HttpContext.Response.Cookies.Append(REFRESH_TOKEN, refreshToken.ToString());
 
         return UnitResult.Success<Error>();
     }
@@ -47,7 +48,7 @@ public class HttpContextProvider
             return Errors.General.Failure();
         }
 
-        _httpContextAccessor.HttpContext.Response.Cookies.Delete("refreshToken");
+        _httpContextAccessor.HttpContext.Response.Cookies.Delete(REFRESH_TOKEN);
 
         return UnitResult.Success<Error>();
     }
