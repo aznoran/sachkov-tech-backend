@@ -14,7 +14,7 @@ using SachkovTech.Core.Options;
 using SachkovTech.Framework;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Accounts.Infrastructure;
+namespace SachkovTech.Accounts.Infrastructure.Providers;
 
 public class JwtTokenProvider : ITokenProvider
 {
@@ -42,12 +42,9 @@ public class JwtTokenProvider : ITokenProvider
         var permissions = await _permissionManager.GetUserPermissionCodes(user.Id, cancellationToken);
         var permissionClaims = permissions.Select(p => new Claim(CustomClaims.Permission, p));
 
-        var jti = Guid.NewGuid();
-
         Claim[] claims =
         [
             new Claim(CustomClaims.Id, user.Id.ToString()),
-            new Claim(CustomClaims.Jti, jti.ToString()),
             new Claim(CustomClaims.Email, user.Email ?? "")
         ];
 
@@ -65,17 +62,16 @@ public class JwtTokenProvider : ITokenProvider
 
         var jwtStringToken = new JwtSecurityTokenHandler().WriteToken(jwtToken);
 
-        return new JwtTokenResult(jwtStringToken, jti);
+        return new JwtTokenResult(jwtStringToken);
     }
 
-    public async Task<Guid> GenerateRefreshToken(User user, Guid accessTokenJti, CancellationToken cancellationToken)
+    public async Task<Guid> GenerateRefreshToken(User user, CancellationToken cancellationToken)
     {
         var refreshSession = new RefreshSession
         {
             User = user,
             ExpiresIn = DateTime.UtcNow.AddDays(30),
             CreatedAt = DateTime.UtcNow,
-            Jti = accessTokenJti,
             RefreshToken = Guid.NewGuid()
         };
 

@@ -7,8 +7,6 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Application.Commands.RefreshTokens;
 
-public record RefreshTokensCommand(Guid RefreshToken) : ICommand;
-
 public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokensCommand>
 {
     private readonly IRefreshSessionManager _refreshSessionManager;
@@ -46,7 +44,7 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
             .GenerateAccessToken(oldRefreshSession.Value.User, cancellationToken);
 
         var refreshToken = await _tokenProvider
-            .GenerateRefreshToken(oldRefreshSession.Value.User, accessToken.Jti, cancellationToken);
+            .GenerateRefreshToken(oldRefreshSession.Value.User, cancellationToken);
 
         return new LoginResponse(
             accessToken.AccessToken,

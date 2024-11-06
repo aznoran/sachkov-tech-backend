@@ -9,8 +9,6 @@ public class RefreshSession
 
     public Guid RefreshToken { get; init; }
 
-    public Guid Jti { get; init; }
-
     public DateTime ExpiresIn { get; init; }
 
     public DateTime CreatedAt { get; init; }
