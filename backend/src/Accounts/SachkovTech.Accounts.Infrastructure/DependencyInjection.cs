@@ -76,9 +76,6 @@ public static class DependencyInjection
     {
         services.AddTransient<ITokenProvider, JwtTokenProvider>();
 
-        services.AddScoped<HttpContextProvider>();
-        services.AddHttpContextAccessor();
-
         return services;
     }
 }
