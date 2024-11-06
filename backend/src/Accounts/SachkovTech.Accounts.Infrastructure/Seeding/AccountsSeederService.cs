@@ -1,10 +1,14 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Accounts.Infrastructure.IdentityManagers;
 using SachkovTech.Accounts.Infrastructure.Options;
+using SachkovTech.Core.Abstractions;
+using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Infrastructure.Seeding;
@@ -16,7 +20,8 @@ public class AccountsSeederService(
     PermissionManager permissionManager,
     RolePermissionManager rolePermissionManager,
     IOptions<AdminOptions> adminOptions,
-    ILogger<AccountsSeederService> logger)
+    ILogger<AccountsSeederService> logger,
+    [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork)
 {
     private readonly AdminOptions _adminOptions = adminOptions.Value;
 
@@ -35,16 +40,7 @@ public class AccountsSeederService(
 
         await SeedRolePermissions(seedData);
 
-        var adminRole = await roleManager.FindByNameAsync(AdminAccount.ADMIN)
-                        ?? throw new ApplicationException("Could not find admin role.");
-
-        var adminUser = User.CreateAdmin(_adminOptions.UserName, _adminOptions.Email, adminRole);
-        await userManager.CreateAsync(adminUser, _adminOptions.Password);
-
-        var fullName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
-        var adminAccount = new AdminAccount(fullName, adminUser);
-
-        await accountsManager.CreateAdminAccount(adminAccount);
+        await SeedAdminAccount();
     }
 
     private async Task SeedRolePermissions(RolePermissionOptions seedData)
@@ -83,5 +79,53 @@ public class AccountsSeederService(
         await permissionManager.AddRangeIfExist(permissionsToAdd);
 
         logger.LogInformation("Permissions added to database.");
+    }
+
+    private async Task SeedAdminAccount()
+    {
+        var adminExists = await userManager.Users
+            .FirstOrDefaultAsync(u => u.Email == _adminOptions.Email);
+
+        if (adminExists is not null)
+            return;
+        
+        var adminRole = await roleManager.FindByNameAsync(AdminAccount.ADMIN)
+                        ?? throw new ApplicationException("Could not find admin role.");
+
+        var transaction = await unitOfWork.BeginTransaction();
+
+        try
+        {
+            var fullName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
+
+            var adminUser = User.CreateAdmin(
+                _adminOptions.UserName, 
+                _adminOptions.Email, 
+                fullName, 
+                adminRole);
+
+            if (adminUser.IsFailure)
+                throw new ApplicationException(adminUser.Error.Message);
+        
+            await userManager.CreateAsync(adminUser.Value, _adminOptions.Password);
+        
+            var adminAccount = new AdminAccount(adminUser.Value);
+
+            await accountsManager.CreateAdminAccount(adminAccount);
+
+            await unitOfWork.SaveChanges();
+            
+            transaction.Commit();
+            
+            logger.LogInformation("Admin account added to database");
+        }
+        catch (Exception ex)
+        {
+            logger.LogError("Creating admin was failed");
+            
+            transaction.Rollback();
+
+            throw new ApplicationException(ex.Message);
+        }
     }
 }

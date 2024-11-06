@@ -1,18 +1,20 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SachkovTech.Core.Dtos;
 using SachkovTech.Files.Contracts.Converters;
 using SachkovTech.Framework;
-using SachkovTech.Issues.Application.Commands.AddIssue;
-using SachkovTech.Issues.Application.Commands.Create;
-using SachkovTech.Issues.Application.Commands.Delete;
-using SachkovTech.Issues.Application.Commands.DeleteIssue;
-using SachkovTech.Issues.Application.Commands.DeleteIssue.SoftDeleteIssue;
-using SachkovTech.Issues.Application.Commands.ForceDeleteIssue;
-using SachkovTech.Issues.Application.Commands.RestoreIssue;
-using SachkovTech.Issues.Application.Commands.UpdateIssueMainInfo;
-using SachkovTech.Issues.Application.Commands.UpdateIssuePosition;
-using SachkovTech.Issues.Application.Commands.UpdateMainInfo;
-using SachkovTech.Issues.Application.Commands.UploadFilesToIssue;
+using SachkovTech.Framework.Authorization;
+using SachkovTech.Issues.Application.Features.Module.Commands.AddIssue;
+using SachkovTech.Issues.Application.Features.Module.Commands.Create;
+using SachkovTech.Issues.Application.Features.Module.Commands.Delete;
+using SachkovTech.Issues.Application.Features.Module.Commands.DeleteIssue;
+using SachkovTech.Issues.Application.Features.Module.Commands.DeleteIssue.SoftDeleteIssue;
+using SachkovTech.Issues.Application.Features.Module.Commands.ForceDeleteIssue;
+using SachkovTech.Issues.Application.Features.Module.Commands.RestoreIssue;
+using SachkovTech.Issues.Application.Features.Module.Commands.UpdateIssueMainInfo;
+using SachkovTech.Issues.Application.Features.Module.Commands.UpdateIssuePosition;
+using SachkovTech.Issues.Application.Features.Module.Commands.UpdateMainInfo;
+using SachkovTech.Issues.Application.Features.Module.Commands.UploadFilesToIssue;
 using SachkovTech.Issues.Presentation.Modules.Requests;
 using SachkovTech.Issues.Presentation.Modules.Responses;
 
@@ -20,6 +22,87 @@ namespace SachkovTech.Issues.Presentation.Modules;
 
 public class ModulesController : ApplicationController
 {
+    [HttpGet]
+    public ActionResult Get()
+    {
+        List<ModuleDto> response =
+        [
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 1",
+                Description = "Description 1",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 2",
+                Description = "Description 2",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 3",
+                Description = "Description 3",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 4",
+                Description = "Description 4",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 5",
+                Description = "Description 5",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 6",
+                Description = "Description 6",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 7",
+                Description = "Description 7",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 8",
+                Description = "Description 8",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 9",
+                Description = "Description 9",
+                Issues = []
+            },
+            new()
+            {
+                Id = Guid.NewGuid(),
+                Title = "Module 10",
+                Description = "Description 10",
+                Issues = []
+            }
+        ];
+
+        return Ok(response);
+    }
+
+    [Permission(Permissions.Modules.CreateModule)]
     [HttpPost]
     public async Task<ActionResult> Create(
         [FromServices] CreateModuleHandler handler,
@@ -34,6 +117,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.CreateIssue)]
     [HttpPost("{id:guid}/issue")]
     public async Task<ActionResult> AddIssue(
         [FromRoute] Guid id,
@@ -51,6 +135,8 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Files.Upload)]
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPost("{moduleId:guid}/issue/{issueId:guid}/files")]
     public async Task<ActionResult> UploadFilesToIssue(
         [FromRoute] Guid moduleId,
@@ -74,6 +160,7 @@ public class ModulesController : ApplicationController
         return Ok(response);
     }
 
+    [Permission(Permissions.Modules.UpdateModule)]
     [HttpPut("{id:guid}/main-info")]
     public async Task<ActionResult> UpdateMainInfo(
         [FromRoute] Guid id,
@@ -89,7 +176,8 @@ public class ModulesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{id:guid}/issue/{issueId:guid}/newPosition/{newPosition:int}")]
     public async Task<ActionResult> UpdateIssuePosition(
         [FromRoute] Guid id,
@@ -107,6 +195,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{id:guid}/issue/{issueId:guid}/main-info")]
     public async Task<ActionResult> UpdateIssueMainInfo(
         [FromRoute] Guid id,
@@ -124,6 +213,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{moduleId:guid}/issue/{issueId:guid}/restore")]
     public async Task<ActionResult> RestoreIssue(
         [FromRoute] Guid moduleId,
@@ -141,6 +231,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Modules.DeleteModule)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,
@@ -156,6 +247,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.DeleteIssue)]
     [HttpDelete("{id:guid}/issue/{issueId:guid}/soft")]
     public async Task<ActionResult> SoftDeleteIssue(
         [FromRoute] Guid id,
@@ -172,6 +264,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
+    [Permission(Permissions.Issues.DeleteIssue)]
     [HttpDelete("{id:guid}/issue/{issueId:guid}/force")]
     public async Task<ActionResult> ForceDeleteIssue(
         [FromRoute] Guid id,

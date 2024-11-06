@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Domain.Entities;
+using SachkovTech.Issues.Domain.Module.Entities;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -15,6 +15,13 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
 
         builder.HasKey(i => i.Id);
 
+        builder.ComplexProperty(b => b.Experience, eb =>
+        {
+            eb.Property(e => e.Value)
+                .HasColumnName("experience")
+                .IsRequired(true);
+        });
+
         builder.Property(i => i.Id)
             .HasConversion(
                 id => id.Value,
@@ -27,7 +34,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                     .IsRequired(false)
                     .HasColumnName("lesson_id");
             });
-        
+
         builder.ComplexProperty(i => i.Experience,
             lb =>
             {
@@ -63,7 +70,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
         builder.Property(i => i.Files)
             .ValueObjectsCollectionJsonConversion(
                 fileId => fileId.Value,
-                fileGuid => FileId.Create(fileGuid))
+                FileId.Create)
             .HasColumnName("files");
 
         builder.Property<bool>("_isDeleted")

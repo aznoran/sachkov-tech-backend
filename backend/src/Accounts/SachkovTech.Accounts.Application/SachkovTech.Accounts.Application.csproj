@@ -13,4 +13,8 @@
       <ProjectReference Include="..\SachkovTech.Accounts.Domain\SachkovTech.Accounts.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Queries\" />
+    </ItemGroup>
+
 </Project>

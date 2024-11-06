@@ -1,3 +1,5 @@
+using SachkovTech.SharedKernel.ValueObjects;
+
 namespace SachkovTech.Accounts.Infrastructure.Options;
 
 public class AdminOptions
@@ -7,4 +9,6 @@ public class AdminOptions
     public string UserName { get; init; } = string.Empty;
     public string Email { get; init; } = string.Empty;
     public string Password { get; init; } = string.Empty;
+    
+    public List<SocialNetwork> SocialNetworks { get; init; } = [];
 }

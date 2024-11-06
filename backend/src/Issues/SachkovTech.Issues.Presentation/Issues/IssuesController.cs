@@ -1,13 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Framework;
-using SachkovTech.Issues.Application.Queries.GetIssueById;
-using SachkovTech.Issues.Application.Queries.GetModulesWithPagination;
+using SachkovTech.Framework.Authorization;
+using SachkovTech.Issues.Application.Features.Module.Queries.GetIssueById;
+using SachkovTech.Issues.Application.Features.Module.Queries.GetModulesWithPagination;
 using SachkovTech.Issues.Presentation.Issues.Requests;
 
 namespace SachkovTech.Issues.Presentation.Issues;
 
 public class IssuesController : ApplicationController
 {
+    [Permission(Permissions.Issues.ReadIssue)]
     [HttpGet("dapper")]
     public async Task<ActionResult> GetDapper(
         [FromQuery] GetIssuesWithPaginationRequest request,
@@ -21,6 +23,7 @@ public class IssuesController : ApplicationController
         return Ok(response);
     }
     
+    [Permission(Permissions.Issues.ReadIssue)]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetIssuesWithPaginationRequest request,
@@ -34,6 +37,7 @@ public class IssuesController : ApplicationController
         return Ok(response);
     }
 
+    [Permission(Permissions.Issues.ReadIssue)]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,

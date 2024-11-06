@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Dtos;
-using SachkovTech.Issues.Application;
+using SachkovTech.Issues.Application.Interfaces;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 
@@ -10,6 +10,9 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
 {
     public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
     public IQueryable<IssueDto> Issues => Set<IssueDto>();
+    public IQueryable<IssueReviewDto> IssueReviewDtos => Set<IssueReviewDto>();
+    public IQueryable<CommentDto> Comments => Set<CommentDto>();
+    public IQueryable<UserIssueDto> UserIssues => Set<UserIssueDto>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -26,7 +29,7 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
         modelBuilder.HasDefaultSchema("issues");
         
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(IsssuesWriteDbContext).Assembly,
+            typeof(IssuesWriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
 
         modelBuilder.Entity<IssueDto>().HasQueryFilter(i => !i.IsDeleted);

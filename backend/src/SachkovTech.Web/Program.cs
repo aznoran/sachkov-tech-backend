@@ -1,5 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Accounts.Infrastructure.Seeding;
+using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;
@@ -44,8 +47,6 @@ builder.Services.AddLogging(builder.Configuration);
 builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
-builder.Services.AddIssuesReviewsModule(builder.Configuration);
-builder.Services.AddIssueSolvingModule(builder.Configuration);
 builder.Services.AddApplicationLayers();
 
 builder.Services.AddControllers();
@@ -55,6 +56,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthServices(builder.Configuration);
 
 var app = builder.Build();
+
+// await using var scope = app.Services.CreateAsyncScope();
+//
+// var dbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
+//
+// await dbContext.Database.MigrateAsync();
 
 var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
@@ -69,6 +76,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors(config =>
+{
+    config.WithOrigins("http://localhost:5173")
+        .AllowCredentials()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+});
 
 app.UseAuthentication();
 app.UseAuthorization();

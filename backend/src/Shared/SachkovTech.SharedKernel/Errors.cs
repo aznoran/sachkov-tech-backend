@@ -19,7 +19,7 @@ public static class Errors
         public static Error ValueIsRequired(string? name = null)
         {
             var label = name == null ? "" : " " + name + " ";
-            return Error.Validation("length.is.invalid", $"invalid{label}length)");
+            return Error.Validation("length.is.invalid", $"invalid{label}length");
         }
 
         public static Error AlreadyExist()
@@ -56,6 +56,11 @@ public static class Errors
         public static Error InvalidCredentials()
         {
             return Error.Validation("credentials.is.invalid", "Your credentials is invalid");
+        }
+
+        public static Error InvalidRole()
+        {
+            return Error.Failure("invalid.role", "Invalid role");
         }
     }
 
