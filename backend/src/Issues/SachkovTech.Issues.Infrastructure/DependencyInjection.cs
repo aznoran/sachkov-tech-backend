@@ -1,9 +1,11 @@
+using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.Issues.Infrastructure.Grpc.Client;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
 
@@ -19,7 +21,8 @@ public static class DependencyInjection
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
-            .AddServices();
+            .AddServices()
+            .AddGrpcNotificationServiceClient(configuration);
 
         return services;   
     }
@@ -61,6 +64,23 @@ public static class DependencyInjection
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<DeleteExpiredIssuesService>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services, IConfiguration configuration)
+    {
+        var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+
+        services.AddKeyedSingleton<GrpcChannel>(
+            implementationInstance: GrpcChannel.ForAddress(uri!),
+            serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+
+        services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
+            {
+                GrpcChannel channel = sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
+                return new GrpcNotificationServiceClient(channel);
+            });
 
         return services;
     }
