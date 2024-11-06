@@ -1,5 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Accounts.Contracts;
+using SachkovTech.Accounts.Infrastructure.Providers;
 
 namespace SachkovTech.Accounts.Presentation;
 
@@ -9,6 +10,9 @@ public static class DependencyInjection
     {
         services.AddScoped<IAccountsContract, AccountsContract>();
 
+        services.AddScoped<HttpContextProvider>();
+        services.AddHttpContextAccessor();
+        
         return services;
     }
 }

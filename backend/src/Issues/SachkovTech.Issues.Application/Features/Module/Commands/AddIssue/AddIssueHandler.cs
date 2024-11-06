@@ -41,7 +41,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         {
             return validationResult.ToList();
         }
-
+        
         var moduleResult = await _modulesRepository
             .GetById(ModuleId.Create(command.ModuleId), cancellationToken);
 
