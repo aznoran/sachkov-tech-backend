@@ -80,15 +80,15 @@ public class UploadFilesHandler : ICommandHandler<UploadFilesResponse, UploadFil
         UploadFilesCommand command,
         CancellationToken cancellationToken)
     {
-        var fileData = new FileDataDocument(
-            uploadFileResult.FileName,
-            uploadFileResult.FilePath,
-            true,
-            uploadFileResult.FileSize,
-            uploadFileResult.FilePath.Prefix,
-            command.OwnerTypeName,
-            command.OwnerId,
-            []);
+        var fileData = new FileDataDocument
+        {
+            Name = uploadFileResult.FileName,
+            StoragePath = uploadFileResult.FilePath,
+            FileSize = uploadFileResult.FileSize,
+            MimeType = uploadFileResult.FilePath.Prefix,
+            OwnerType = command.OwnerTypeName,
+            OwnerId = command.OwnerId,
+        };
 
         var saveFileResult = await _filesRepository.Add([fileData], cancellationToken);
 

@@ -17,7 +17,7 @@ namespace FileService.Infrastrucure.Repositories
             _logger = logger;
         }
 
-        public async Task<Result<IEnumerable<Guid>,Error>> Add(IEnumerable<FileDataDocument> filesData, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<Guid>, Error>> Add(IEnumerable<FileDataDocument> filesData, CancellationToken cancellationToken)
         {
             try
             {
@@ -39,7 +39,7 @@ namespace FileService.Infrastrucure.Repositories
             {
                 var files = await _fileCollection.Find(f => fileIds.Contains(f.Id)).ToListAsync(cancellationToken);
 
-                if(files.Count == 0)
+                if (files.Count == 0)
                     return Error.NotFound("Repository.Get.File", "The file with this id was not found.");
 
                 return files;
@@ -58,7 +58,7 @@ namespace FileService.Infrastrucure.Repositories
             {
                 var result = await _fileCollection.DeleteManyAsync(f => fileIds.Contains(f.Id), cancellationToken);
 
-                if(result.DeletedCount == 0)
+                if (result.DeletedCount == 0)
                     return Error.NotFound("Repository.Remove.File", "The file with this id was not found.");
 
                 return Result.Success<Error>();

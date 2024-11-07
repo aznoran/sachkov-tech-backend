@@ -1,5 +1,4 @@
-﻿using FileService.Api.Contracts;
-using FileService.Application.Commands.UploadFiles;
+﻿using FileService.Application.Commands.UploadFiles;
 using FileService.Application.Queries.GetLinkFiles;
 using Microsoft.AspNetCore.Mvc;
 

@@ -2,7 +2,6 @@
 using FileService.Application.Interfaces;
 using FileService.Application.Queries.GetLinkFiles;
 using FileService.Data.Options;
-using FileService.Infrastrucure.Abstractions;
 using FileService.Infrastrucure.Providers;
 using FileService.Infrastrucure.Repositories;
 using Minio;
