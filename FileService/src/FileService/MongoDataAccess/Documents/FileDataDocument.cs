@@ -1,31 +1,30 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 
-namespace FileService.MongoDataAccess.Documents
+namespace FileService.MongoDataAccess.Documents;
+
+public class FileDataDocument
 {
-    public class FileDataDocument
-    {
-        [BsonId]
-        public Guid Id { get; init; }
+    [BsonId]
+    public Guid Key { get; init; }
 
-        [BsonElement("name")]
-        public string Name { get; init; } = string.Empty;
+    [BsonElement("prefix")]
+    public string Prefix { get; init; } = string.Empty;
 
-        [BsonElement("storage_path")]
-        public string StoragePath { get; init; } = string.Empty;
+    [BsonElement("name")]
+    public string Name { get; init; } = string.Empty;
 
-        [BsonElement("upload_date")]
-        public DateTime UploadDate { get; init; }
+    [BsonElement("upload_date")]
+    public DateTime UploadDate { get; init; }
 
-        [BsonElement("file_size")]
-        public long FileSize { get; init; }
+    [BsonElement("file_size")]
+    public long FileSize { get; init; }
 
-        [BsonElement("mime_type")]
-        public string MimeType { get; init; } = string.Empty;
+    [BsonElement("mime_type")]
+    public string ContentType { get; init; } = string.Empty;
 
-        [BsonElement("owner_type")]
-        public string OwnerType { get; init; } = string.Empty;
+    [BsonElement("owner_type")]
+    public string OwnerType { get; init; } = string.Empty;
 
-        [BsonElement("owner_id")]
-        public Guid OwnerId { get; init; }
-    }
+    [BsonElement("owner_id")]
+    public Guid OwnerId { get; init; }
 }
