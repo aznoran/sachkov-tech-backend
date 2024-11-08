@@ -13,16 +13,15 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
         builder.ToTable("lessons");
 
         builder.HasKey(l => l.Id);
-        
+
         builder.Property(i => i.Id)
-            .HasConversion(
-                id => id.Value,
+            .HasConversion(id => id.Value,
                 value => LessonId.Create(value));
 
         builder.Property(l => l.ModuleId)
             .IsRequired()
             .HasColumnName("module_id");
-        
+
         builder.ComplexProperty(m => m.Title, tb =>
         {
             tb.Property(t => t.Value)
@@ -38,20 +37,28 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
                 .HasMaxLength(Description.MAX_LENGTH)
                 .HasColumnName("description");
         });
-        
+
         builder.ComplexProperty(b => b.Experience, eb =>
         {
             eb.Property(e => e.Value)
                 .IsRequired()
                 .HasColumnName("experience");
         });
-        
+
         builder.Property(l => l.VideoId)
             .IsRequired()
             .HasColumnName("video_id");
-        
-        builder.Property(l => l.FileId)
+
+        builder.Property(l => l.PreviewFileId)
             .IsRequired()
-            .HasColumnName("file_id");
+            .HasColumnName("preview_file_id");
+
+        builder.Property(x => x.Tags)
+            .HasColumnName("tags")
+            .HasColumnType("uuid[]");
+        
+        builder.Property(x => x.Issues)
+            .HasColumnName("issues")
+            .HasColumnType("uuid[]");
     }
 }

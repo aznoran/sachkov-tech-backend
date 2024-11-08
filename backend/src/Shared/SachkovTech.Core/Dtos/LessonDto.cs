@@ -8,7 +8,7 @@ public record LessonDto
     public string Description { get; init; } = string.Empty;
     public int Experience { get; init; }
     public Guid VideoId { get; init; }
-    public Guid FileId { get; init; }
-    public IEnumerable<Guid> Tags { get; init; }
-    public IEnumerable<Guid> Issues { get; init; }
+    public Guid PreviewFileId { get; init; }
+    public Guid[] Tags { get; init; }
+    public Guid[] Issues { get; init; }
 }

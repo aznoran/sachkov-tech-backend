@@ -31,9 +31,10 @@ public class UpdateLessonHandler(
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Title).Value;
         var experience = Experience.Create(command.Experience).Value;
-        
-        lesson.Value.Update(title, description,experience, command.VideoId, command.FileId, command.Tags, command.Issues);
-        
+
+        lesson.Value.Update(title, description, experience, command.VideoId, command.PreviewFileId, command.Tags.ToArray(),
+            command.Issues.ToArray());
+
         await unitOfWork.SaveChanges(cancellationToken);
 
         logger.Log(LogLevel.Information, "Updated lesson with {LessonId}", lesson.Value.Id);

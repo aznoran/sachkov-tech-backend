@@ -47,7 +47,7 @@ public class AddLessonHandler(
             Description.Create(command.Description).Value,
             Experience.Create(command.Experience).Value,
             command.VideoId,
-            command.FileId,
-            command.Tags,
-            command.Issues);
+            command.PreviewFileId,
+            command.Tags.ToArray(),
+            command.Issues.ToArray());
 }

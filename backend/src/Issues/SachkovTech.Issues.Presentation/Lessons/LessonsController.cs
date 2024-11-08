@@ -4,6 +4,7 @@ using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddIssueToLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddTagToLesson;
+using SachkovTech.Issues.Application.Features.Lessons.Command.RestoreLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.SoftDeleteLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.UpdateLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
@@ -15,7 +16,7 @@ namespace SachkovTech.Issues.Presentation.Lessons;
 public class LessonsController : ApplicationController
 {
     [HttpPost]
-    // [Permission(Permissions.Lessons.CreateLesson)]
+    [Permission(Permissions.Lessons.CreateLesson)]
     public async Task<IActionResult> CreateLesson(
         [FromBody] AddLessonRequest request,
         [FromServices] AddLessonHandler handler,
@@ -30,7 +31,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPut]
-    // [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> UpdateLesson(
         [FromBody] UpdateLessonRequest request,
         [FromServices] UpdateLessonHandler handler,
@@ -45,7 +46,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPatch("{lessonId}/tags/{tagId:guid}")]
-    // [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> AddTagToLesson(
         [FromRoute] Guid lessonId,
         [FromRoute] Guid tagId,
@@ -61,7 +62,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPatch("{lessonId}/issues/{issueId:guid}")]
-    // [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> AddIssueToLesson(
         [FromRoute] Guid lessonId,
         [FromRoute] Guid issueId,
@@ -76,8 +77,24 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
+    
+    [HttpPatch("{lessonId}/restore")]
+    [Permission(Permissions.Lessons.UpdateLesson)]
+    public async Task<IActionResult> RestoreLesson(
+        [FromRoute] Guid lessonId,
+        [FromServices] RestoreLessonHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new RestoreLessonCommand(lessonId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
+    
     [HttpDelete("{lessonId:guid}")]
-    // [Permission(Permissions.Lessons.DeleteLesson)]
+    [Permission(Permissions.Lessons.DeleteLesson)]
     public async Task<IActionResult> SoftDeleteLesson(
         [FromRoute] Guid lessonId,
         [FromServices] SoftDeleteLessonHandler handler,
@@ -91,25 +108,25 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
-    
     [HttpGet()]
-    // [Permission(Permissions.Lessons.ReadLesson)]
+    [Permission(Permissions.Lessons.ReadLesson)]
     public async Task<IActionResult> GetLessonWithPagination(
         [FromQuery] int page,
         [FromQuery] int pageSize,
         [FromServices] GetLessonsWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(new GetLessonsWithPaginationValidatorQuery(page, pageSize), cancellationToken);
+        var result = await handler.Handle(new GetLessonsWithPaginationValidatorQuery(page, pageSize),
+            cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
 
         return Ok(result.Value);
     }
-    
+
     [HttpGet("{lessonId:guid}")]
-    // [Permission(Permissions.Lessons.ReadLesson)]
+    [Permission(Permissions.Lessons.ReadLesson)]
     public async Task<IActionResult> GetLessonById(
         [FromRoute] Guid lessonId,
         [FromServices] GetLessonByIdHandler handler,

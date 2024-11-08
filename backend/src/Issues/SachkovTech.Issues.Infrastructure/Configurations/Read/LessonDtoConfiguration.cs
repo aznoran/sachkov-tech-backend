@@ -31,10 +31,16 @@ public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDto>
         
         builder.Property(l => l.VideoId)
             .IsRequired()
-            .HasColumnName("file_id");
+            .HasColumnName("video_id");
         
-        builder.Property(l => l.FileId)
+        builder.Property(l => l.PreviewFileId)
             .IsRequired()
-            .HasColumnName("file_id");
+            .HasColumnName("preview_file_id");
+
+        builder.Property(l => l.Tags)
+            .HasColumnName("tags");
+
+        builder.Property(l => l.Issues)
+            .HasColumnName("issues");
     }
 }

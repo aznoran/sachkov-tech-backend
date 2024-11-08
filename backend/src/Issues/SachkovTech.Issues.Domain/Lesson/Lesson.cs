@@ -8,20 +8,15 @@ namespace SachkovTech.Issues.Domain.Lesson;
 
 public class Lesson : SoftDeletableEntity<LessonId>
 {
-    private Lesson(LessonId id) : base(id) { }
-
-    private List<Guid> _tags { get; set; }
-    private List<Guid> _issues { get; set; }
-
+    private Lesson(LessonId id) : base(id){}
     public Guid ModuleId { get; private set; }
     public Title Title { get; private set; }
     public Description Description { get; private set; }
     public Experience Experience { get; private set; }
     public Guid VideoId { get; private set; }
-    public Guid FileId { get; private set; }
-    
-    public IReadOnlyList<Guid> Tags => _tags;
-    public IReadOnlyList<Guid> Issues => _issues;
+    public Guid PreviewFileId { get; private set; }
+    public Guid[] Tags { get; private set; }
+    public Guid[] Issues { get; private set; }
 
     public Lesson(
         LessonId id,
@@ -30,73 +25,73 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Description description,
         Experience experience,
         Guid videoId,
-        Guid fileId,
-        IEnumerable<Guid> tags,
-        IEnumerable<Guid> issues) : base(id)
+        Guid previewFileId,
+        Guid[] tags,
+        Guid[] issues) : base(id)
     {
         ModuleId = moduleId;
         Title = title;
         Description = description;
         Experience = experience;
         VideoId = videoId;
-        FileId = fileId;
-        _tags = tags.ToList();
-        _issues = issues.ToList();
+        PreviewFileId = previewFileId;
+        Tags = tags;
+        Issues = issues;
     }
 
     /// <summary>
-    /// Метод, который полностью обновляет данные об уроке
+    /// Метод, который полностью обновляет урок
     /// </summary>
-    /// <param name="title">Название урока</param>
-    /// <param name="description">Описание урока</param>
-    /// <param name="experience">Количество опыта за просмотр урока</param>
+    /// <param name="title">Название</param>
+    /// <param name="description">Описание</param>
+    /// <param name="experience">Опыт за урок</param>
     /// <param name="videoId">Ссылка на видео</param>
-    /// <param name="fileId">Ссылка на название видео</param>
+    /// <param name="fileId">Ссылка на файл</param>
     /// <param name="tags">Список тегов к уроку</param>
     /// <param name="issues">Список задач к уроку</param>
     public void Update(
-        Title title, 
-        Description description, 
-        Experience experience, 
-        Guid videoId, 
-        Guid fileId, 
-        IEnumerable<Guid> tags,
-        IEnumerable<Guid> issues)
+        Title title,
+        Description description,
+        Experience experience,
+        Guid videoId,
+        Guid fileId,
+        Guid[] tags,
+        Guid[] issues)
     {
         Title = title;
         Description = description;
         Experience = experience;
         VideoId = videoId;
-        FileId = fileId;
-        _tags = tags.ToList();
-        _issues = issues.ToList();
+        PreviewFileId = fileId;
+        Tags = tags;
+        Issues = issues;
     }
 
     /// <summary>
-    /// Метод, который добавляет ссылку на задачу в список.
+    /// Добавить задачку к уроку
     /// </summary>
     /// <param name="issueId">Ссылка на задачу</param>
+    /// <returns>Выполненную операцию либо ошибку, что такая задача уже есть</returns>
     public UnitResult<Error> AddIssue(Guid issueId)
     {
-        if (_issues.Contains(issueId))
+        if (Issues.Contains(issueId))
             return Errors.General.AlreadyExist();
-        
-        _issues.Add(issueId);
+
+        Issues = Issues.Append(issueId).ToArray();
         return UnitResult.Success<Error>();
     }
-    
+
     /// <summary>
-    /// Метод, который добавляет тег к уроку.
+    /// Добавить тег к уроку
     /// </summary>
     /// <param name="tagId">Ссылка на тег</param>
+    /// <returns>Выполненную операцию либо ошибку, что такой тег уже есть</returns>
     public UnitResult<Error> AddTag(Guid tagId)
     {
-        if (_tags.Contains(tagId))
+        if (Tags.Contains(tagId))
             return Errors.General.AlreadyExist();
-        
-        _tags.Add(tagId);
+
+        Tags = Tags.Append(tagId).ToArray();
         return UnitResult.Success<Error>();
     }
-    
-    
 }
