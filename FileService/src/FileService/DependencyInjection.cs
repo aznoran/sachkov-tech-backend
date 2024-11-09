@@ -1,5 +1,5 @@
-﻿using FileService.Core.Options;
-using FileService.MongoDataAccess;
+﻿using FileService.MongoDataAccess;
+using FileService.MongoDataAccess.Options;
 using Minio;
 using MongoDB.Driver;
 

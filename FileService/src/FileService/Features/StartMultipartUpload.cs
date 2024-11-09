@@ -26,12 +26,12 @@ public static class StartMultipartUpload
     {
         try
         {
-            var key = Guid.NewGuid();
+            var key = $"{request.ContentType}/{Guid.NewGuid()}";
 
             var startMultipartRequest = new InitiateMultipartUploadRequest
             {
                 BucketName = "bucket",
-                Key = $"videos/{key}",
+                Key = key,
                 ContentType = request.ContentType,
                 Metadata =
                 {

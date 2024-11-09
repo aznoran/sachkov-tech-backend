@@ -1,73 +1,36 @@
 ﻿using CSharpFunctionalExtensions;
+using FileService.Core;
 using FileService.Core.Models;
-using FileService.MongoDataAccess.Documents;
 using MongoDB.Driver;
 
 namespace FileService.MongoDataAccess;
 
-public class FileRepository
+public class FileRepository : IFileRepository
 {
-    private readonly IMongoCollection<FileDataDocument> _fileCollection;
-    private readonly ILogger<FileRepository> _logger;
+    private readonly FileMongoDbContext _dbContext;
 
-    public FileRepository(IConfiguration configuration, ILogger<FileRepository> logger, MongoClient client)
+    public FileRepository(FileMongoDbContext dbContext)
     {
-        var database = client.GetDatabase("file_service");
-        _fileCollection = database.GetCollection<FileDataDocument>("files");
-        _logger = logger;
+        _dbContext = dbContext;
     }
 
-    public async Task<Result<IEnumerable<Guid>, Error>> Add(IEnumerable<FileDataDocument> filesData, CancellationToken cancellationToken)
+    public async Task<Result<Guid, Error>> Add(FileData fileData, CancellationToken cancellationToken)
     {
-        try
-        {
-            await _fileCollection.InsertManyAsync(filesData, cancellationToken: cancellationToken);
+        await _dbContext.Files.InsertOneAsync(fileData, cancellationToken: cancellationToken);
 
-            return filesData.Select(f => f.Key).ToList();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Fail to save file in database.");
-
-            return Error.Failure("Repository.Add.File", "Fail to save file in database.");
-        }
+        return fileData.Id;
     }
 
-    public async Task<Result<IEnumerable<FileDataDocument>, Error>> Get(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<FileData>> Get(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
+        => await _dbContext.Files.Find(f => fileIds.Contains(f.Id)).ToListAsync(cancellationToken);
+
+    public async Task<UnitResult<Error>> DeleteMany(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
     {
-        try
-        {
-            var files = await _fileCollection.Find(f => fileIds.Contains(f.Key)).ToListAsync(cancellationToken);
+        var deleteResult = await _dbContext.Files.DeleteManyAsync(f => fileIds.Contains(f.Id), cancellationToken: cancellationToken);
 
-            if (files.Count == 0)
-                return Error.NotFound("Repository.Get.File", "The file with this id was not found.");
+        if (deleteResult.DeletedCount == 0)
+            return Errors.Files.FailRemove();
 
-            return files;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Fail to remove file from database.");
-
-            return Error.Failure("Repository.Get.File", "Fail to get file from database.");
-        }
-    }
-
-    public async Task<UnitResult<Error>> Remove(IEnumerable<Guid> fileIds, CancellationToken cancellationToken)
-    {
-        try
-        {
-            var result = await _fileCollection.DeleteManyAsync(f => fileIds.Contains(f.Key), cancellationToken);
-
-            if (result.DeletedCount == 0)
-                return Error.NotFound("Repository.Remove.File", "The file with this id was not found.");
-
-            return Result.Success<Error>();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Fail to remove file from database.");
-
-            return Error.Failure("Repository.Remove.File", "Fail to remove file from database.");
-        }
+        return Result.Success<Error>();
     }
 }

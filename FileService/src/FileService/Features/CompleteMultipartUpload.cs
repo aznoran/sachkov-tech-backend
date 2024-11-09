@@ -1,6 +1,10 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using FileService.Core;
 using FileService.Endpoints;
+using FileService.Jobs;
+using FileService.MongoDataAccess;
+using Hangfire;
 
 namespace FileService.Features;
 
@@ -14,24 +18,27 @@ public static class CompleteMultipartUpload
     {
         public void MapEndpoint(IEndpointRouteBuilder app)
         {
-            app.MapPost("files/{key:guid}/complete-multipart", Handler);
+            app.MapPost("files/{key}/complete-multipart", Handler);
         }
     }
 
     private static async Task<IResult> Handler(
-        Guid key,
+        string key,
         CompleteMultipartRequest request,
+        IFileRepository fileRepository,
         IAmazonS3 s3Client,
         CancellationToken cancellationToken)
     {
         try
         {
-            // TODO: Создать задачу, которая проверит по key наличие файла в mongodb и в minio через 24 часа
+            var fileId = Guid.NewGuid();
+
+            var jobId = BackgroundJob.Schedule<ConfirmConsistencyJob>(j => j.Execute(fileId, key), TimeSpan.FromSeconds(5));
 
             var completeRequest = new CompleteMultipartUploadRequest
             {
                 BucketName = "bucket",
-                Key = $"videos/{key}",
+                Key = key,
                 UploadId = request.UploadId,
                 PartETags = request.Parts.Select(p => new PartETag(p.PartNumber, p.ETag)).ToList()
             };
@@ -40,13 +47,31 @@ public static class CompleteMultipartUpload
                 completeRequest,
                 cancellationToken);
 
-            // TODO: Instert into mongodb info about file
+            var metaDataRequest = new GetObjectMetadataRequest
+            {
+                BucketName = "bucket",
+                Key = key
+            };
 
-            // TODO: Удалить задачу, которая проверит по key наличие файла в mongodb и в minio через 24 часа
+            var metaData = await s3Client.GetObjectMetadataAsync(metaDataRequest, cancellationToken);
+
+            var fileData = new FileData
+            {
+                Id = fileId,
+                StoragePath = key,
+                Size = metaData.Headers.ContentLength,
+                ContentType = metaData.Headers.ContentType,
+                UploadDate = DateTime.UtcNow
+            };
+
+            await fileRepository.Add(fileData, cancellationToken);
+
+            BackgroundJob.Delete(jobId);
 
             return Results.Ok(new
             {
-                key,
+                Id = key,
+
                 location = response.Location
             });
         }
