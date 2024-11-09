@@ -4,6 +4,7 @@ using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddIssueToLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddTagToLesson;
+using SachkovTech.Issues.Application.Features.Lessons.Command.RemoveIssueFromLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.RestoreLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.SoftDeleteLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.UpdateLesson;
@@ -45,11 +46,11 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
-    [HttpPatch("{lessonId}/tags/{tagId:guid}")]
+    [HttpPatch("{lessonId}/tag")]
     [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> AddTagToLesson(
         [FromRoute] Guid lessonId,
-        [FromRoute] Guid tagId,
+        [FromBody] Guid tagId,
         [FromServices] AddTagToLessonHandler handler,
         CancellationToken cancellationToken)
     {
@@ -61,11 +62,11 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
-    [HttpPatch("{lessonId}/issues/{issueId:guid}")]
+    [HttpPatch("{lessonId}/issue")]
     [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> AddIssueToLesson(
         [FromRoute] Guid lessonId,
-        [FromRoute] Guid issueId,
+        [FromBody] Guid issueId,
         [FromServices] AddIssueToLessonHandler handler,
         CancellationToken cancellationToken)
     {
@@ -77,6 +78,37 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
+    [HttpDelete("{lessonId}/issue")]
+    [Permission(Permissions.Lessons.UpdateLesson)]
+    public async Task<IActionResult> RemoveIssueFromLesson(
+        [FromRoute] Guid lessonId,
+        [FromBody] Guid issueId,
+        [FromServices] RemoveIssueFromLessonHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new RemoveIssueFromLessonCommand(lessonId, issueId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
+    
+    [HttpDelete("{lessonId}/tag")]
+    [Permission(Permissions.Lessons.UpdateLesson)]
+    public async Task<IActionResult> RemoveTagFromLesson(
+        [FromRoute] Guid lessonId,
+        [FromBody] Guid tagId,
+        [FromServices] RemoveIssueFromLessonHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new RemoveIssueFromLessonCommand(lessonId, tagId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
     
     [HttpPatch("{lessonId}/restore")]
     [Permission(Permissions.Lessons.UpdateLesson)]

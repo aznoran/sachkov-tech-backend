@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
@@ -14,6 +15,7 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 namespace SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 
 public class AddLessonHandler(
+    IReadDbContext readDbContext,
     IValidator<AddLessonCommand> validator,
     ILessonsRepository lessonsRepository,
     [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
@@ -26,6 +28,11 @@ public class AddLessonHandler(
         if (validationResult.IsValid == false)
             return validationResult.ToList();
 
+        var isModuleExists
+            = await readDbContext.Modules.FirstOrDefaultAsync(v => v.Id == command.ModuleId, cancellationToken);
+        if (isModuleExists is null)
+            return Errors.General.NotFound(command.ModuleId, "module").ToErrorList();
+        
         var title = Title.Create(command.Title).Value;
         var isLessonExists = await lessonsRepository.GetByTitle(title, cancellationToken);
         if (isLessonExists.IsSuccess)
@@ -47,7 +54,7 @@ public class AddLessonHandler(
             Description.Create(command.Description).Value,
             Experience.Create(command.Experience).Value,
             command.VideoId,
-            command.PreviewFileId,
+            command.PreviewId,
             command.Tags.ToArray(),
             command.Issues.ToArray());
 }

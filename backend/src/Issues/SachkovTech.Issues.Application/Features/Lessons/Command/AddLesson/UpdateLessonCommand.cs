@@ -8,6 +8,6 @@ public record AddLessonCommand(
     string Description,
     int Experience,
     Guid VideoId,
-    Guid PreviewFileId,
+    Guid PreviewId,
     IEnumerable<Guid> Tags,
     IEnumerable<Guid> Issues) : ICommand;

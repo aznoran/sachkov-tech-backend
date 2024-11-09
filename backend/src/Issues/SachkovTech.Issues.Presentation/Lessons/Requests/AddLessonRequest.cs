@@ -8,10 +8,10 @@ public record AddLessonRequest(
     string Description,
     int Experience,
     Guid VideoId,
-    Guid PreviewFileId,
+    Guid PreviewId,
     IEnumerable<Guid> Tags,
     IEnumerable<Guid> Issues)
 {
     public AddLessonCommand ToCommand() => 
-        new(ModuleId, Title, Description, Experience, VideoId, PreviewFileId, Tags, Issues);
+        new(ModuleId, Title, Description, Experience, VideoId, PreviewId, Tags, Issues);
 }

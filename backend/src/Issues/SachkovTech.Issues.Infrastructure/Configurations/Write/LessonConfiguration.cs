@@ -49,9 +49,9 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
             .IsRequired()
             .HasColumnName("video_id");
 
-        builder.Property(l => l.PreviewFileId)
+        builder.Property(l => l.PreviewId)
             .IsRequired()
-            .HasColumnName("preview_file_id");
+            .HasColumnName("preview_id");
 
         builder.Property(x => x.Tags)
             .HasColumnName("tags")

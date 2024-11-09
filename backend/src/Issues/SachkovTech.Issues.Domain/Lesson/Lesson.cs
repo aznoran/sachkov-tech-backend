@@ -14,7 +14,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
     public Description Description { get; private set; }
     public Experience Experience { get; private set; }
     public Guid VideoId { get; private set; }
-    public Guid PreviewFileId { get; private set; }
+    public Guid PreviewId { get; private set; }
     public Guid[] Tags { get; private set; }
     public Guid[] Issues { get; private set; }
 
@@ -25,7 +25,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Description description,
         Experience experience,
         Guid videoId,
-        Guid previewFileId,
+        Guid previewId,
         Guid[] tags,
         Guid[] issues) : base(id)
     {
@@ -34,7 +34,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Description = description;
         Experience = experience;
         VideoId = videoId;
-        PreviewFileId = previewFileId;
+        PreviewId = previewId;
         Tags = tags;
         Issues = issues;
     }
@@ -62,7 +62,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Description = description;
         Experience = experience;
         VideoId = videoId;
-        PreviewFileId = fileId;
+        PreviewId = fileId;
         Tags = tags;
         Issues = issues;
     }
@@ -92,6 +92,34 @@ public class Lesson : SoftDeletableEntity<LessonId>
             return Errors.General.AlreadyExist();
 
         Tags = Tags.Append(tagId).ToArray();
+        return UnitResult.Success<Error>();
+    }
+    
+    /// <summary>
+    /// Удалить тег у урока
+    /// </summary>
+    /// <param name="tagId">Ссылка на тег</param>
+    /// <returns>Выполненную операцию либо ошибку, что такой тег отсутствует</returns>
+    public UnitResult<Error> RemoveTag(Guid tagId)
+    {
+        if (!Tags.Contains(tagId))
+            return Errors.General.NotFound(tagId, "tag");
+
+        Tags = Tags.Where(id => id != tagId).ToArray();
+        return UnitResult.Success<Error>();
+    }
+    
+    /// <summary>
+    /// Удалить задачу у урока
+    /// </summary>
+    /// <param name="issueId">Ссылка на задачу</param>
+    /// <returns>Выполненную операцию либо ошибку, что такая задача отсутствует</returns>
+    public UnitResult<Error> RemoveIssue(Guid issueId)
+    {
+        if (!Issues.Contains(issueId))
+            return Errors.General.NotFound(issueId, "tag");
+
+        Issues = Issues.Where(id => id != issueId).ToArray();
         return UnitResult.Success<Error>();
     }
 }
