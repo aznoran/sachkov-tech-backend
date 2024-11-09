@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Dtos;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Domain.Lesson;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 
@@ -13,6 +14,7 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
     public IQueryable<IssueReviewDto> IssueReviewDtos => Set<IssueReviewDto>();
     public IQueryable<CommentDto> Comments => Set<CommentDto>();
     public IQueryable<UserIssueDto> UserIssues => Set<UserIssueDto>();
+    public IQueryable<LessonDto> Lessons => Set<LessonDto>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

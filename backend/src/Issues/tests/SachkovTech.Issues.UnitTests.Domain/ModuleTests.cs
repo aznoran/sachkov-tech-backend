@@ -201,7 +201,7 @@ public class ModuleTests
                 IssueId.NewIssueId(),
                 Title.Create("test title").Value,
                 Description.Create("test description").Value,
-                LessonId.Empty(),
+                LessonId.Empty,
                 Experience.Create(1).Value,
                 null);
 

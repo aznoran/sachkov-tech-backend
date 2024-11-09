@@ -9,4 +9,5 @@ public interface IReadDbContext
     IQueryable<IssueReviewDto> IssueReviewDtos { get; }
     IQueryable<CommentDto> Comments { get; }
     IQueryable<UserIssueDto> UserIssues { get; }
+    IQueryable<LessonDto> Lessons { get; }
 }

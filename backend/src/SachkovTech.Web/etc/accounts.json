@@ -1,6 +1,10 @@
 {
   "Roles": {
     "Admin": [
+      "lessons.read",
+      "lessons.create",
+      "lessons.update",
+      "lessons.delete",
       "issues.read",
       "issues.create",
       "issues.update",
@@ -17,6 +21,7 @@
       "accounts.enroll"
     ],
     "Student": [
+      "lessons.read",
       "issues.read",
       "solving.issues.read",
       "solving.issues.create",
@@ -30,6 +35,7 @@
       "issues.read"
     ],
     "Support": [
+      "lessons.read",
       "issues.read",
       "review.issues.read",
       "review.issues.create",
@@ -40,6 +46,12 @@
     ]
   },
   "Permissions": {
+    "Lessons": [
+      "lessons.read",
+      "lessons.create",
+      "lessons.update",
+      "lessons.delete"
+    ],
     "Modules": [
       "modules.read",
       "modules.create",

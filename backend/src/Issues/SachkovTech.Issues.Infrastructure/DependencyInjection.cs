@@ -39,6 +39,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<ILessonsRepository, LessonsRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
         services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();

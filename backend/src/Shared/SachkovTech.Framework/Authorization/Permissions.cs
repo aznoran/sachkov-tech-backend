@@ -5,6 +5,14 @@ namespace SachkovTech.Framework.Authorization;
 /// </summary>
 public static class Permissions
 {
+    public static class Lessons
+    {
+        public const string ReadLesson = "lessons.read";
+        public const string CreateLesson = "lessons.create";
+        public const string UpdateLesson = "lessons.update";
+        public const string DeleteLesson = "lessons.delete";
+    }
+
     public static class Modules
     {
         //public const string ReadModule = "modules.read";
@@ -12,6 +20,7 @@ public static class Permissions
         public const string UpdateModule = "modules.update";
         public const string DeleteModule = "modules.delete";
     }
+
     public static class Issues
     {
         public const string ReadIssue = "issues.read";
