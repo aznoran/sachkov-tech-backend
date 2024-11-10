@@ -26,7 +26,8 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         IUserIssueRepository userIssueRepository,
         IReadDbContext readDbContext,
         ILogger<TakeOnWorkHandler> logger,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Issues.Issues)]
+        IUnitOfWork unitOfWork,
         IFilesContracts filesContracts)
     {
         _userIssueRepository = userIssueRepository;
@@ -53,26 +54,16 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
             return Errors.General.ValueIsInvalid().ToErrorList();
         }
 
-        if (issueResult.Value.Position > 1)
-        {
-            var previousIssueResult = await GetIssueByPosition(
-                issueResult.Value.Position - 1, cancellationToken);
+        var previousUserIssue = await _readDbContext.UserIssues
+            .FirstOrDefaultAsync(u => u.UserId == command.UserId, cancellationToken);
 
-            if (previousIssueResult.IsFailure)
-                return previousIssueResult.Error;
+        if (previousUserIssue is null)
+            return Errors.General.NotFound(null, "Previous solved issue").ToErrorList();
 
-            var previousUserIssue = await _readDbContext.UserIssues
-                .FirstOrDefaultAsync(u => u.UserId == command.UserId &&
-                                          u.IssueId == previousIssueResult.Value.Id, cancellationToken);
+        var previousUserIssueStatus = Enum.Parse<IssueStatus>(previousUserIssue.Status);
 
-            if (previousUserIssue is null)
-                return Errors.General.NotFound(null, "Previous solved issue").ToErrorList();
-
-            var previousUserIssueStatus = Enum.Parse<IssueStatus>(previousUserIssue.Status);
-
-            if (previousUserIssueStatus != IssueStatus.Completed)
-                return Error.Failure("prev.issue.not.solved", "previous issue not solved").ToErrorList();
-        }
+        if (previousUserIssueStatus != IssueStatus.Completed)
+            return Error.Failure("prev.issue.not.solved", "previous issue not solved").ToErrorList();
 
         var userIssueId = UserIssueId.NewIssueId();
         var userId = UserId.Create(command.UserId);
@@ -103,26 +94,11 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
 
         var response = new IssueResponse(
             issueDto.Id,
-            issueDto.ModuleId,
             issueDto.Title,
             issueDto.Description,
-            issueDto.Position,
             issueDto.LessonId,
             fileLinks.Select(f => new FileResponse(f.FileId, f.Link)).ToArray());
 
         return response;
-    }
-
-    private async Task<Result<IssueDto, ErrorList>> GetIssueByPosition(
-       int position,
-        CancellationToken cancellationToken = default)
-    {
-        var issueDto = await _readDbContext.Issues
-            .FirstOrDefaultAsync(i => i.Position == position, cancellationToken);
-
-        if (issueDto is null)
-            return Errors.General.NotFound().ToErrorList();
-
-        return issueDto;
     }
 }

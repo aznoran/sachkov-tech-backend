@@ -1,17 +1,16 @@
 ﻿using Grpc.Net.Client;
-using SachkovTech.Issues.Application.Interfaces;
-using Protos = SachkovTech.Issues.Grpc.Protos;
-using static SachkovTech.Issues.Grpc.Protos.NotificationService;
 using SachkovTech.Issues.Application.Features.GrpcNotificationServiceTester.Commands.AddNotificationSettings;
 using SachkovTech.Issues.Application.Features.GrpcNotificationServiceTester.Commands.PushNotification;
+using SachkovTech.Issues.Application.Interfaces;
+using Protos = SachkovTech.Issues.Grpc.Protos;
 
-namespace SachkovTech.Issues.Infrastructure.Grpc.Client;
+namespace SachkovTech.Issues.Infrastructure.Grpc.NotificationServiceClient;
 public class GrpcNotificationServiceClient : IGrpcNotificationServiceClient
 {
-    private NotificationServiceClient _grpcClient;
+    private Protos.NotificationService.NotificationServiceClient _grpcClient;
     public GrpcNotificationServiceClient(GrpcChannel channel)
     {
-        _grpcClient = new NotificationServiceClient(channel);
+        _grpcClient = new Protos.NotificationService.NotificationServiceClient(channel);
     }
 
     public async Task<Guid> PushNotificationAsync(

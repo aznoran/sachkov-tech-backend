@@ -1,4 +1,4 @@
-﻿using SachkovTech.Issues.Application.Features.Module.Commands.UpdateIssueMainInfo;
+﻿using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo;
 
 namespace SachkovTech.Issues.Presentation.Modules.Requests;
 
@@ -7,6 +7,6 @@ public record UpdateIssueMainInfoRequest(
     string Description,
     int Experience)
 {
-    public UpdateIssueMainInfoCommand ToCommand(Guid moduleId, Guid issueId) =>
-        new(moduleId, issueId, Title, Description, Experience);
+    public UpdateIssueMainInfoCommand ToCommand(Guid issueId) =>
+        new(issueId, Title, Description, Experience);
 }

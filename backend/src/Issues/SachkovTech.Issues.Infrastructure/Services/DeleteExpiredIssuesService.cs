@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SachkovTech.Issues.Domain.Module;
+using SachkovTech.Issues.Domain.Issue;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 
 namespace SachkovTech.Issues.Infrastructure.Services;
@@ -13,21 +13,20 @@ public class DeleteExpiredIssuesService
     {
         _issuesWriteDbContext = issuesWriteDbContext;
     }
-    
+
     public async Task Process(CancellationToken cancellationToken)
     {
-        var modules = await GetModulesWithIssuesAsync(cancellationToken);
+        var issues = await GetModulesWithIssuesAsync(cancellationToken);
 
-        foreach (var module in modules)
-        {
-            module.DeleteExpiredIssues();
-        }
+        issues.RemoveAll(i => i.DeletionDate != null
+                              && DateTime.UtcNow >= i.DeletionDate.Value
+                                  .AddDays(Constants.Issues.LIFETIME_AFTER_DELETION));
 
         await _issuesWriteDbContext.SaveChangesAsync(cancellationToken);
     }
 
-    private async Task<IEnumerable<Module>> GetModulesWithIssuesAsync(CancellationToken cancellationToken)
+    private async Task<List<Issue>> GetModulesWithIssuesAsync(CancellationToken cancellationToken)
     {
-        return await _issuesWriteDbContext.Modules.Include(m => m.Issues).ToListAsync(cancellationToken);
+        return await _issuesWriteDbContext.Issues.ToListAsync(cancellationToken);
     }
 }

@@ -28,7 +28,6 @@ public class Position : ValueObject
         return new Position(number);
     }
 
-
     protected override IEnumerable<IComparable> GetEqualityComponents()
     {
         yield return Value;

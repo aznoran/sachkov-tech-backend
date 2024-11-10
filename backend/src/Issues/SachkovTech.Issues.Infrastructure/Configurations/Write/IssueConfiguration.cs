@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Domain.Module.Entities;
+using SachkovTech.Issues.Domain.Issue;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -41,14 +41,6 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                 lb.Property(l => l.Value)
                     .IsRequired()
                     .HasColumnName("experience");
-            });
-
-        builder.ComplexProperty(i => i.Position,
-            lb =>
-            {
-                lb.Property(l => l.Value)
-                    .IsRequired()
-                    .HasColumnName("position");
             });
 
         builder.ComplexProperty(m => m.Title, tb =>

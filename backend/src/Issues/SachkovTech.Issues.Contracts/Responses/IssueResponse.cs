@@ -2,10 +2,8 @@
 {
     public record IssueResponse(
         Guid Id,
-        Guid ModuleId,
         string Title,
         string Description,
-        int Position,
         Guid? LessonId,
         FileResponse[] Files);
 

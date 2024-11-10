@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Domain.Module;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -34,12 +36,12 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
                 .HasMaxLength(Description.MAX_LENGTH)
                 .HasColumnName("description");
         });
-
-        builder.HasMany(m => m.Issues)
-            .WithOne(m => m.Module)
-            .HasForeignKey("module_id")
-            .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+        
+        builder.Property(i => i.IssuesPosition)
+            .ValueObjectsCollectionJsonConversion(
+                Value => Value,
+                IssuePosition => new IssuePosition(IssuePosition.IssueId, IssuePosition.Position))
+            .HasColumnName("issues_position");
 
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)

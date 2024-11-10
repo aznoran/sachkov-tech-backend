@@ -14,4 +14,8 @@
       <ProjectReference Include="..\SachkovTech.Issues.Domain\SachkovTech.Issues.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Features\Modules\Queries\" />
+    </ItemGroup>
+
 </Project>

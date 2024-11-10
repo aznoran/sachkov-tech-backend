@@ -19,7 +19,7 @@ public class StartReviewHandler : ICommandHandler<Guid, StartReviewCommand>
 
     public StartReviewHandler(
         IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
         IValidator<StartReviewCommand> validator,
         ILogger<StartReviewHandler> logger)
     {

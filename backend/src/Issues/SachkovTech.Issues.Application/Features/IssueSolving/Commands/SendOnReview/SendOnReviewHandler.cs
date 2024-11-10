@@ -24,7 +24,7 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
         IUserIssueRepository userIssueRepository,
         ILogger<SendOnReviewHandler> logger,
         IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
         IValidator<SendOnReviewCommand> validator)
     {
         _issueReviewRepository = issueReviewRepository;

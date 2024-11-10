@@ -9,6 +9,11 @@ public class ModuleId : ValueObject
         Value = value;
     }
 
+    public ModuleId()
+    {
+        
+    }
+
     public Guid Value { get; }
 
     public static ModuleId NewModuleId() => new(Guid.NewGuid());

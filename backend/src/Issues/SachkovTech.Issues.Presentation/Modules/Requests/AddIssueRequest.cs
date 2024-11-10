@@ -1,4 +1,4 @@
-using SachkovTech.Issues.Application.Features.Module.Commands.AddIssue;
+using SachkovTech.Issues.Application.Features.Issue.Commands.AddIssue;
 
 namespace SachkovTech.Issues.Presentation.Modules.Requests;
 
@@ -7,6 +7,6 @@ public record AddIssueRequest(
     string Description,
     int Experience)
 {
-    public AddIssueCommand ToCommand(Guid moduleId) =>
-        new (moduleId, Title, Description, Experience);
+    public AddIssueCommand ToCommand() =>
+        new (Title, Description, Experience);
 }

@@ -2,7 +2,7 @@
 
 public enum Modules
 {
-    Issues,
     Files,
-    Accounts
+    Accounts,
+    Modules
 }

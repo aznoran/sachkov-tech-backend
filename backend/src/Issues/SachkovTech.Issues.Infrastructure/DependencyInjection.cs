@@ -5,7 +5,7 @@ using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.Issues.Infrastructure.Grpc.Client;
+using SachkovTech.Issues.Infrastructure.Grpc.NotificationServiceClient;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
 
@@ -24,13 +24,14 @@ public static class DependencyInjection
             .AddServices()
             .AddGrpcNotificationServiceClient(configuration);
 
-        return services;   
+        return services;
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
-        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(SharedKernel.Modules.Issues);
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(SharedKernel.Issues.Issues);
+        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(SharedKernel.Modules.Modules);
 
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -39,10 +40,11 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IModulesRepository, ModulesRepository>();
         services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
-        
+        services.AddScoped<IModulesRepository, ModulesRepository>();
+        services.AddScoped<IIssueRepository, IssuesRepository>();
+
         return services;
     }
 
@@ -68,7 +70,8 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services,
+        IConfiguration configuration)
     {
         var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
 
@@ -77,10 +80,11 @@ public static class DependencyInjection
             serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
 
         services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
-            {
-                GrpcChannel channel = sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
-                return new GrpcNotificationServiceClient(channel);
-            });
+        {
+            GrpcChannel channel =
+                sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
+            return new GrpcNotificationServiceClient(channel);
+        });
 
         return services;
     }

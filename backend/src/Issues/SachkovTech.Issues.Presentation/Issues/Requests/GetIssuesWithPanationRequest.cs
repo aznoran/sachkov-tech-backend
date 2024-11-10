@@ -1,4 +1,4 @@
-using SachkovTech.Issues.Application.Features.Module.Queries.GetModulesWithPagination;
+﻿using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
 
 namespace SachkovTech.Issues.Presentation.Issues.Requests;
 

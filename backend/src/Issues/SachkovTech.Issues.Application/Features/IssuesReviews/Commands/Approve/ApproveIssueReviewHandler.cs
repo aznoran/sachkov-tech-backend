@@ -1,3 +1,4 @@
+using System.Threading;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +9,6 @@ using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Threading;
 
 namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.Approve;
 
@@ -23,7 +23,7 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
     public ApproveIssueReviewHandler(
         IIssueReviewRepository issueReviewRepository,
         IUserIssueRepository userIssueRepository,
-        [FromKeyedServices(Modules.Issues)]
+        [FromKeyedServices(SharedKernel.Issues.Issues)]
         IUnitOfWork unitOfWork,
         IValidator<ApproveIssueReviewCommand> validator,
         ILogger<ApproveIssueReviewHandler> logger)

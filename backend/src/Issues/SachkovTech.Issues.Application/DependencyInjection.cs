@@ -1,3 +1,5 @@
 ﻿namespace SachkovTech.Issues.Application;
 
-public static class DependencyInjection { }
+public static class DependencyInjection
+{
+}

@@ -19,7 +19,7 @@ public class CompleteIssueHandler : ICommandHandler<Guid, CompleteIssueCommand>
 
     public CompleteIssueHandler(
         IUserIssueRepository userIssueRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
         IValidator<CompleteIssueCommand> validator,
         ILogger<CompleteIssueHandler> logger)
     {

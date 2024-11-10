@@ -1,11 +1,12 @@
 using CSharpFunctionalExtensions;
 using SachkovTech.Core.Dtos;
 using SachkovTech.Framework.Authorization;
-using SachkovTech.Issues.Application.Features.Module.Queries.GetIssueById;
-using SachkovTech.Issues.Application.Features.Module.Queries.GetIssueByPosition;
+using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
+using SachkovTech.Issues.Application.Features.Modules.Queries.GetIssueByPosition;
 using SachkovTech.Issues.Contracts;
 using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.SharedKernel;
+using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Presentation;
 
@@ -29,11 +30,12 @@ public class IssuesContract : IIssuesContract
 
         return await _getIssueByIdHandler.Handle(query, cancellationToken);
     }
-    public async Task<Result<IssueDto, ErrorList>> GetIssueByPosition(
+    public async Task<Result<Guid, ErrorList>> GetIssueByPosition(
         int position,
+        ModuleId moduleId,
         CancellationToken cancellationToken = default)
     {
-        var query = new GetIssueByPositionQuery(position);
+        var query = new GetIssueByPositionQuery(moduleId, position);
 
         return await _getIssueByPositionHandler.Handle(query, cancellationToken);
     }

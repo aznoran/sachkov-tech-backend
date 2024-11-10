@@ -21,7 +21,7 @@ public class CreateIssueReviewHandler : ICommandHandler<Guid, CreateIssueReviewC
 
     public CreateIssueReviewHandler(
         IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
         IValidator<CreateIssueReviewCommand> validator,
         ILogger<CreateIssueReviewHandler> logger)
     {
