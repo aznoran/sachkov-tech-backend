@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Dtos;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Domain.Lesson;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 

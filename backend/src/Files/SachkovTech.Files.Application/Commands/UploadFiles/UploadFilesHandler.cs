@@ -8,7 +8,6 @@ using SachkovTech.Files.Domain;
 using SachkovTech.Files.Domain.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
-using SachkovTech.Files.Contracts.Dtos;
 
 namespace SachkovTech.Files.Application.Commands.UploadFiles;
 

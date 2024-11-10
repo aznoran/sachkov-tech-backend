@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using Minio;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Files.Application;
 using SachkovTech.Files.Application.Interfaces;
 using SachkovTech.Files.Infrastructure.Database;
 using SachkovTech.Files.Infrastructure.Options;

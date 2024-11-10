@@ -5,7 +5,6 @@ using SachkovTech.Issues.Domain.IssueSolving.Entities;
 using SachkovTech.Issues.Domain.IssuesReviews;
 using SachkovTech.Issues.Domain.Lesson;
 using SachkovTech.Issues.Domain.Module;
-using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 

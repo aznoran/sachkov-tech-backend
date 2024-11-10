@@ -1,8 +1,6 @@
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Files.Application;
 using SachkovTech.Files.Infrastructure.Database;
 
 namespace SachkovTech.Files.Infrastructure;

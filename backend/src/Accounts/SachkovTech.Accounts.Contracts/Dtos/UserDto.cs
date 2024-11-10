@@ -1,5 +1,3 @@
-using SachkovTech.SharedKernel.ValueObjects;
-
 namespace SachkovTech.Accounts.Contracts.Dtos;
 
 public class UserDto

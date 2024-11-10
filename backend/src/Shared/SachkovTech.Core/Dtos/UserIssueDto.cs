@@ -1,6 +1,4 @@
-﻿using SachkovTech.SharedKernel.ValueObjects.Ids;
-
-namespace SachkovTech.Core.Dtos;
+﻿namespace SachkovTech.Core.Dtos;
 
 public class UserIssueDto
 {
