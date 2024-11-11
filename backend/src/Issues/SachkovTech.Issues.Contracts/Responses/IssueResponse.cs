@@ -2,6 +2,7 @@
 {
     public record IssueResponse(
         Guid Id,
+        Guid? ModuleId,
         string Title,
         string Description,
         Guid? LessonId,

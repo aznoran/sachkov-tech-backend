@@ -33,6 +33,7 @@ public class GetIssueByIdHandler : IQueryHandlerWithResult<IssueResponse, GetIss
 
         var response = new IssueResponse(
             issueDto.Id,
+            issueDto.ModuleId,
             issueDto.Title,
             issueDto.Description,
             issueDto.LessonId,

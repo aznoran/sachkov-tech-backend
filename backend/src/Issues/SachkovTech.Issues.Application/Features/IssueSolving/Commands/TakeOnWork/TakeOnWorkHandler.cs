@@ -94,6 +94,7 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
 
         var response = new IssueResponse(
             issueDto.Id,
+            issueDto.ModuleId,
             issueDto.Title,
             issueDto.Description,
             issueDto.LessonId,

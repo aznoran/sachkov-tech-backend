@@ -9,7 +9,7 @@ public class ModuleId : ValueObject
         Value = value;
     }
 
-    public ModuleId()
+    private ModuleId()
     {
         
     }

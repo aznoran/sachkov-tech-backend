@@ -1,6 +1,6 @@
 ﻿namespace SachkovTech.SharedKernel;
 
-//TODO: Спросить Кирилла
+//TODO: Это надо?
 public enum Issues
 {
     Issues

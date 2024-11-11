@@ -31,10 +31,14 @@ public class Issue : SoftDeletableEntity<IssueId>
     }
     
     public Experience Experience { get; private set; } = default!;
+    
     public Title Title { get; private set; } = default!;
+    
     public Description Description { get; private set; } = default!;
 
     public LessonId LessonId { get; private set; } = null!;
+    
+    public ModuleId? ModuleId { get; private set; } = default!;
 
     public IReadOnlyList<FileId> Files => _files;
 

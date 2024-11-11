@@ -26,6 +26,12 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
             .HasConversion(
                 id => id.Value,
                 value => IssueId.Create(value));
+        
+        builder.Property(i => i.ModuleId)
+            .HasConversion(
+                id => id.Value,
+                value => ModuleId.Create(value))
+            .IsRequired(false);
 
         builder.ComplexProperty(i => i.LessonId,
             lb =>
