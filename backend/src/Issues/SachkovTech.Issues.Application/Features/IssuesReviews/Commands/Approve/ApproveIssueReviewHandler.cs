@@ -21,7 +21,7 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
     public ApproveIssueReviewHandler(
         IIssueReviewRepository issueReviewRepository,
         IUserIssueRepository userIssueRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)]
+        [FromKeyedServices(SharedKernel.Modules.Issues)]
         IUnitOfWork unitOfWork,
         IValidator<ApproveIssueReviewCommand> validator,
         ILogger<ApproveIssueReviewHandler> logger)

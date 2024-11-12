@@ -19,7 +19,7 @@ public class SendUserIssueForRevisionHandler : ICommandHandler<Guid, SendUserIss
 
     public SendUserIssueForRevisionHandler(
         IUserIssueRepository userIssueRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<SendUserIssueForRevisionCommand> validator,
         ILogger<SendUserIssueForRevisionHandler> logger)
     {

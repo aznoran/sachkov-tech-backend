@@ -15,7 +15,7 @@ public class RestoreIssueHandler : ICommandHandler<Guid, RestoreIssueCommand>
 
     public RestoreIssueHandler(
         IIssueRepository issueRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         ILogger<RestoreIssueHandler> logger)
     {
         _issueRepository = issueRepository;

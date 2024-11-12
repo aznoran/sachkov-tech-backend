@@ -19,7 +19,7 @@ public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
 
     public ForceDeleteIssueHandler(
         IIssueRepository issueRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteIssueCommand> validator,
         ILogger<ForceDeleteIssueHandler> logger)
     {

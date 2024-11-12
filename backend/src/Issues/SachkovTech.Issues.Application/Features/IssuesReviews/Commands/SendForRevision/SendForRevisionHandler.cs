@@ -20,7 +20,7 @@ public class SendForRevisionHandler : ICommandHandler<Guid, SendForRevisionComma
 
     public SendForRevisionHandler(
         IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)]
+        [FromKeyedServices(SharedKernel.Modules.Issues)]
         IUnitOfWork unitOfWork,
         IValidator<SendForRevisionCommand> validator,
         ILogger<SendForRevisionHandler> logger,

@@ -16,7 +16,7 @@ public class StopWorkingHandler : ICommandHandler<StopWorkingCommand>
     public StopWorkingHandler(
         IUserIssueRepository repository,
         ILogger<StopWorkingHandler> logger,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork)
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork)
     {
         _repository = repository;
         _logger = logger;

@@ -21,7 +21,7 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
 
     public UpdateIssueMainInfoHandler(
         IIssueRepository issueRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<UpdateIssueMainInfoCommand> validator,
         ILogger<UpdateIssueMainInfoHandler> logger)
     {

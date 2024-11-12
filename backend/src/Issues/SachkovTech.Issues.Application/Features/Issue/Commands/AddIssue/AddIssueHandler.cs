@@ -21,7 +21,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
 
     public AddIssueHandler(
         IIssueRepository issuesRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<AddIssueCommand> validator,
         ILogger<AddIssueHandler> logger)
     {

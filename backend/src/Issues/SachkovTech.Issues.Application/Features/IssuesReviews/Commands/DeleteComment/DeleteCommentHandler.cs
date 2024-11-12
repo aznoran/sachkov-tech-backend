@@ -19,7 +19,7 @@ public class DeleteCommentHandler : ICommandHandler<Guid, DeleteCommentCommand>
 
     public DeleteCommentHandler(
         IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteCommentCommand> validator,
         ILogger<DeleteCommentHandler> logger)
     {

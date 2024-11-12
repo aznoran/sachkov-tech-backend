@@ -25,7 +25,7 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         IUserIssueRepository userIssueRepository,
         IReadDbContext readDbContext,
         ILogger<TakeOnWorkHandler> logger,
-        [FromKeyedServices(SharedKernel.Issues.Issues)]
+        [FromKeyedServices(SharedKernel.Modules.Issues)]
         IUnitOfWork unitOfWork,
         IFilesContracts filesContracts)
     {

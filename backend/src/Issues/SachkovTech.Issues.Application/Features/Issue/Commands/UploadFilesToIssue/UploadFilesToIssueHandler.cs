@@ -26,7 +26,7 @@ public class UploadFilesToIssueHandler : ICommandHandler<UploadFilesResponse, Up
     public UploadFilesToIssueHandler(
         IFilesContracts filesContracts,
         IIssueRepository issueRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<UploadFilesToIssueCommand> validator,
         ILogger<UploadFilesToIssueHandler> logger)
     {

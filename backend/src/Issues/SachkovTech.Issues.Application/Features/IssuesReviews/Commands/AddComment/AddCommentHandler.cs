@@ -21,7 +21,7 @@ public class AddCommentHandler : ICommandHandler<Guid, AddCommentCommand>
 
     public AddCommentHandler(
         IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(SharedKernel.Issues.Issues)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<AddCommentCommand> validator,
         ILogger<AddCommentHandler> logger)
     {
