@@ -5,15 +5,15 @@ using SachkovTech.Files.Domain;
 
 namespace SachkovTech.Files.Infrastructure.Database;
 
-internal class FilesWriteDbContext : DbContext
+public class FilesWriteDbContext : DbContext
 {
     private readonly IConfiguration _configuration;
-    private readonly ILoggerFactory _loggeFactory;
+    private readonly ILoggerFactory _loggerFactory;
 
-    public FilesWriteDbContext(IConfiguration configuration, ILoggerFactory loggeFactory)
+    public FilesWriteDbContext(IConfiguration configuration, ILoggerFactory loggerFactory)
     {
         _configuration = configuration;
-        _loggeFactory = loggeFactory;
+        _loggerFactory = loggerFactory;
     }
 
     public DbSet<FileData> FileData => Set<FileData>();
@@ -23,7 +23,7 @@ internal class FilesWriteDbContext : DbContext
         optionsBuilder.UseNpgsql(_configuration.GetConnectionString("Database"));
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.EnableSensitiveDataLogging();
-        optionsBuilder.UseLoggerFactory(_loggeFactory);
+        optionsBuilder.UseLoggerFactory(_loggerFactory);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

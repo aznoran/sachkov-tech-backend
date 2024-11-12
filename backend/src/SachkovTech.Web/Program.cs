@@ -1,5 +1,6 @@
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
+using SachkovTech.Core.Extensions;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;
@@ -54,11 +55,7 @@ builder.Services.AddAuthServices(builder.Configuration);
 
 var app = builder.Build();
 
-// await using var scope = app.Services.CreateAsyncScope();
-//
-// var dbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
-//
-// await dbContext.Database.MigrateAsync();
+app.Services.RunMigrations();
 
 var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
