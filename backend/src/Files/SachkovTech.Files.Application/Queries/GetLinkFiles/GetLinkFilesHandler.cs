@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Dtos;
 using SachkovTech.Files.Application.Interfaces;

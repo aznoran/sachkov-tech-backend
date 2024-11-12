@@ -1,4 +1,3 @@
-using System.Threading;
 using CSharpFunctionalExtensions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,7 +7,6 @@ using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.Approve;
 

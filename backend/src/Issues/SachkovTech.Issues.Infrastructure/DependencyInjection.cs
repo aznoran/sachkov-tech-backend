@@ -1,11 +1,9 @@
-using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.Issues.Infrastructure.Grpc.NotificationServiceClient;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
 
@@ -21,8 +19,7 @@ public static class DependencyInjection
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
-            .AddServices()
-            .AddGrpcNotificationServiceClient(configuration);
+            .AddServices();
 
         return services;
     }
@@ -31,7 +28,6 @@ public static class DependencyInjection
     {
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(SharedKernel.Issues.Issues);
-        services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(SharedKernel.Modules.Modules);
 
         Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -40,6 +36,8 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<ILessonsRepository, LessonsRepository>();
+        services.AddScoped<IModulesRepository, ModulesRepository>();
         services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
@@ -70,22 +68,22 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services,
-        IConfiguration configuration)
-    {
-        var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
-
-        services.AddKeyedSingleton<GrpcChannel>(
-            implementationInstance: GrpcChannel.ForAddress(uri!),
-            serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
-
-        services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
-        {
-            GrpcChannel channel =
-                sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
-            return new GrpcNotificationServiceClient(channel);
-        });
-
-        return services;
-    }
+    // private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services,
+    //     IConfiguration configuration)
+    // {
+    //     var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+    //
+    //     services.AddKeyedSingleton<GrpcChannel>(
+    //         implementationInstance: GrpcChannel.ForAddress(uri!),
+    //         serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+    //
+    //     // services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
+    //     // {
+    //     //     GrpcChannel channel =
+    //     //         sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
+    //     //     return new GrpcNotificationServiceClient(channel);
+    //     // });
+    //
+    //     return services;
+    // }
 }

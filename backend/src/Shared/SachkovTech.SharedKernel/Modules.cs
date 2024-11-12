@@ -4,5 +4,5 @@ public enum Modules
 {
     Files,
     Accounts,
-    Modules
+    Issues,
 }

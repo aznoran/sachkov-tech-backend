@@ -18,7 +18,7 @@ public class DeleteModuleHandler : ICommandHandler<Guid, DeleteModuleCommand>
 
     public DeleteModuleHandler(
         IModulesRepository modulesRepository,
-        [FromKeyedServices(SharedKernel.Modules.Modules)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteModuleCommand> validator,
         ILogger<DeleteModuleHandler> logger)
     {

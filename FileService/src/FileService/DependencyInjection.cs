@@ -1,9 +1,5 @@
-﻿using FileService.Application.Commands.UploadFiles;
-using FileService.Application.Interfaces;
-using FileService.Application.Queries.GetLinkFiles;
-using FileService.Data.Options;
-using FileService.Infrastrucure.Providers;
-using FileService.Infrastrucure.Repositories;
+﻿using FileService.MongoDataAccess;
+using FileService.MongoDataAccess.Options;
 using Minio;
 using MongoDB.Driver;
 
@@ -38,31 +34,6 @@ public static class DependencyInjection
             options.WithCredentials(minioOptions.AccessKey, minioOptions.SecretKey);
             options.WithSSL(minioOptions.WithSsl);
         });
-
-        services.Configure<MinioLimitations>(configuration.GetSection(nameof(MinioLimitations)));
-
-        services.AddScoped<IFileProvider, MinioProvider>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddCommandsAndQueries(
-        this IServiceCollection services)
-    {
-        //services.Scan(scan => scan.FromAssemblies(typeof(DependencyInjection).Assembly)
-        //    .AddClasses(classes => classes
-        //        .AssignableToAny(typeof(ICommandHandler<,>), typeof(ICommandHandler<>)))
-        //    .AsSelfWithInterfaces()
-        //    .WithScopedLifetime());
-
-        //services.Scan(scan => scan.FromAssemblies(typeof(DependencyInjection).Assembly)
-        //    .AddClasses(classes => classes
-        //        .AssignableToAny(typeof(IQueryHandler<,>), typeof(IQueryHandlerWithResult<,>)))
-        //    .AsSelfWithInterfaces()
-        //    .WithScopedLifetime());
-
-        services.AddScoped<UploadFilesHandler>();
-        services.AddScoped<GetLinkFilesHandler>();
 
         return services;
     }

@@ -1,8 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Accounts.Infrastructure.Seeding;
-using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;

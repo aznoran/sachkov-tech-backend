@@ -1,6 +1,4 @@
 using CSharpFunctionalExtensions;
-using SachkovTech.Core.Dtos;
-using SachkovTech.Issues.Contracts.Requests;
 using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;

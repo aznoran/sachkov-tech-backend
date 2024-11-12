@@ -42,10 +42,7 @@ public class UserIssueConfiguration : IEntityTypeConfiguration<UserIssue>
 
         builder.Property(u => u.Status)
             .IsRequired()
-            .HasConversion(
-                push => push.ToString(),
-                pull => Enum.Parse<IssueStatus>(pull)
-            );
+            .HasConversion<string>();
 
         builder.Property(u => u.StartDateOfExecution);
 

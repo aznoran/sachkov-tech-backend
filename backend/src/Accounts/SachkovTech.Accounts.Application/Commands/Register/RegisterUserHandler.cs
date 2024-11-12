@@ -8,7 +8,6 @@ using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.SharedKernel;
-using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Application.Commands.Register;
 

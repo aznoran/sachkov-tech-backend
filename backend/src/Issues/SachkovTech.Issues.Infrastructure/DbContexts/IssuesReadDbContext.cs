@@ -1,3 +1,4 @@
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,7 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
     public IQueryable<CommentDto> Comments => Set<CommentDto>();
     
     public IQueryable<UserIssueDto> UserIssues => Set<UserIssueDto>();
+    public IQueryable<LessonDto> Lessons => Set<LessonDto>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

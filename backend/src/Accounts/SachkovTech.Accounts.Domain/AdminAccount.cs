@@ -1,5 +1,3 @@
-using SachkovTech.SharedKernel.ValueObjects;
-
 namespace SachkovTech.Accounts.Domain;
 
 public class AdminAccount

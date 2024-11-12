@@ -1,6 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Accounts.Contracts;
-using SachkovTech.Accounts.Infrastructure.Providers;
 using SachkovTech.Accounts.Presentation.Providers;
 
 namespace SachkovTech.Accounts.Presentation;

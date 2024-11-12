@@ -2,7 +2,6 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Models;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Application.Commands.RefreshTokens;

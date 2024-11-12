@@ -21,7 +21,7 @@ public class CreateModuleHandler : ICommandHandler<Guid, CreateModuleCommand>
 
     public CreateModuleHandler(
         IModulesRepository modulesRepository,
-        [FromKeyedServices(SharedKernel.Modules.Modules)] IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<CreateModuleCommand> validator,
         ILogger<CreateModuleHandler> logger)
     {

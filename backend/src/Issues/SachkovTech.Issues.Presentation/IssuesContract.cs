@@ -1,6 +1,4 @@
 using CSharpFunctionalExtensions;
-using SachkovTech.Core.Dtos;
-using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetIssueByPosition;
 using SachkovTech.Issues.Contracts;
