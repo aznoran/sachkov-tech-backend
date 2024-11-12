@@ -2,9 +2,10 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using CSharpFunctionalExtensions;
-using System.ComponentModel.DataAnnotations;
+using EmailNotificationService.API.Models;
+using EmailNotificationService.API.Options;
 
-namespace EmailNotificationService.API;
+namespace EmailNotificationService.API.Features;
 
 public class MailSender
 {
@@ -22,7 +23,7 @@ public class MailSender
         _validator = validator;
     }
 
-    public async Task<UnitResult<string>> Send(MailData mailData) 
+    public async Task<UnitResult<string>> Send(MailData mailData)
     {
         var validationResult = _validator.Execute(mailData.To);
         if (validationResult.IsFailure)
@@ -39,7 +40,7 @@ public class MailSender
             MailboxAddress.TryParse(address, out var mailAddress);
             mail.To.Add(mailAddress!);
         }
-            
+
         var body = new BodyBuilder { HtmlBody = mailData.Body };
 
         mail.Body = body.ToMessageBody();

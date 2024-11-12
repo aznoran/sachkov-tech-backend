@@ -1,4 +1,4 @@
-﻿namespace EmailNotificationService.API;
+﻿namespace EmailNotificationService.API.Middlewares;
 
 public class ExceptionHandler
 {

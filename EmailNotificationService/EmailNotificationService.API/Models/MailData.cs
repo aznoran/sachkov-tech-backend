@@ -1,4 +1,4 @@
-﻿namespace EmailNotificationService.API;
+﻿namespace EmailNotificationService.API.Models;
 
 public class MailData
 {
@@ -8,9 +8,4 @@ public class MailData
     // Content
     public string Subject { get; set; } = string.Empty;
     public string Body { get; set; } = string.Empty;
-}
-
-public class Notification
-{
-    
 }

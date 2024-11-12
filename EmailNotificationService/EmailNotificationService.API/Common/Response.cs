@@ -1,4 +1,4 @@
-﻿namespace EmailNotificationService.API;
+﻿namespace EmailNotificationService.API.Common;
 
 public record Response
 {

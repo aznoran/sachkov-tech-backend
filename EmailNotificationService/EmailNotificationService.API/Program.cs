@@ -1,6 +1,10 @@
 using EmailNotificationService.API;
 using Serilog.Events;
 using Serilog;
+using EmailNotificationService.API.Middlewares;
+using EmailNotificationService.API.Models;
+using EmailNotificationService.API.Options;
+using EmailNotificationService.API.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
