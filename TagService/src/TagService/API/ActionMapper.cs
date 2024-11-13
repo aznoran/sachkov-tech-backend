@@ -94,12 +94,12 @@ public static class ActionMapper
             return Results.Ok(Envelope.Ok(result));
         });
         
-        app.MapGet("/tags", async (
-            [FromQuery] Guid[]? ids,
+        app.MapPost("/tags", async (
+            [FromBody] IEnumerable<Guid> ids,
             [FromServices] GetTagsByListIdsHandler handler,
             CancellationToken cancellationToken) =>
         {
-            if (ids is null || ids.Length == 0)
+            if (!ids.Any())
             {
                 return Results.BadRequest("Please provide at least one id.");
             }
@@ -110,6 +110,5 @@ public static class ActionMapper
 
             return Results.Ok(Envelope.Ok(result));
         });
-
     }
 }

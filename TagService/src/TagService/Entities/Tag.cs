@@ -5,7 +5,7 @@ namespace TagService.Entities;
 
 public class Tag : Entity<Guid>
 {
-    public const int TEXT_MAX_LENGTH = 5000;
+    public const int TEXT_MAX_LENGTH = 50;
     
     public string Name { get; private set; }
     

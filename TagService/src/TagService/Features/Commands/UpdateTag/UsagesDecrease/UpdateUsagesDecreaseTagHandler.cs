@@ -24,7 +24,6 @@ public class UpdateUsagesDecreaseTagHandler
         
         tag.UsagesDecrease();
 
-        _dbContext.Tags.Attach(tag);
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return tag.Id;
