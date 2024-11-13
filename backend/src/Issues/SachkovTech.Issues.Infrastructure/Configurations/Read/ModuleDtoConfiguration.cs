@@ -18,5 +18,7 @@ public class ModuleDtoConfiguration : IEntityTypeConfiguration<ModuleDto>
             .HasConversion(
                 values => EfCoreFluentApiExtensions.SerializeValueObjectsCollection(),
                 json => EfCoreFluentApiExtensions.DeserializeDtoCollection<IssuePositionDto>(json).ToArray());
+        
+        builder.HasQueryFilter(f => f.IsDeleted == false);
     }
 }

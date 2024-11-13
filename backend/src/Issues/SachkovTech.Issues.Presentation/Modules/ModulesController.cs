@@ -8,6 +8,7 @@ using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePositi
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 using SachkovTech.Issues.Presentation.Modules.Requests;
+using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Presentation.Modules;
 
@@ -74,7 +75,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Modules.DeleteModule)]
+    //[Permission(Permissions.Modules.DeleteModule)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,

@@ -1,4 +1,5 @@
-﻿using SachkovTech.Core.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
@@ -21,9 +22,9 @@ public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleDto
     {
         var modulesQuery = _readDbContext.Modules.AsQueryable();
 
-        if (string.IsNullOrWhiteSpace(query.Title) == false)
+        if (!string.IsNullOrWhiteSpace(query.Title))
         {
-            modulesQuery = modulesQuery.Where(m => m.Title.Contains(query.Title, StringComparison.CurrentCultureIgnoreCase));
+            modulesQuery = modulesQuery.Where(m => EF.Functions.Like(m.Title.ToLower(), $"%{query.Title.ToLower()}%"));
         }
 
         return await modulesQuery.ToPagedList(query.PageNumber, query.PageSize, cancellationToken);
