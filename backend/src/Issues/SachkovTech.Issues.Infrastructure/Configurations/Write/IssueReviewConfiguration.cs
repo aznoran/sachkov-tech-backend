@@ -1,8 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Issues.Domain.IssuesReviews;
-using SachkovTech.Issues.Domain.IssuesReviews.Enums;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Write;

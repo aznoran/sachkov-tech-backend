@@ -1,6 +1,5 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Models;
 
 namespace SachkovTech.Core.Extensions;

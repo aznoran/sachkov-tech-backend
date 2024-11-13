@@ -9,7 +9,6 @@ using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
-using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo;
 
@@ -100,6 +99,6 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
             command.IssueId);
 
         //TODO: переделать
-        return (Guid)issueResult.Value.Id;
+        return issueResult.Value.Id.Value;
     }
 }

@@ -15,7 +15,7 @@ namespace SachkovTech.Issues.Application.Features.Issue.Commands.AddIssue;
 
 public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
 {
-    private readonly IIssuesRepository _issuesesRepository;
+    private readonly IIssuesRepository _issuesRepository;
     private readonly ILessonsRepository _lessonsRepository;
     private readonly IModulesRepository _modulesRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +23,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
     private readonly ILogger<AddIssueHandler> _logger;
 
     public AddIssueHandler(
-        IIssuesRepository issuesesRepository,
+        IIssuesRepository issuesRepository,
         ILessonsRepository lessonsRepository,
         IModulesRepository modulesRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)]
@@ -31,7 +31,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         IValidator<AddIssueCommand> validator,
         ILogger<AddIssueHandler> logger)
     {
-        _issuesesRepository = issuesesRepository;
+        _issuesRepository = issuesRepository;
         _lessonsRepository = lessonsRepository;
         _modulesRepository = modulesRepository;
         _unitOfWork = unitOfWork;
@@ -60,7 +60,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         var module = moduleResult.Value;
         
         var issue = InitIssue(module.Id ,command);
-        await _issuesesRepository.Add(issue, cancellationToken);
+        await _issuesRepository.Add(issue, cancellationToken);
         
         var issuesPositionList = module.IssuesPosition;
 
@@ -84,7 +84,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         var issueId = IssueId.NewIssueId();
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Description).Value;
-        var lessonId = LessonId.Empty;
+        var lessonId =
         var experience = Experience.Create(command.Experience).Value;
 
         return new Domain.Issue.Issue(

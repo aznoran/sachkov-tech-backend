@@ -104,14 +104,15 @@ public class Module : SoftDeletableEntity<ModuleId>
         for (int i = 0; i < updatedPositions.Count; i++)
         {
             var issue = updatedPositions[i];
-            if (issue.Position > currentPosition)
-            {
-                var moveResult = issue.MoveBack();
-                if (moveResult.IsFailure)
-                    return moveResult.Error;
+            
+            if (issue.Position <= currentPosition)
+                continue;
+            
+            var moveResult = issue.MoveBack();
+            if (moveResult.IsFailure)
+                return moveResult.Error;
 
-                updatedPositions[i] = moveResult.Value;
-            }
+            updatedPositions[i] = moveResult.Value;
         }
         
         updatedPositions = updatedPositions.OrderBy(i => i.Position.Value).ToList();
@@ -152,14 +153,14 @@ public class Module : SoftDeletableEntity<ModuleId>
             for (int i = 0; i < updatedPositions.Count; i++)
             {
                 var issue = updatedPositions[i];
-                if (issue.Position > currentPosition && issue.Position <= newPosition)
-                {
-                    var moveResult = issue.MoveBack();
-                    if (moveResult.IsFailure)
-                        return moveResult.Error;
+                if (issue.Position <= currentPosition || issue.Position > newPosition)
+                    continue;
+                
+                var moveResult = issue.MoveBack();
+                if (moveResult.IsFailure)
+                    return moveResult.Error;
 
-                    updatedPositions[i] = moveResult.Value;
-                }
+                updatedPositions[i] = moveResult.Value;
             }
         }
 

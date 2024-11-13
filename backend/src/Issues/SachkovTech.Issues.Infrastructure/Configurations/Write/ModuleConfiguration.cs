@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Domain.Module.ValueObjects;
@@ -36,17 +37,15 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
                 .HasMaxLength(Description.MAX_LENGTH)
                 .HasColumnName("description");
         });
-        
-        // builder.Property(i => i.IssuesPosition)
-        //     .ValueObjectsCollectionJsonConversion(
-        //         Value => Value,
-        //         IssuePosition => new IssuePosition(IssuePosition.IssueId, IssuePosition.Position))
-        //     .HasColumnName("issues_position");
-        
+
         builder.Property(i => i.IssuesPosition)
             .ValueObjectsCollectionJsonConversion(
-                valueObject => new { valueObject.IssueId, valueObject.Position },
-                IssuePosition => new IssuePosition(IssuePosition.IssueId, IssuePosition.Position))
+                valueObject => new IssuePositionDto
+                {
+                    IssueId = valueObject.IssueId,
+                    Position = valueObject.Position
+                },
+                issuePosition => new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
             .HasColumnName("issues_position");
 
         builder.Property<bool>("_isDeleted")

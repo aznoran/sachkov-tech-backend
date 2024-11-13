@@ -32,7 +32,7 @@ public class GetIssuesByModuleWithPaginationHandler
 
         var issuesQuery = _readDbContext.Issues
             .Where(m => m.ModuleId == query.ModuleId);
-        
+
         Expression<Func<IssueDto, object>> keySelector = query.SortBy?.ToLower() switch
         {
             "title" => (issue) => issue.Title,

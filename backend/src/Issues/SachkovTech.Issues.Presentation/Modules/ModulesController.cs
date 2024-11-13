@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Modules.Commands.Create;
@@ -8,7 +7,6 @@ using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePositi
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 using SachkovTech.Issues.Presentation.Modules.Requests;
-using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Presentation.Modules;
 
@@ -25,7 +23,7 @@ public class ModulesController : ApplicationController
         return Ok(response);
     }
 
-    //[Permission(Permissions.Modules.CreateModule)]
+    [Permission(Permissions.Modules.CreateModule)]
     [HttpPost]
     public async Task<ActionResult> Create(
         [FromServices] CreateModuleHandler handler,

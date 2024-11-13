@@ -51,7 +51,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
         builder.Property(i => i.Position)
             .IsRequired(false)
             .HasConversion(
-                position => position.Value,
+                position => position!.Value,
                 value => Position.Create(value).Value);
         
         builder.ComplexProperty(i => i.Experience,

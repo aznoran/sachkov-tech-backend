@@ -4,7 +4,6 @@ using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 

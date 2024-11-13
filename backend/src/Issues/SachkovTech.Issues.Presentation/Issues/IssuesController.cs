@@ -59,7 +59,7 @@ public class IssuesController : ApplicationController
         if (response.IsFailure)
             return response.Error.ToResponse();
         
-        return Ok(response);
+        return Ok(response.Value);
     }
 
     [Permission(Permissions.Issues.ReadIssue)]
@@ -80,15 +80,13 @@ public class IssuesController : ApplicationController
     }
     
     [Permission(Permissions.Issues.CreateIssue)]
-    [HttpPost("{moduleId:guid}/issue/add/{lessonId:guid}")]
+    [HttpPost]
     public async Task<ActionResult> AddIssue(
-        [FromRoute] Guid moduleId,
-        [FromRoute] Guid lessonId,
         [FromBody] AddIssueRequest request,
         [FromServices] AddIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(lessonId, moduleId);
+        var command = request.ToCommand(moduleId);
 
         var result = await handler.Handle(command, cancellationToken);
 
