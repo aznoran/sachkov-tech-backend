@@ -49,26 +49,20 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
             return validationResult.ToList();
         }
 
-        var lessonResult  = await _lessonsRepository.GetById(command.LessonId, cancellationToken);
-        if (lessonResult .IsFailure)
-            return lessonResult .Error.ToErrorList();
+        var lessonResult = await _lessonsRepository.GetById(command.LessonId, cancellationToken);
+        if (lessonResult.IsFailure)
+            return lessonResult.Error.ToErrorList();
 
-        var moduleResult  = await _modulesRepository.GetById(command.ModuleId, cancellationToken);
-        if (moduleResult .IsFailure)
-            return moduleResult .Error.ToErrorList();
+        var moduleResult = await _modulesRepository.GetById(command.ModuleId, cancellationToken);
+        if (moduleResult.IsFailure)
+            return moduleResult.Error.ToErrorList();
 
         var module = moduleResult.Value;
-        
-        var issue = InitIssue(module.Id ,command);
+
+        var issue = InitIssue(module.Id, command);
         await _issuesRepository.Add(issue, cancellationToken);
-        
-        var issuesPositionList = module.IssuesPosition;
 
-        var newIssuesPositionList = new List<IssuePosition>(issuesPositionList);
-
-        newIssuesPositionList.Add(new IssuePosition(issue.Id, Position.Create(issuesPositionList.Count + 1).Value));
-        
-        module.UpdateIssuesPosition(newIssuesPositionList);
+        module.AddIssue(issue.Id, Position.Create(module.IssuesPosition.Count + 1).Value);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 
@@ -84,7 +78,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         var issueId = IssueId.NewIssueId();
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Description).Value;
-        var lessonId =
+        var lessonId = command.LessonId ?? Guid.Empty;
         var experience = Experience.Create(command.Experience).Value;
 
         return new Domain.Issue.Issue(

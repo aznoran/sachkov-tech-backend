@@ -24,12 +24,6 @@ public class GetIssuesByModuleWithPaginationHandler
         GetFilteredIssuesByModuleWithPaginationQuery query,
         CancellationToken cancellationToken = default)
     {
-        var moduleResult = await _readDbContext.Modules
-            .SingleOrDefaultAsync(m => m.Id == query.ModuleId, cancellationToken);
-
-        if (moduleResult is null)
-            return Errors.General.NotFound(query.ModuleId).ToErrorList();
-
         var issuesQuery = _readDbContext.Issues
             .Where(m => m.ModuleId == query.ModuleId);
 

@@ -37,7 +37,7 @@ public class Module : SoftDeletableEntity<ModuleId>
         Description = description;
     }
     
-    public UnitResult<Error> AddIssue(IssueId issueId, Position position)
+    public void AddIssue(IssueId issueId, Position position)
     {
         var newIssuePosition = new IssuePosition(issueId, position);
 
@@ -46,8 +46,6 @@ public class Module : SoftDeletableEntity<ModuleId>
         newIssuesPosition.Add(newIssuePosition);
         
         UpdateIssuesPosition(newIssuesPosition);
-        
-        return Result.Success<Error>();
     }
     
     public UnitResult<Error> MoveIssue(IssuePosition issuePosition, Position newPosition)

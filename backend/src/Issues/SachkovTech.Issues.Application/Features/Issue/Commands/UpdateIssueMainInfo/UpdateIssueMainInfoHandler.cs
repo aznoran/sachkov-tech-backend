@@ -9,6 +9,7 @@ using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
+using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo;
 
@@ -71,7 +72,7 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Description).Value;
         var experience = Experience.Create(command.Experience).Value;
-        var lessonId = lessonResult.Value.Id;
+        var lessonId = LessonId.Create(lessonResult.Value.Id);
         var moduleId = moduleResult.Value.Id;
         var position = Position.Create(moduleResult.Value.IssuesPosition.Count + 1);
         if (position.IsFailure)
@@ -98,7 +99,6 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
             "Issue main info was updated with id {issueId}",
             command.IssueId);
 
-        //TODO: переделать
         return issueResult.Value.Id.Value;
     }
 }

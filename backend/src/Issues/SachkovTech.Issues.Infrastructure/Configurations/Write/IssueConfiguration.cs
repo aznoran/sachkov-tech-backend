@@ -40,14 +40,6 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                 value => LessonId.Create(value))
             .IsRequired(false);
         
-        // builder.ComplexProperty(i => i.Position,
-        //     pb =>
-        //     {
-        //         pb.Property(p => p.Value)
-        //             .IsRequired()
-        //             .HasColumnName("position");
-        //     });
-        
         builder.Property(i => i.Position)
             .IsRequired(false)
             .HasConversion(

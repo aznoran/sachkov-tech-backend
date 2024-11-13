@@ -86,7 +86,7 @@ public class IssuesController : ApplicationController
         [FromServices] AddIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(moduleId);
+        var command = request.ToCommand();
 
         var result = await handler.Handle(command, cancellationToken);
 

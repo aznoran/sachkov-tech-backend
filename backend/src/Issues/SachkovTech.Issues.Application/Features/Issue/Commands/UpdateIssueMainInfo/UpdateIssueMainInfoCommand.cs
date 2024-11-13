@@ -4,7 +4,7 @@ namespace SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMain
 
 public record UpdateIssueMainInfoCommand(
     Guid IssueId,
-    Guid LessonId,
+    Guid? LessonId,
     Guid ModuleId,
     string Title,
     string Description,
