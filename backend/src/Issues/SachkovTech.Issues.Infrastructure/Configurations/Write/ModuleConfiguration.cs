@@ -1,8 +1,6 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Domain.Issue;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
@@ -51,7 +49,6 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
                 IssuePosition => new IssuePosition(IssuePosition.IssueId, IssuePosition.Position))
             .HasColumnName("issues_position");
 
-
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
@@ -59,5 +56,7 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
         builder.Property(m => m.DeletionDate)
             .IsRequired(false)
             .HasColumnName("deletion_date");
+
+        builder.HasQueryFilter(f => f.IsDeleted == false);
     }
 }
