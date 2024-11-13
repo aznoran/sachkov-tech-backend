@@ -13,22 +13,11 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    protected override async Task HandleRequirementAsync(
+    protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
         using var scope = _serviceScopeFactory.CreateScope();
-
-        //var accountContract = scope.ServiceProvider.GetRequiredService<IAccountsContract>();
-
-        // var userIdString = context.User.Claims
-        //     .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
-        //
-        // if (!Guid.TryParse(userIdString, out var userId))
-        // {
-        //     context.Fail();
-        //     return;
-        // }
 
         var permissions = context.User.Claims
             .Where(c => c.Type == CustomClaims.Permission)
@@ -38,9 +27,10 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         if (permissions.Contains(permission.Code))
         {
             context.Succeed(permission);
-            return;
+            return Task.CompletedTask;
         }
 
         context.Fail();
+        return Task.CompletedTask;
     }
 }

@@ -9,6 +9,8 @@ public class ModuleDto
     public string Description { get; init; } = string.Empty;
 
     public IssuePositionDto[] IssuesPosition { get; init; } = [];
+
+    public bool IsDeleted { get; init; }
 }
 
 public class IssuePositionDto
