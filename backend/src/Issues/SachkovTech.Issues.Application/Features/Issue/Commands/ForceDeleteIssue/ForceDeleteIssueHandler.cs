@@ -12,18 +12,18 @@ namespace SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssu
 
 public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
 {
-    private readonly IIssueRepository _issueRepository;
+    private readonly IIssuesRepository _issuesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<DeleteIssueCommand> _validator;
     private readonly ILogger<ForceDeleteIssueHandler> _logger;
 
     public ForceDeleteIssueHandler(
-        IIssueRepository issueRepository,
+        IIssuesRepository issuesRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteIssueCommand> validator,
         ILogger<ForceDeleteIssueHandler> logger)
     {
-        _issueRepository = issueRepository;
+        _issuesRepository = issuesRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -39,12 +39,12 @@ public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
             return validationResult.ToList();
         }
         
-        var issueResult = await _issueRepository.GetById(command.IssueId, cancellationToken);
+        var issueResult = await _issuesRepository.GetById(command.IssueId, cancellationToken);
         
         if (issueResult.IsFailure)
             return Errors.General.NotFound(command.IssueId).ToErrorList();
 
-        var result = _issueRepository.Delete(issueResult.Value);
+        var result = _issuesRepository.Delete(issueResult.Value);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

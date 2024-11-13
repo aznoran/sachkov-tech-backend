@@ -12,11 +12,11 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Infrastructure.Repositories;
 
-public class IssuesRepository : IIssueRepository
+public class IssuesesRepository : IIssuesRepository
 {
     private readonly IssuesWriteDbContext _dbContext;
     
-    public IssuesRepository(IssuesWriteDbContext dbContext)
+    public IssuesesRepository(IssuesWriteDbContext dbContext)
     {
         _dbContext = dbContext;
     }

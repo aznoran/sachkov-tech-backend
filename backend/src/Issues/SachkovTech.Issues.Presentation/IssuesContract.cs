@@ -3,6 +3,7 @@ using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetIssueByPosition;
 using SachkovTech.Issues.Contracts;
 using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -20,6 +21,7 @@ public class IssuesContract : IIssuesContract
         _getIssueByIdHandler = getIssueByIdHandler;
         _getIssueByPositionHandler = getIssueByPositionHandler;
     }
+    
     public async Task<Result<IssueResponse, ErrorList>> GetIssueById(
         Guid issueId,
         CancellationToken cancellationToken = default)
@@ -28,9 +30,10 @@ public class IssuesContract : IIssuesContract
 
         return await _getIssueByIdHandler.Handle(query, cancellationToken);
     }
+    
     public async Task<Result<Guid, ErrorList>> GetIssueByPosition(
-        int position,
         ModuleId moduleId,
+        Position position,
         CancellationToken cancellationToken = default)
     {
         var query = new GetIssueByPositionQuery(moduleId, position);

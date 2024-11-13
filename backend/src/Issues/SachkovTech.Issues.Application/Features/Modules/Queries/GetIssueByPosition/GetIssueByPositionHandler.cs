@@ -26,7 +26,7 @@ public class GetIssueByPositionHandler : IQueryHandlerWithResult<Guid, GetIssueB
             return Errors.General.NotFound().ToErrorList();
         
         var issueDto = module.IssuesPosition
-            .FirstOrDefault(i => i.Position.Value == query.Position);
+            .FirstOrDefault(i => i.Position == query.Position);
 
         if (issueDto is null)
             return Errors.General.NotFound().ToErrorList();

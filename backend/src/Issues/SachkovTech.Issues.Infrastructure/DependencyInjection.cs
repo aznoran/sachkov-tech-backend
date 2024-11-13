@@ -38,10 +38,10 @@ public static class DependencyInjection
     {
         services.AddScoped<ILessonsRepository, LessonsRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
-        services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
+        services.AddScoped<IIssuesReviewRepository, IssuesReviewRepository>();
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
-        services.AddScoped<IIssueRepository, IssuesRepository>();
+        services.AddScoped<IIssuesRepository, IssuesesRepository>();
 
         return services;
     }

@@ -12,21 +12,21 @@ namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.SendFor
 
 public class SendForRevisionHandler : ICommandHandler<Guid, SendForRevisionCommand>
 {
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<SendForRevisionCommand> _validator;
     private readonly ILogger<SendForRevisionHandler> _logger;
 
     public SendForRevisionHandler(
-        IIssueReviewRepository issueReviewRepository,
+        IIssuesReviewRepository issuesReviewRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)]
         IUnitOfWork unitOfWork,
         IValidator<SendForRevisionCommand> validator,
         ILogger<SendForRevisionHandler> logger,
         IUserIssueRepository userIssueRepository)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -43,7 +43,7 @@ public class SendForRevisionHandler : ICommandHandler<Guid, SendForRevisionComma
             return validationResult.ToList();
         }
 
-        var issueReviewResult = await _issueReviewRepository
+        var issueReviewResult = await _issuesReviewRepository
             .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)

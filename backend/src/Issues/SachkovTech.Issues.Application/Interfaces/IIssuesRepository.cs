@@ -6,7 +6,7 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Application.Interfaces;
 
-public interface IIssueRepository
+public interface IIssuesRepository
 {
     Task<Guid> Add(Issue issue, CancellationToken cancellationToken = default);
     

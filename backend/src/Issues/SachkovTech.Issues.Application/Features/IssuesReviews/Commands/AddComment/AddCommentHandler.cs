@@ -14,18 +14,18 @@ namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.AddComm
 
 public class AddCommentHandler : ICommandHandler<Guid, AddCommentCommand>
 {
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<AddCommentCommand> _validator;
     private readonly ILogger<AddCommentHandler> _logger;
 
     public AddCommentHandler(
-        IIssueReviewRepository issueReviewRepository,
+        IIssuesReviewRepository issuesReviewRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<AddCommentCommand> validator,
         ILogger<AddCommentHandler> logger)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -41,7 +41,7 @@ public class AddCommentHandler : ICommandHandler<Guid, AddCommentCommand>
             return validationResult.ToList();
         }
 
-        var issueReviewResult = await _issueReviewRepository
+        var issueReviewResult = await _issuesReviewRepository
             .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)

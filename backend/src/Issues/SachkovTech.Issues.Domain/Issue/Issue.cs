@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using SachkovTech.Issues.Domain.Issue.ValueObjects;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
@@ -20,12 +21,14 @@ public class Issue : SoftDeletableEntity<IssueId>
         Title title,
         Description description,
         LessonId lessonId,
+        ModuleId moduleId,
         Experience experience,
         IEnumerable<FileId>? files = null) : base(id)
     {
         Title = title;
         Description = description;
         LessonId = lessonId;
+        ModuleId = moduleId;
         Experience = experience;
         _files = files?.ToList() ?? [];
     }
@@ -36,9 +39,11 @@ public class Issue : SoftDeletableEntity<IssueId>
     
     public Description Description { get; private set; } = default!;
 
-    public LessonId LessonId { get; private set; } = null!;
+    public LessonId? LessonId { get; private set; } = null!;
     
     public ModuleId? ModuleId { get; private set; } = default!;
+    
+    public Position? Position { get; private set; } = default!;
 
     public IReadOnlyList<FileId> Files => _files;
 
@@ -51,12 +56,16 @@ public class Issue : SoftDeletableEntity<IssueId>
         Title title,
         Description description,
         LessonId lessonId,
-        Experience experience)
+        ModuleId moduleId,
+        Experience experience,
+        Position position)
     {
         Title = title;
         Description = description;
         LessonId = lessonId;
+        ModuleId = moduleId;
         Experience = experience;
+        Position = position;
 
         return Result.Success<Error>();
     }

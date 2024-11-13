@@ -7,6 +7,6 @@ public record AddIssueRequest(
     string Description,
     int Experience)
 {
-    public AddIssueCommand ToCommand() =>
-        new (Title, Description, Experience);
+    public AddIssueCommand ToCommand(Guid lessonId, Guid moduleId) =>
+        new (lessonId, moduleId, Title, Description, Experience);
 }

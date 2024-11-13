@@ -4,21 +4,16 @@ namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
 public class ModuleId : ValueObject
 {
+    public static readonly ModuleId Empty = new ModuleId(Guid.Empty);
+    
     private ModuleId(Guid value)
     {
         Value = value;
     }
-
-    private ModuleId()
-    {
-        
-    }
-
+    
     public Guid Value { get; }
 
     public static ModuleId NewModuleId() => new(Guid.NewGuid());
-
-    public static ModuleId Empty() => new(Guid.Empty);
 
     public static ModuleId Create(Guid id) => new(id);
 

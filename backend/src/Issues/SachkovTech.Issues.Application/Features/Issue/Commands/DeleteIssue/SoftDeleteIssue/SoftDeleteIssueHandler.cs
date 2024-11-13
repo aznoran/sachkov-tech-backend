@@ -10,18 +10,18 @@ using SachkovTech.SharedKernel;
 namespace SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.SoftDeleteIssue;
 public class SoftDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
 {
-    private readonly IIssueRepository _issueRepository;
+    private readonly IIssuesRepository _issuesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<DeleteIssueCommand> _validator;
     private readonly ILogger<SoftDeleteIssueHandler> _logger;
 
     public SoftDeleteIssueHandler(
-        IIssueRepository issueRepository,
+        IIssuesRepository issuesRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteIssueCommand> validator,
         ILogger<SoftDeleteIssueHandler> logger)
     {
-        _issueRepository = issueRepository;
+        _issuesRepository = issuesRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -37,11 +37,11 @@ public class SoftDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
             return validationResult.ToList();
         }
 
-        var issueResult = await _issueRepository.GetById(command.IssueId, cancellationToken);
+        var issueResult = await _issuesRepository.GetById(command.IssueId, cancellationToken);
         if (issueResult.IsFailure)
             return issueResult.Error.ToErrorList();
 
-        _issueRepository.Delete(issueResult.Value);
+        _issuesRepository.Delete(issueResult.Value);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

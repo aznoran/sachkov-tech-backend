@@ -9,16 +9,16 @@ namespace SachkovTech.Issues.Application.Features.Issue.Commands.RestoreIssue;
 
 public class RestoreIssueHandler : ICommandHandler<Guid, RestoreIssueCommand>
 {
-    private readonly IIssueRepository _issueRepository;
+    private readonly IIssuesRepository _issuesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RestoreIssueHandler> _logger;
 
     public RestoreIssueHandler(
-        IIssueRepository issueRepository,
+        IIssuesRepository issuesRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         ILogger<RestoreIssueHandler> logger)
     {
-        _issueRepository = issueRepository;
+        _issuesRepository = issuesRepository;
         _unitOfWork = unitOfWork;
         _logger = logger;
     }
@@ -27,7 +27,7 @@ public class RestoreIssueHandler : ICommandHandler<Guid, RestoreIssueCommand>
         RestoreIssueCommand command,
         CancellationToken cancellationToken = default)
     {
-        var restoreResult = await _issueRepository.GetById(command.IssueId, cancellationToken);
+        var restoreResult = await _issuesRepository.GetById(command.IssueId, cancellationToken);
         if (restoreResult.IsFailure)
             return restoreResult.Error.ToErrorList();
         

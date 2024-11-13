@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SachkovTech.Files.Contracts.Converters;
+﻿using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Issue.Commands.AddIssue;
@@ -9,11 +7,10 @@ using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.SoftDel
 using SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.RestoreIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo;
-using SachkovTech.Issues.Application.Features.Issue.Commands.UploadFilesToIssue;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
+using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesByModuleWithPagination;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
 using SachkovTech.Issues.Presentation.Issues.Requests;
-using SachkovTech.Issues.Presentation.Issues.Responses;
 
 namespace SachkovTech.Issues.Presentation.Issues;
 
@@ -46,6 +43,24 @@ public class IssuesController : ApplicationController
         
         return Ok(response);
     }
+    
+    [Permission(Permissions.Issues.ReadIssue)]
+    [HttpGet("module/{moduleId:guid}")]
+    public async Task<ActionResult> GetByModule(
+        [FromRoute] Guid moduleId,
+        [FromQuery] GetIssuesByModuleWithPaginationRequest request,
+        [FromServices] GetIssuesByModuleWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var query = request.ToQuery(moduleId);
+        
+        var response = await handler.Handle(query, cancellationToken);
+        
+        if (response.IsFailure)
+            return response.Error.ToResponse();
+        
+        return Ok(response);
+    }
 
     [Permission(Permissions.Issues.ReadIssue)]
     [HttpGet("{id:guid}")]
@@ -65,13 +80,15 @@ public class IssuesController : ApplicationController
     }
     
     [Permission(Permissions.Issues.CreateIssue)]
-    [HttpPost]
+    [HttpPost("{moduleId:guid}/issue/add/{lessonId:guid}")]
     public async Task<ActionResult> AddIssue(
+        [FromRoute] Guid moduleId,
+        [FromRoute] Guid lessonId,
         [FromBody] AddIssueRequest request,
         [FromServices] AddIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand();
+        var command = request.ToCommand(lessonId, moduleId);
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -79,30 +96,6 @@ public class IssuesController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Files.Upload)]
-    [Permission(Permissions.Issues.UpdateIssue)]
-    [HttpPost("{issueId:guid}/files")]
-    public async Task<ActionResult> UploadFilesToIssue(
-        [FromRoute] Guid issueId,
-        [FromForm] IFormFileCollection files,
-        [FromServices] UploadFilesToIssueHandler handler,
-        [FromServices] IFormFileConverter fileConverter,
-        CancellationToken cancellationToken)
-    {
-        var fileDtos = fileConverter.ToUploadFileDtos(files);
-
-        var command = new UploadFilesToIssueCommand(issueId, fileDtos);
-
-        var result = await handler.Handle(command, cancellationToken);
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        var response = UploadFilesToIssueResponse
-            .MapFromUploadFilesResult(result.Value);
-
-        return Ok(response);
     }
     
     [Permission(Permissions.Issues.UpdateIssue)]

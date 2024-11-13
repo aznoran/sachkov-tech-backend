@@ -12,18 +12,18 @@ namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.DeleteC
 
 public class DeleteCommentHandler : ICommandHandler<Guid, DeleteCommentCommand>
 {
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<DeleteCommentCommand> _validator;
     private readonly ILogger<DeleteCommentHandler> _logger;
 
     public DeleteCommentHandler(
-        IIssueReviewRepository issueReviewRepository,
+        IIssuesReviewRepository issuesReviewRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteCommentCommand> validator,
         ILogger<DeleteCommentHandler> logger)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -39,7 +39,7 @@ public class DeleteCommentHandler : ICommandHandler<Guid, DeleteCommentCommand>
             return validationResult.ToList();
         }
 
-        var issueReviewResult = await _issueReviewRepository
+        var issueReviewResult = await _issuesReviewRepository
             .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)

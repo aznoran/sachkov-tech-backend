@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -11,5 +12,5 @@ public interface IIssuesContract
         Guid issueId, CancellationToken cancellationToken = default);
 
     Task<Result<Guid, ErrorList>> GetIssueByPosition(
-        int position, ModuleId moduleId, CancellationToken cancellationToken = default);
+        ModuleId moduleId, Position position, CancellationToken cancellationToken = default);
 }

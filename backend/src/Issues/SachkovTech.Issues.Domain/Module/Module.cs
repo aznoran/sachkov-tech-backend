@@ -36,7 +36,20 @@ public class Module : SoftDeletableEntity<ModuleId>
         Title = title;
         Description = description;
     }
+    
+    public UnitResult<Error> AddIssue(IssueId issueId, Position position)
+    {
+        var newIssuePosition = new IssuePosition(issueId, position);
 
+        var newIssuesPosition = new List<IssuePosition>(IssuesPosition);
+        
+        newIssuesPosition.Add(newIssuePosition);
+        
+        UpdateIssuesPosition(newIssuesPosition);
+        
+        return Result.Success<Error>();
+    }
+    
     public UnitResult<Error> MoveIssue(IssuePosition issuePosition, Position newPosition)
     {
         var currentPosition = issuePosition.Position;
@@ -57,6 +70,53 @@ public class Module : SoftDeletableEntity<ModuleId>
         UpdateIssuesPosition(newIssuesPosition.Value);
 
         return Result.Success<Error>();
+    }
+
+    public UnitResult<Error> DeleteIssuePosition(IssueId issueId)
+    {
+        var issue = IssuesPosition.FirstOrDefault(i => i.IssueId == issueId);
+        if (issue is null)
+            return Result.Success<Error>();
+        
+        var currentPosition = issue.Position;
+
+        var newIssuesPosition = RecalculatePositionOfOtherIssues(currentPosition);
+        if (newIssuesPosition.IsFailure)
+            return newIssuesPosition.Error;
+        
+        var removeIssueIndex = newIssuesPosition.Value
+            .FindIndex(i => i.Position == currentPosition);
+        
+        newIssuesPosition.Value.RemoveAt(removeIssueIndex);
+
+        UpdateIssuesPosition(newIssuesPosition.Value);
+
+        return Result.Success<Error>();
+    }
+
+    private Result<List<IssuePosition>, Error> RecalculatePositionOfOtherIssues(Position currentPosition)
+    {
+        var updatedPositions = IssuesPosition.ToList();
+
+        if (currentPosition == IssuesPosition.Count)
+            return updatedPositions;
+
+        for (int i = 0; i < updatedPositions.Count; i++)
+        {
+            var issue = updatedPositions[i];
+            if (issue.Position > currentPosition)
+            {
+                var moveResult = issue.MoveBack();
+                if (moveResult.IsFailure)
+                    return moveResult.Error;
+
+                updatedPositions[i] = moveResult.Value;
+            }
+        }
+        
+        updatedPositions = updatedPositions.OrderBy(i => i.Position.Value).ToList();
+
+        return updatedPositions;
     }
 
     private Result<List<IssuePosition>, Error> MoveIssuesBetweenPositions(
@@ -120,24 +180,5 @@ public class Module : SoftDeletableEntity<ModuleId>
             return lastPosition.Error;
 
         return lastPosition.Value;
-    }
-
-
-    private UnitResult<Error> RecalculatePositionOfOtherIssues(Position currentPosition)
-    {
-        if (currentPosition == IssuesPosition.Count)
-            return Result.Success<Error>();
-
-        var issuesToMove = IssuesPosition.Where(i => i.Position > currentPosition);
-        foreach (var issue in issuesToMove)
-        {
-            var result = issue.MoveBack();
-            if (result.IsFailure)
-            {
-                return result.Error;
-            }
-        }
-
-        return Result.Success<Error>();
     }
 }

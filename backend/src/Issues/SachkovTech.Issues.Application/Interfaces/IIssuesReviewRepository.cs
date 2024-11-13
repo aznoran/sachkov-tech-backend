@@ -5,7 +5,7 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Application.Interfaces;
 
-public interface IIssueReviewRepository
+public interface IIssuesReviewRepository
 {
     Task<Result<IssueReview, Error>> GetById(IssueReviewId id,
         CancellationToken cancellationToken = default);

@@ -15,10 +15,5 @@ public class IssuePositionDto
 {
     public Guid IssueId { get; init; }
 
-    public PositionDto Position { get; init; }
-}
-
-public class PositionDto
-{
-    public int Value { get; init; }
+    public int Position { get; init; } = default!;
 }
