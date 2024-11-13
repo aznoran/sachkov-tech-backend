@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Models;
+using SachkovTech.Framework.Models;
 
 namespace SachkovTech.Framework.Authorization;
 
@@ -17,18 +18,25 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
+        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
+        {
+            context.Fail();
+            return;
+        }
+        
         using var scope = _serviceScopeFactory.CreateScope();
 
-        //var accountContract = scope.ServiceProvider.GetRequiredService<IAccountsContract>();
+        var userScopedData = scope.ServiceProvider.GetRequiredService<UserScopedData>();
+        
+        var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == CustomClaims.Id)!.Value;
 
-        // var userIdString = context.User.Claims
-        //     .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
-        //
-        // if (!Guid.TryParse(userIdString, out var userId))
-        // {
-        //     context.Fail();
-        //     return;
-        // }
+        if (!Guid.TryParse(userIdClaim, out Guid userId))
+        {
+            context.Fail();
+            return;
+        }
+
+        userScopedData.UserId = userId;
 
         var permissions = context.User.Claims
             .Where(c => c.Type == CustomClaims.Permission)

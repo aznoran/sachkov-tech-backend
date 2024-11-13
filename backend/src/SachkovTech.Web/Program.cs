@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddLogging(builder.Configuration);
 
+builder.Services.AddFramework();
 builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
