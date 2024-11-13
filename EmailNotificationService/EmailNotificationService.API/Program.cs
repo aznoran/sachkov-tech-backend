@@ -5,6 +5,7 @@ using EmailNotificationService.API.Middlewares;
 using EmailNotificationService.API.Models;
 using EmailNotificationService.API.Options;
 using EmailNotificationService.API.Features;
+using EmailNotificationService.API.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
