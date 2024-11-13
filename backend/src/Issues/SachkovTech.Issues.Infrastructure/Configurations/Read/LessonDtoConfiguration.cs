@@ -32,7 +32,7 @@ public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDto>
         builder.Property(l => l.VideoId)
             .IsRequired()
             .HasColumnName("video_id");
-        
+
         builder.Property(l => l.PreviewId)
             .IsRequired()
             .HasColumnName("preview_id");

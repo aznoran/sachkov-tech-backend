@@ -140,9 +140,9 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
-    [HttpGet()]
-    [Permission(Permissions.Lessons.ReadLesson)]
-    public async Task<IActionResult> GetLessonWithPagination(
+    [HttpGet]
+    //[Permission(Permissions.Lessons.ReadLesson)]
+    public async Task<IActionResult> GetLessonsWithPagination(
         [FromQuery] int page,
         [FromQuery] int pageSize,
         [FromServices] GetLessonsWithPaginationHandler handler,

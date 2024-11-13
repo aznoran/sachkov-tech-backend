@@ -1,3 +1,4 @@
+using FileService.Communication;
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
 using SachkovTech.Core.Extensions;
@@ -53,13 +54,15 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAuthServices(builder.Configuration);
 
+builder.Services.AddFileHttpCommunication(builder.Configuration);
+
 var app = builder.Build();
 
-app.Services.RunMigrations();
+// app.Services.RunMigrations();
 
-var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
-
-await accountsSeeder.SeedAsync();
+// var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+//
+// await accountsSeeder.SeedAsync();
 
 app.UseExceptionMiddleware();
 

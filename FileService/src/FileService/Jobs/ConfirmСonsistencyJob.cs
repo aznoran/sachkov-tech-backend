@@ -5,7 +5,7 @@ using Hangfire;
 namespace FileService.Jobs;
 
 public class ConfirmConsistencyJob(
-    IFileRepository fileRepository,
+    IFilesRepository filesRepository,
     IAmazonS3 s3Client,
     ILogger<ConfirmConsistencyJob> logger)
 {

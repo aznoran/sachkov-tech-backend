@@ -14,4 +14,8 @@
       <ProjectReference Include="..\SachkovTech.Issues.Domain\SachkovTech.Issues.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="fileservice" Version="1.0.0" />
+    </ItemGroup>
+
 </Project>
