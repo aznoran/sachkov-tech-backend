@@ -1,6 +1,7 @@
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
 using SachkovTech.Core.Extensions;
+using SachkovTech.Framework.Middlewares;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;
@@ -81,6 +82,7 @@ app.UseCors(config =>
 });
 
 app.UseAuthentication();
+app.UseAuthorizationMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();

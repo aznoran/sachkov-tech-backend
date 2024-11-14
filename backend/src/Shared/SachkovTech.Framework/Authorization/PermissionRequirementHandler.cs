@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Models;
 using SachkovTech.Framework.Models;
@@ -18,35 +19,20 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
+        //using var scope = _serviceScopeFactory.CreateScope();
+
+        //var userScopedData = scope.ServiceProvider.GetRequiredService<UserScopedData>();
+
+        //временный вариант
+        if (context.Resource is HttpContext httpContext &&
+            httpContext.Items.TryGetValue("UserScopedData", out var userScopedDataObj) &&
+            userScopedDataObj is UserScopedData userScopedData)
         {
-            context.Fail();
-            return;
-        }
-        
-        using var scope = _serviceScopeFactory.CreateScope();
-
-        var userScopedData = scope.ServiceProvider.GetRequiredService<UserScopedData>();
-        
-        var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == CustomClaims.Id)!.Value;
-
-        if (!Guid.TryParse(userIdClaim, out Guid userId))
-        {
-            context.Fail();
-            return;
-        }
-
-        userScopedData.UserId = userId;
-
-        var permissions = context.User.Claims
-            .Where(c => c.Type == CustomClaims.Permission)
-            .Select(c => c.Value)
-            .ToList();
-
-        if (permissions.Contains(permission.Code))
-        {
-            context.Succeed(permission);
-            return;
+            if (userScopedData.Permissions.Contains(permission.Code))
+            {
+                context.Succeed(permission);
+                return;
+            }
         }
 
         context.Fail();

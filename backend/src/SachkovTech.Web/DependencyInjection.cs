@@ -92,7 +92,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddFramework(this IServiceCollection services)
     {
-        services.AddSingleton<UserScopedData>();
+        services.AddScoped<UserScopedData>();
 
         return services;
     }
