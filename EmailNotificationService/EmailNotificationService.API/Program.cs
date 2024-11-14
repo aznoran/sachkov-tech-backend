@@ -6,6 +6,8 @@ using EmailNotificationService.API.Models;
 using EmailNotificationService.API.Options;
 using EmailNotificationService.API.Features;
 using EmailNotificationService.API.Common;
+using EmailNotificationService.API.Requests;
+using EmailNotificationService.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,16 +20,17 @@ services.Configure<MailOptions>(
     config.GetSection(MailOptions.SECTION_NAME));
 services.AddScoped<EmailValidator>();
 services.AddScoped<MailSender>();
+services.AddScoped<MailConfirmationService>();
 
-Log.Logger = new LoggerConfiguration()
-           .WriteTo.Console()
-           .WriteTo.Debug()
-           .WriteTo.Seq(config.GetConnectionString("Seq")
-               ?? throw new ArgumentNullException("Seq connection string was not found"))
-           .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Information)
-           .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Information)
-           .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Information)
-           .CreateLogger();
+//Log.Logger = new LoggerConfiguration()
+//           .WriteTo.Console()
+//           .WriteTo.Debug()
+//           .WriteTo.Seq(config.GetConnectionString("Seq")
+//               ?? throw new ArgumentNullException("Seq connection string was not found"))
+//           .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Information)
+//           .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Information)
+//           .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Information)
+//           .CreateLogger();
 
 services.AddSerilog();
 
@@ -36,6 +39,8 @@ services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseStaticFiles();
 
 app.UseMiddleware<ExceptionHandler>();
 
@@ -56,6 +61,11 @@ app.MapPost("send", async (MailData mailData, MailSender mailSender) =>
 
         return response;
     });
+
+app.MapPost("confirm-email", async (MailConfirmationRequest request, MailConfirmationService service) =>
+{
+    var result = await service.Execute(request);
+});
 
 app.UseHttpsRedirection();
 
