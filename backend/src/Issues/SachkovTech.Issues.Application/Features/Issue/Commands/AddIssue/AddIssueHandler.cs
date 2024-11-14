@@ -49,17 +49,23 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
             return validationResult.ToList();
         }
 
-        var lessonResult = await _lessonsRepository.GetById(command.LessonId, cancellationToken);
-        if (lessonResult.IsFailure)
-            return lessonResult.Error.ToErrorList();
+        LessonId? lessonId = null;
+
+        if (command.LessonId is not null)
+        {
+            var lessonResult = await _lessonsRepository.GetById(command.LessonId, cancellationToken);
+            if (lessonResult.IsFailure)
+                return lessonResult.Error.ToErrorList();
+
+            lessonId = LessonId.Create(lessonResult.Value.Id).Value;
+        }
 
         var moduleResult = await _modulesRepository.GetById(command.ModuleId, cancellationToken);
         if (moduleResult.IsFailure)
             return moduleResult.Error.ToErrorList();
 
         var module = moduleResult.Value;
-
-        var issue = InitIssue(module.Id, command);
+        var issue = InitIssue(module.Id, lessonId, command);
         await _issuesRepository.Add(issue, cancellationToken);
 
         module.AddIssue(issue.Id, Position.Create(module.IssuesPosition.Count + 1).Value);
@@ -73,12 +79,14 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         return issue.Id.Value;
     }
 
-    private Domain.Issue.Issue InitIssue(ModuleId moduleId, AddIssueCommand command)
+    private Domain.Issue.Issue InitIssue(
+        ModuleId moduleId, 
+        LessonId? lessonId,
+        AddIssueCommand command)
     {
         var issueId = IssueId.NewIssueId();
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Description).Value;
-        var lessonId = command.LessonId ?? Guid.Empty;
         var experience = Experience.Create(command.Experience).Value;
 
         return new Domain.Issue.Issue(

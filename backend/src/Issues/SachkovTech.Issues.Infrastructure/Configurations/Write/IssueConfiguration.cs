@@ -35,16 +35,10 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
             .IsRequired(false);
 
         builder.Property(i => i.LessonId)
-            .HasConversion(
-                id => id.Value,
-                value => LessonId.Create(value))
-            .IsRequired(false);
-        
-        builder.Property(i => i.Position)
             .IsRequired(false)
             .HasConversion(
-                position => position!.Value,
-                value => Position.Create(value).Value);
+                id => id.Value,
+                value => LessonId.Create(value));
         
         builder.ComplexProperty(i => i.Experience,
             eb =>

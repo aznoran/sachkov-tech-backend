@@ -13,17 +13,21 @@ namespace SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssu
 public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
 {
     private readonly IIssuesRepository _issuesRepository;
+    private readonly IModulesRepository _modulesRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<DeleteIssueCommand> _validator;
     private readonly ILogger<ForceDeleteIssueHandler> _logger;
 
     public ForceDeleteIssueHandler(
         IIssuesRepository issuesRepository,
-        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
+        IModulesRepository modulesRepository,
+        [FromKeyedServices(SharedKernel.Modules.Issues)]
+        IUnitOfWork unitOfWork,
         IValidator<DeleteIssueCommand> validator,
         ILogger<ForceDeleteIssueHandler> logger)
     {
         _issuesRepository = issuesRepository;
+        _modulesRepository = modulesRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -38,13 +42,23 @@ public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
         {
             return validationResult.ToList();
         }
-        
+
         var issueResult = await _issuesRepository.GetById(command.IssueId, cancellationToken);
-        
         if (issueResult.IsFailure)
             return Errors.General.NotFound(command.IssueId).ToErrorList();
 
         var result = _issuesRepository.Delete(issueResult.Value);
+
+        if (issueResult.Value.ModuleId is not null)
+        {
+            var moduleIssuesResult = await _modulesRepository.GetById(issueResult.Value.ModuleId, cancellationToken);
+            if (moduleIssuesResult.IsFailure)
+            {
+                return moduleIssuesResult.Error.ToErrorList();
+            }
+
+            moduleIssuesResult.Value.DeleteIssuePosition(command.IssueId);
+        }
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

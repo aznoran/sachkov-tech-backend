@@ -20,7 +20,7 @@ public class Issue : SoftDeletableEntity<IssueId>
         IssueId id,
         Title title,
         Description description,
-        LessonId lessonId,
+        LessonId? lessonId,
         ModuleId moduleId,
         Experience experience,
         IEnumerable<FileId>? files = null) : base(id)
@@ -42,8 +42,6 @@ public class Issue : SoftDeletableEntity<IssueId>
     public LessonId? LessonId { get; private set; } = null!;
     
     public ModuleId? ModuleId { get; private set; } = default!;
-    
-    public Position? Position { get; private set; } = default!;
 
     public IReadOnlyList<FileId> Files => _files;
 
@@ -55,17 +53,15 @@ public class Issue : SoftDeletableEntity<IssueId>
     public UnitResult<Error> UpdateMainInfo(
         Title title,
         Description description,
-        LessonId lessonId,
+        LessonId? lessonId,
         ModuleId moduleId,
-        Experience experience,
-        Position position)
+        Experience experience)
     {
         Title = title;
         Description = description;
         LessonId = lessonId;
         ModuleId = moduleId;
         Experience = experience;
-        Position = position;
 
         return Result.Success<Error>();
     }

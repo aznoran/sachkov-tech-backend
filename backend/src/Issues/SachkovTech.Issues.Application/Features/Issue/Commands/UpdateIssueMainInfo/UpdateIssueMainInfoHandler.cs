@@ -83,8 +83,7 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
             description,
             lessonId,
             moduleId,
-            experience,
-            position.Value);
+            experience);
 
         if (updateResult.IsFailure)
             return updateResult.Error.ToErrorList();
