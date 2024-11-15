@@ -64,60 +64,85 @@ public class ModuleTests
         finalIssues[2].IssueId.Value.Should().Be(issueGuid3.Value);
     }
 
-    // [Fact]
-    // public void MoveIssue_to_back()
-    // {
-    //     // Arrange
-    //     var module = CreateAndFillModule(3);
-    //
-    //     var issuesPositions = module.IssuesPosition.OrderBy(i => i.Position).ToList();
-    //
-    //     // Act
-    //     var result = module.MoveIssue(issuesPositions[1], Position.Create(1).Value);
-    //
-    //     // Assert
-    //     var finalIssues = module.IssuesPosition.OrderBy(i => i.Position).ToList();
-    //
-    //     result.IsSuccess.Should().BeTrue();
-    //     finalIssues.Should().Equal(new List<IssuePosition> { issuesPositions[1], issuesPositions[0], issuesPositions[2] });
-    // }
+    [Fact]
+    public void MoveIssue_to_forward()
+    {
+        // Arrange
+        var module = new Module(
+            ModuleId.NewModuleId(),
+            Title.Create("test title").Value,
+            Description.Create("test description").Value);
 
-    // [Fact]
-    // public void MoveIssue_to_forward()
-    // {
-    //     // Arrange
-    //     // Arrange
-    //     var module = CreateAndFillModule(3);
-    //
-    //     var issues = module.Issues.OrderBy(i => i.Position).ToList();
-    //
-    //     // Act
-    //     var result = module.MoveIssue(issues[1], Position.Create(3).Value);
-    //
-    //     // Assert
-    //     var finalIssues = module.Issues.OrderBy(i => i.Position).ToList();
-    //
-    //     result.IsSuccess.Should().BeTrue();
-    //     finalIssues.Should().Equal(new List<Issue> { issues[0], issues[2], issues[1] });
-    // }
+        var issueGuid1 = IssueId.Create(Guid.NewGuid());
+        var issueGuid2 = IssueId.Create(Guid.NewGuid());
+        var issueGuid3 = IssueId.Create(Guid.NewGuid());
 
-    // [Fact]
-    // public void MoveIssue_to_last_position()
-    // {
-    //     // Arrange
-    //     var module = CreateAndFillModule(3);
-    //     var issueToMove = module.Issues[0];
-    //     var issues = module.Issues.OrderBy(i => i.Position).ToList();
-    //
-    //     // Act
-    //     var result = module.MoveIssue(issueToMove, Position.Create(5).Value);
-    //
-    //     // Assert
-    //     var finalIssues = module.Issues.OrderBy(i => i.Position).ToList();
-    //
-    //     result.IsSuccess.Should().BeTrue();
-    //     finalIssues.Should().Equal(new List<Issue> { issues[1], issues[2], issues[0] });
-    // }
+        var position1 = Position.Create(1).Value;
+        var position2 = Position.Create(2).Value;
+        var position3 = Position.Create(3).Value;
+
+        var issuesPosition = new List<IssuePosition>
+        {
+            new IssuePosition(issueGuid1, position1),
+            new IssuePosition(issueGuid2, position2),
+            new IssuePosition(issueGuid3, position3)
+        };
+
+        module.UpdateIssuesPosition(issuesPosition);
+
+        var issuesPositions = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
+
+        // Act
+        var result = module.MoveIssue(issuesPositions[1], Position.Create(3).Value);
+
+        // Assert
+        var finalIssues = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
+
+        result.IsSuccess.Should().BeTrue();
+        finalIssues[0].IssueId.Value.Should().Be(issueGuid1.Value);
+        finalIssues[1].IssueId.Value.Should().Be(issueGuid3.Value);
+        finalIssues[2].IssueId.Value.Should().Be(issueGuid2.Value);
+    }
+
+    [Fact]
+    public void MoveIssue_to_last_position()
+    {
+        // Arrange
+        var module = new Module(
+            ModuleId.NewModuleId(),
+            Title.Create("test title").Value,
+            Description.Create("test description").Value);
+
+        var issueGuid1 = IssueId.Create(Guid.NewGuid());
+        var issueGuid2 = IssueId.Create(Guid.NewGuid());
+        var issueGuid3 = IssueId.Create(Guid.NewGuid());
+
+        var position1 = Position.Create(1).Value;
+        var position2 = Position.Create(2).Value;
+        var position3 = Position.Create(3).Value;
+
+        var issuesPosition = new List<IssuePosition>
+        {
+            new IssuePosition(issueGuid1, position1),
+            new IssuePosition(issueGuid2, position2),
+            new IssuePosition(issueGuid3, position3)
+        };
+
+        module.UpdateIssuesPosition(issuesPosition);
+
+        var issuesPositions = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
+
+        // Act
+        var result = module.MoveIssue(issuesPositions[0], Position.Create(3).Value);
+
+        // Assert
+        var finalIssues = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
+
+        result.IsSuccess.Should().BeTrue();
+        finalIssues[0].IssueId.Value.Should().Be(issueGuid2.Value);
+        finalIssues[1].IssueId.Value.Should().Be(issueGuid3.Value);
+        finalIssues[2].IssueId.Value.Should().Be(issueGuid1.Value);
+    }
 
     [Fact]
     public void Soft_delete_module()

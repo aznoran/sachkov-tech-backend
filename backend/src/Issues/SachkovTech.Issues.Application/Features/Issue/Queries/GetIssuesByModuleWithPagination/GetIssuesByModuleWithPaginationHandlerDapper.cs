@@ -54,10 +54,9 @@ public class GetIssuesByModuleWithPaginationHandlerDapper
 
         sqlBuilder.ApplySorting(query.SortBy, query.SortDirection);
 
-        // Todo пагинация неработает!!!
+        // TODO: пагинация не работает
         // sqlBuilder.ApplyPagination(parameters, query.Page, query.PageSize);
 
-        //Подсчёт общего количества записей
         var totalCountSql = new StringBuilder(
             """
             SELECT COUNT(*)
@@ -81,7 +80,7 @@ public class GetIssuesByModuleWithPaginationHandlerDapper
             {
                 var files = JsonSerializer.Deserialize<Guid[]>(jsonFiles) ?? Array.Empty<Guid>();
 
-                // Todo Заполнение файлов в ответе неработает
+                // TODO: Заполнение файлов в ответе не работает
                 //issue.Files = files.Select(f => new FileResponse(f, "")).ToArray();
 
                 return issue;
