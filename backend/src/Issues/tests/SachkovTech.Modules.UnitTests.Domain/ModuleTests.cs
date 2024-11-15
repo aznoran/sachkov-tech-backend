@@ -24,6 +24,46 @@ public class ModuleTests
         module.IssuesPosition.Should().HaveCount(5);
     }
 
+    [Fact]
+    public void MoveIssue_to_back()
+    {
+        // Arrange
+        var module = new Module(
+            ModuleId.NewModuleId(),
+            Title.Create("test title").Value,
+            Description.Create("test description").Value);
+
+        var issueGuid1 = IssueId.Create(Guid.NewGuid());
+        var issueGuid2 = IssueId.Create(Guid.NewGuid());
+        var issueGuid3 = IssueId.Create(Guid.NewGuid());
+
+        var position1 = Position.Create(1).Value;
+        var position2 = Position.Create(2).Value;
+        var position3 = Position.Create(3).Value;
+
+        var issuesPosition = new List<IssuePosition>
+        {
+            new IssuePosition(issueGuid1, position1),
+            new IssuePosition(issueGuid2, position2),
+            new IssuePosition(issueGuid3, position3)
+        };
+
+        module.UpdateIssuesPosition(issuesPosition);
+
+        var issuesPositions = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
+
+        // Act
+        var result = module.MoveIssue(issuesPositions[1], Position.Create(1).Value);
+
+        // Assert
+        var finalIssues = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
+
+        result.IsSuccess.Should().BeTrue();
+        finalIssues[0].IssueId.Value.Should().Be(issueGuid2.Value);
+        finalIssues[1].IssueId.Value.Should().Be(issueGuid1.Value);
+        finalIssues[2].IssueId.Value.Should().Be(issueGuid3.Value);
+    }
+
     // [Fact]
     // public void MoveIssue_to_back()
     // {
