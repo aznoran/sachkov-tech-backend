@@ -19,22 +19,32 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        //using var scope = _serviceScopeFactory.CreateScope();
-
-        //var userScopedData = scope.ServiceProvider.GetRequiredService<UserScopedData>();
-
-        //временный вариант
-        if (context.Resource is HttpContext httpContext &&
-            httpContext.Items.TryGetValue("UserScopedData", out var userScopedDataObj) &&
-            userScopedDataObj is UserScopedData userScopedData)
+        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
         {
-            if (userScopedData.Permissions.Contains(permission.Code))
-            {
-                context.Succeed(permission);
-                return;
-            }
+            context.Fail();
+            return;
         }
+        
+        var userIdString = context.User.Claims
+             .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
+        
+         if (!Guid.TryParse(userIdString, out var userId))
+         {
+             context.Fail();
+             return;
+         }
 
+        var permissions = context.User.Claims
+            .Where(c => c.Type == CustomClaims.Permission)
+            .Select(c => c.Value)
+            .ToList();
+        
+        if (permissions.Contains(permission.Code))
+        {
+            context.Succeed(permission);
+            return;
+        }
+        
         context.Fail();
     }
 }
