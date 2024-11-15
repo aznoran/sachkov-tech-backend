@@ -42,20 +42,19 @@ public class GetIssuesByModuleWithPaginationHandlerDapper
                      JOIN issues.modules AS m
                           ON i.module_id = m.id
                      JOIN LATERAL jsonb_array_elements(m.issues_position) AS ip ON (ip->>'IssueId')::uuid = i.id
-            WHERE NOT i.is_deleted;
+            WHERE NOT i.is_deleted
             
             """);
 
-        if (!string.IsNullOrWhiteSpace(query.Title))
-        {
-            sqlBuilder.Append("\nAND i.title ILIKE @Title");
-            parameters.Add("@Title", $"%{query.Title}%");
-        }
+        // if (!string.IsNullOrWhiteSpace(query.Title))
+        // {
+        //     sqlBuilder.Append("\nAND i.title ILIKE @Title");
+        //     parameters.Add("@Title", $"%{query.Title}%");
+        // }
 
         sqlBuilder.ApplySorting(query.SortBy, query.SortDirection);
-
-        // TODO: пагинация не работает
-        // sqlBuilder.ApplyPagination(parameters, query.Page, query.PageSize);
+        
+        sqlBuilder.ApplyPagination(parameters, query.Page, query.PageSize);
 
         var totalCountSql = new StringBuilder(
             """
@@ -74,6 +73,8 @@ public class GetIssuesByModuleWithPaginationHandlerDapper
             totalCountSql.ToString(),
             parameters);
 
+        Console.WriteLine(sqlBuilder.ToString());
+        
         var issues = await connection.QueryAsync<IssueResponse, string, IssueResponse>(
             sqlBuilder.ToString(),
             (issue, jsonFiles) =>
