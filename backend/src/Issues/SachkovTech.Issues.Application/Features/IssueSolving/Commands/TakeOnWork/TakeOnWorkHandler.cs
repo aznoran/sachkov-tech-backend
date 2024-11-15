@@ -96,6 +96,7 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
             issueDto.ModuleId,
             issueDto.Title,
             issueDto.Description,
+            null,
             issueDto.LessonId,
             fileLinks.Select(f => new FileResponse(f.FileId, f.Link)).ToArray());
 

@@ -29,13 +29,16 @@ public class GetIssueByIdHandler : IQueryHandlerWithResult<IssueResponse, GetIss
         if (issueDto is null)
             return Errors.General.NotFound(query.IssueId).ToErrorList();
 
-        var fileLinks = await _filesContracts.GetLinkFiles(issueDto.Files);
+        var fileLinks = await _filesContracts.GetLinkFiles(issueDto.Files, cancellationToken);
 
+        
+        // Todo Переделать null
         var response = new IssueResponse(
             issueDto.Id,
             issueDto.ModuleId,
             issueDto.Title,
             issueDto.Description,
+            null,
             issueDto.LessonId,
             fileLinks.Select(f => new FileResponse(f.FileId, f.Link)).ToArray());
 

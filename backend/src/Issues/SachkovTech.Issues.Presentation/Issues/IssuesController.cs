@@ -49,12 +49,12 @@ public class IssuesController : ApplicationController
     public async Task<ActionResult> GetByModule(
         [FromRoute] Guid moduleId,
         [FromQuery] GetIssuesByModuleWithPaginationRequest request,
-        [FromServices] GetIssuesByModuleWithPaginationHandler handler,
+        [FromServices] GetIssuesByModuleWithPaginationHandlerDapper handlerDapper,
         CancellationToken cancellationToken)
     {
         var query = request.ToQuery(moduleId);
         
-        var response = await handler.Handle(query, cancellationToken);
+        var response = await handlerDapper.Handle(query, cancellationToken);
         
         if (response.IsFailure)
             return response.Error.ToResponse();
