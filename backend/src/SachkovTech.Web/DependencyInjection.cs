@@ -1,18 +1,18 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using SachkovTech.Accounts.Infrastructure;
-using SachkovTech.Accounts.Presentation;
-using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Options;
 using SachkovTech.Files.Infrastructure;
 using SachkovTech.Files.Presentation;
-using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Infrastructure;
 using SachkovTech.Issues.Presentation;
-using Serilog;
 using Serilog.Events;
+using Serilog;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using SachkovTech.Core.Options;
+using SachkovTech.Accounts.Presentation;
+using SachkovTech.Core.Abstractions;
+using SachkovTech.Framework;
 
 namespace SachkovTech.Web;
 

@@ -21,7 +21,7 @@ builder.Services.AddCors();
 builder.Services.AddSingleton<IMongoClient>(new MongoClient(builder.Configuration.GetConnectionString("MongoConnection")));
 
 builder.Services.AddScoped<FileMongoDbContext>();
-builder.Services.AddScoped<IFileRepository, FileRepository>();
+builder.Services.AddScoped<IFilesRepository, FilesRepository>();
 
 var mongoClient = new MongoClient(builder.Configuration.GetConnectionString("MongoConnection"));
 

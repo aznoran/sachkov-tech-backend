@@ -54,6 +54,12 @@ builder.Services.AddAuthServices(builder.Configuration);
 
 var app = builder.Build();
 
+// await using var scope = app.Services.CreateAsyncScope();
+//
+// var dbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
+//
+// await dbContext.Database.MigrateAsync();
+
 var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
 await accountsSeeder.SeedAsync();

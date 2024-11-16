@@ -13,7 +13,7 @@ public class FileData
 
     public required DateTime UploadDate { get; init; }
 
-    public required long Size { get; init; }
+    public required long FileSize { get; init; }
 
     public required string ContentType { get; init; }
 }

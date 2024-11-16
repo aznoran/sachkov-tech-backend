@@ -1,7 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts;
 using FluentValidation;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
@@ -11,10 +12,11 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonWithP
 
 public class GetLessonsWithPaginationHandler(
     IValidator<GetLessonsWithPaginationValidatorQuery> validator,
+    FileHttpClient fileHttpClient,
     IReadDbContext context)
-    : IQueryHandlerWithResult<PagedList<LessonDto>, GetLessonsWithPaginationValidatorQuery>
+    : IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationValidatorQuery>
 {
-    public async Task<Result<PagedList<LessonDto>, ErrorList>> Handle(
+    public async Task<Result<PagedList<LessonResponse>, ErrorList>> Handle(
         GetLessonsWithPaginationValidatorQuery query, CancellationToken cancellationToken = default)
     {
         var validationResult = await validator.ValidateAsync(query, cancellationToken);
@@ -23,6 +25,35 @@ public class GetLessonsWithPaginationHandler(
 
         var lessonsQuery = context.Lessons;
 
-        return  await lessonsQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
+        var lessonsPagedList = await lessonsQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
+
+        // мы должны получить videoUrl из FileService
+        // var videoIds = lessonsPagedList.Items.Select(l => l.VideoId);
+        List<Guid> videoIds = [Guid.Parse("2572d9ad-a013-4645-be3e-b79dbfcd4c09")];
+
+        var videoUrlsResult = await fileHttpClient.GetFilesPresignedUrls(new GetFilesPresignedUrlsRequest(videoIds), cancellationToken);
+        if (videoUrlsResult.IsFailure)
+            return Errors.General.NotFound().ToErrorList();
+
+        var videoUrl = "videoUrl";
+
+        return new PagedList<LessonResponse>
+        {
+            Page = lessonsPagedList.Page,
+            PageSize = lessonsPagedList.PageSize,
+            TotalCount = lessonsPagedList.TotalCount,
+            Items = lessonsPagedList.Items.Select(dto => new LessonResponse(
+                dto.Id,
+                dto.ModuleId,
+                dto.Title,
+                dto.Description,
+                dto.Experience,
+                dto.VideoId,
+                videoUrl,
+                dto.PreviewId,
+                "previewUrl",
+                dto.Tags,
+                dto.Issues)).ToList()
+        };
     }
 }

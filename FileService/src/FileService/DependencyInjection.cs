@@ -13,7 +13,7 @@ public static class DependencyInjection
     {
         services.AddSingleton(new MongoClient(configurations.GetConnectionString("MongoConnection")));
 
-        services.AddScoped<FileRepository>();
+        services.AddScoped<FilesRepository>();
 
         return services;
     }
