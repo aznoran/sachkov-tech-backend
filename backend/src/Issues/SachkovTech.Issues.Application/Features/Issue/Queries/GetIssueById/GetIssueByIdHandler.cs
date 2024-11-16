@@ -27,7 +27,6 @@ public class GetIssueByIdHandler : IQueryHandlerWithResult<IssueResponse, GetIss
         if (issueDto is null)
             return Errors.General.NotFound(query.IssueId).ToErrorList();
 
-        // Todo Переделать null
         var response = new IssueResponse
         {
             Id = issueDto.Id,
