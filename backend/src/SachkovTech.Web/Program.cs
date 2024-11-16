@@ -2,6 +2,7 @@ using FileService.Communication;
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
 using SachkovTech.Core.Extensions;
+using SachkovTech.Framework.Middlewares;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;
@@ -43,6 +44,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddLogging(builder.Configuration);
 
+builder.Services.AddFramework();
 builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
@@ -83,6 +85,7 @@ app.UseCors(config =>
 });
 
 app.UseAuthentication();
+app.UseScopeDataMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();
