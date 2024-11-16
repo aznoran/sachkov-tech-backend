@@ -39,9 +39,9 @@ public class Issue : SoftDeletableEntity<IssueId>
     
     public Description Description { get; private set; } = default!;
 
-    public LessonId? LessonId { get; private set; } = null!;
+    public LessonId? LessonId { get; private set; }
     
-    public ModuleId? ModuleId { get; private set; } = default!;
+    public ModuleId ModuleId { get; private set; }
 
     public IReadOnlyList<FileId> Files => _files;
 

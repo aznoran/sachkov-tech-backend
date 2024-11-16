@@ -20,26 +20,26 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
         {
             eb.Property(e => e.Value)
                 .HasColumnName("experience")
-                .IsRequired(true);
+                .IsRequired();
         });
 
         builder.Property(i => i.Id)
             .HasConversion(
                 id => id.Value,
                 value => IssueId.Create(value));
-        
+
         builder.Property(i => i.ModuleId)
             .HasConversion(
                 id => id.Value,
                 value => ModuleId.Create(value))
-            .IsRequired(false);
+            .IsRequired();
 
         builder.Property(i => i.LessonId)
             .IsRequired(false)
             .HasConversion(
-                id => id.Value,
+                id => id!.Value,
                 value => LessonId.Create(value));
-        
+
         builder.ComplexProperty(i => i.Experience,
             eb =>
             {

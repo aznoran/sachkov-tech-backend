@@ -50,7 +50,6 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         }
 
         LessonId? lessonId = null;
-
         if (command.LessonId is not null)
         {
             var lessonResult = await _lessonsRepository.GetById(command.LessonId, cancellationToken);

@@ -36,18 +36,19 @@ public class Module : SoftDeletableEntity<ModuleId>
         Title = title;
         Description = description;
     }
-    
+
     public void AddIssue(IssueId issueId, Position position)
     {
         var newIssuePosition = new IssuePosition(issueId, position);
 
-        var newIssuesPosition = new List<IssuePosition>(IssuesPosition);
-        
-        newIssuesPosition.Add(newIssuePosition);
-        
+        var newIssuesPosition = new List<IssuePosition>(IssuesPosition)
+        {
+            newIssuePosition
+        };
+
         UpdateIssuesPosition(newIssuesPosition);
     }
-    
+
     public UnitResult<Error> MoveIssue(IssuePosition issuePosition, Position newPosition)
     {
         var currentPosition = issuePosition.Position;
@@ -75,16 +76,16 @@ public class Module : SoftDeletableEntity<ModuleId>
         var issue = IssuesPosition.FirstOrDefault(i => i.IssueId == issueId);
         if (issue is null)
             return Result.Success<Error>();
-        
+
         var currentPosition = issue.Position;
 
         var newIssuesPosition = RecalculatePositionOfOtherIssues(currentPosition);
         if (newIssuesPosition.IsFailure)
             return newIssuesPosition.Error;
-        
+
         var removeIssueIndex = newIssuesPosition.Value
             .FindIndex(i => i.Position == currentPosition);
-        
+
         newIssuesPosition.Value.RemoveAt(removeIssueIndex);
 
         UpdateIssuesPosition(newIssuesPosition.Value);
@@ -102,17 +103,17 @@ public class Module : SoftDeletableEntity<ModuleId>
         for (int i = 0; i < updatedPositions.Count; i++)
         {
             var issue = updatedPositions[i];
-            
+
             if (issue.Position <= currentPosition)
                 continue;
-            
+
             var moveResult = issue.MoveBack();
             if (moveResult.IsFailure)
                 return moveResult.Error;
 
             updatedPositions[i] = moveResult.Value;
         }
-        
+
         updatedPositions = updatedPositions.OrderBy(i => i.Position.Value).ToList();
 
         return updatedPositions;
@@ -153,7 +154,7 @@ public class Module : SoftDeletableEntity<ModuleId>
                 var issue = updatedPositions[i];
                 if (issue.Position <= currentPosition || issue.Position > newPosition)
                     continue;
-                
+
                 var moveResult = issue.MoveBack();
                 if (moveResult.IsFailure)
                     return moveResult.Error;

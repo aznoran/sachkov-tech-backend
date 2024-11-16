@@ -26,8 +26,7 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
         IIssuesRepository issuesRepository,
         ILessonsRepository lessonsRepository,
         IModulesRepository modulesRepository,
-        [FromKeyedServices(SharedKernel.Modules.Issues)]
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<UpdateIssueMainInfoCommand> validator,
         ILogger<UpdateIssueMainInfoHandler> logger)
     {
@@ -53,15 +52,17 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
         if (issueResult.IsFailure)
             return Errors.General.NotFound(command.IssueId).ToErrorList();
 
-        var lessonResult = await _lessonsRepository.GetById(command.LessonId, cancellationToken);
-        if (lessonResult.IsFailure)
-            return lessonResult.Error.ToErrorList();
+        LessonId? lessonId = null;
+        if (command.LessonId is not null)
+        {
+            var lessonResult = await _lessonsRepository.GetById(command.LessonId, cancellationToken);
+            if (lessonResult.IsFailure)
+                return lessonResult.Error.ToErrorList();
 
-        var oldModuleId = issueResult.Value.ModuleId;
-        if (oldModuleId is null)
-            return Errors.General.NotFound(name: "old module id").ToErrorList();
+            lessonId = lessonResult.Value.Id;
+        }
 
-        var oldModule = await _modulesRepository.GetById(oldModuleId, cancellationToken);
+        var oldModule = await _modulesRepository.GetById(issueResult.Value.ModuleId, cancellationToken);
         if (oldModule.IsFailure)
             return oldModule.Error.ToErrorList();
 
@@ -72,7 +73,6 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
         var title = Title.Create(command.Title).Value;
         var description = Description.Create(command.Description).Value;
         var experience = Experience.Create(command.Experience).Value;
-        var lessonId = LessonId.Create(lessonResult.Value.Id);
         var moduleId = moduleResult.Value.Id;
         var position = Position.Create(moduleResult.Value.IssuesPosition.Count + 1);
         if (position.IsFailure)

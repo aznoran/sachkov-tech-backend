@@ -21,8 +21,7 @@ public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
     public ForceDeleteIssueHandler(
         IIssuesRepository issuesRepository,
         IModulesRepository modulesRepository,
-        [FromKeyedServices(SharedKernel.Modules.Issues)]
-        IUnitOfWork unitOfWork,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<DeleteIssueCommand> validator,
         ILogger<ForceDeleteIssueHandler> logger)
     {
@@ -49,16 +48,13 @@ public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
 
         var result = _issuesRepository.Delete(issueResult.Value);
 
-        if (issueResult.Value.ModuleId is not null)
+        var moduleIssuesResult = await _modulesRepository.GetById(issueResult.Value.ModuleId, cancellationToken);
+        if (moduleIssuesResult.IsFailure)
         {
-            var moduleIssuesResult = await _modulesRepository.GetById(issueResult.Value.ModuleId, cancellationToken);
-            if (moduleIssuesResult.IsFailure)
-            {
-                return moduleIssuesResult.Error.ToErrorList();
-            }
-
-            moduleIssuesResult.Value.DeleteIssuePosition(command.IssueId);
+            return moduleIssuesResult.Error.ToErrorList();
         }
+
+        moduleIssuesResult.Value.DeleteIssuePosition(command.IssueId);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 
