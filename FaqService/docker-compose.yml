@@ -1,0 +1,26 @@
+﻿services:
+  postgres:
+    container_name: faq_service
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: faq_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5434:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    restart: always
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:5341
+      - 8081:80
+        
+volumes:
+  postgres-data:
+  minio-data:
