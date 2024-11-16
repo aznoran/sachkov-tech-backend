@@ -70,7 +70,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                 FileId.Create)
             .HasColumnName("files");
 
-        builder.Property<bool>("_isDeleted")
+        builder.Property<bool>("IsDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
 

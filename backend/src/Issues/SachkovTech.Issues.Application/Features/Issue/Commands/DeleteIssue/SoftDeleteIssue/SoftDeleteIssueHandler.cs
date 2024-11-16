@@ -41,8 +41,8 @@ public class SoftDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
         if (issueResult.IsFailure)
             return issueResult.Error.ToErrorList();
 
-        _issuesRepository.Delete(issueResult.Value);
-
+        issueResult.Value.SoftDelete();
+        
         await _unitOfWork.SaveChanges(cancellationToken);
 
         _logger.LogInformation(
