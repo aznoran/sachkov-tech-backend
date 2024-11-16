@@ -8,14 +8,10 @@ namespace SachkovTech.Framework.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
-    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PermissionRequirementHandler(
-        IServiceScopeFactory serviceScopeFactory,
-        IHttpContextAccessor httpContextAccessor)
+    public PermissionRequirementHandler(IHttpContextAccessor httpContextAccessor)
     {
-        _serviceScopeFactory = serviceScopeFactory;
         _httpContextAccessor = httpContextAccessor;
     }
 
