@@ -17,7 +17,6 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
 {
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly IReadDbContext _readDbContext;
-    private readonly IFilesContracts _filesContracts;
     private readonly ILogger<TakeOnWorkHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -26,14 +25,12 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         IReadDbContext readDbContext,
         ILogger<TakeOnWorkHandler> logger,
         [FromKeyedServices(SharedKernel.Modules.Issues)]
-        IUnitOfWork unitOfWork,
-        IFilesContracts filesContracts)
+        IUnitOfWork unitOfWork)
     {
         _userIssueRepository = userIssueRepository;
         _readDbContext = readDbContext;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _filesContracts = filesContracts;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -89,16 +86,14 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         if (issueDto is null)
             return Errors.General.NotFound(issueId).ToErrorList();
 
-        var fileLinks = await _filesContracts.GetLinkFiles(issueDto.Files);
-
-        var response = new IssueResponse(
-            issueDto.Id,
-            issueDto.ModuleId,
-            issueDto.Title,
-            issueDto.Description,
-            null,
-            issueDto.LessonId,
-            fileLinks.Select(f => new FileResponse(f.FileId, f.Link)).ToArray());
+        var response = new IssueResponse
+        {
+            Id = issueDto.Id,
+            ModuleId = issueDto.ModuleId.Value,
+            Title = issueDto.Title,
+            Description = issueDto.Description,
+            LessonId = issueDto.LessonId.Value,
+        };
 
         return response;
     }

@@ -10,12 +10,12 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesByModuleWithPagination;
 
-public class GetIssuesByModuleWithPaginationHandlerDapper
+public class GetIssuesByModuleWithPaginationHandler
     : IQueryHandlerWithResult<PagedList<IssueResponse>, GetFilteredIssuesByModuleWithPaginationQuery>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
-    public GetIssuesByModuleWithPaginationHandlerDapper(ISqlConnectionFactory sqlConnectionFactory)
+    public GetIssuesByModuleWithPaginationHandler(ISqlConnectionFactory sqlConnectionFactory)
     {
         _sqlConnectionFactory = sqlConnectionFactory;
     }
@@ -46,14 +46,13 @@ public class GetIssuesByModuleWithPaginationHandlerDapper
             
             """);
 
-        // if (!string.IsNullOrWhiteSpace(query.Title))
-        // {
-        //     sqlBuilder.Append("\nAND i.title ILIKE @Title");
-        //     parameters.Add("@Title", $"%{query.Title}%");
-        // }
+        if (!string.IsNullOrWhiteSpace(query.Title))
+        {
+            sqlBuilder.Append("\nAND i.title ILIKE @Title");
+            parameters.Add("@Title", $"%{query.Title}%");
+        }
 
         sqlBuilder.ApplySorting(query.SortBy, query.SortDirection);
-        
         sqlBuilder.ApplyPagination(parameters, query.Page, query.PageSize);
 
         var totalCountSql = new StringBuilder(
@@ -73,20 +72,8 @@ public class GetIssuesByModuleWithPaginationHandlerDapper
             totalCountSql.ToString(),
             parameters);
 
-        Console.WriteLine(sqlBuilder.ToString());
-        
-        var issues = await connection.QueryAsync<IssueResponse, string, IssueResponse>(
+        var issues = await connection.QueryAsync<IssueResponse>(
             sqlBuilder.ToString(),
-            (issue, jsonFiles) =>
-            {
-                var files = JsonSerializer.Deserialize<Guid[]>(jsonFiles) ?? Array.Empty<Guid>();
-
-                // TODO: Заполнение файлов в ответе не работает
-                //issue.Files = files.Select(f => new FileResponse(f, "")).ToArray();
-
-                return issue;
-            },
-            splitOn: "files",
             param: parameters);
 
         return new PagedList<IssueResponse>

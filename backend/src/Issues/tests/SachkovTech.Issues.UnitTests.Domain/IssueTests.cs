@@ -11,20 +11,6 @@ namespace SachkovTech.Issues.UnitTests.Domain;
 public class IssueTests
 {
     [Fact]
-    public void Get_issue_by_id_should_return_correct_issue()
-    {
-        // Arrange
-        var issue = CreateAndFillIssue();
-        var issueId = issue.Id;
-
-        // Act
-        var result = issue.Id.Equals(issueId);
-
-        // Assert
-        result.Should().BeTrue();
-    }
-
-    [Fact]
     public void Update_issue_main_info()
     {
         // Arrange

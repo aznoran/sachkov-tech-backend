@@ -11,12 +11,10 @@ namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
 public class GetIssueByIdHandler : IQueryHandlerWithResult<IssueResponse, GetIssueByIdQuery>
 {
     private readonly IReadDbContext _readDbContext;
-    private readonly IFilesContracts _filesContracts;
 
-    public GetIssueByIdHandler(IReadDbContext readDbContext, IFilesContracts filesContracts)
+    public GetIssueByIdHandler(IReadDbContext readDbContext)
     {
         _readDbContext = readDbContext;
-        _filesContracts = filesContracts;
     }
 
     public async Task<Result<IssueResponse, ErrorList>> Handle(
@@ -29,18 +27,15 @@ public class GetIssueByIdHandler : IQueryHandlerWithResult<IssueResponse, GetIss
         if (issueDto is null)
             return Errors.General.NotFound(query.IssueId).ToErrorList();
 
-        var fileLinks = await _filesContracts.GetLinkFiles(issueDto.Files, cancellationToken);
-
-        
         // Todo Переделать null
-        var response = new IssueResponse(
-            issueDto.Id,
-            issueDto.ModuleId,
-            issueDto.Title,
-            issueDto.Description,
-            null,
-            issueDto.LessonId,
-            fileLinks.Select(f => new FileResponse(f.FileId, f.Link)).ToArray());
+        var response = new IssueResponse
+        {
+            Id = issueDto.Id,
+            ModuleId = issueDto.ModuleId.Value,
+            Title = issueDto.Title,
+            Description = issueDto.Description,
+            LessonId = issueDto.LessonId.Value,
+        };
 
         return response;
     }
