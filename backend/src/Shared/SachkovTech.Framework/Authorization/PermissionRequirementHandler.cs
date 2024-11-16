@@ -9,40 +9,35 @@ namespace SachkovTech.Framework.Authorization;
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public PermissionRequirementHandler(IServiceScopeFactory serviceScopeFactory)
+    public PermissionRequirementHandler(
+        IServiceScopeFactory serviceScopeFactory,
+        IHttpContextAccessor httpContextAccessor)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
+        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated 
+                                          || _httpContextAccessor.HttpContext is null)
         {
             context.Fail();
             return;
         }
-        
-        var userIdString = context.User.Claims
-             .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
-        
-         if (!Guid.TryParse(userIdString, out var userId))
-         {
-             context.Fail();
-             return;
-         }
 
-        var permissions = context.User.Claims
-            .Where(c => c.Type == CustomClaims.Permission)
-            .Select(c => c.Value)
-            .ToList();
-        
-        if (permissions.Contains(permission.Code))
+        if (_httpContextAccessor.HttpContext.Items.TryGetValue("user-scoped-data", out var userScopedDataObj) &&
+            userScopedDataObj is UserScopedData userScopedData)
         {
-            context.Succeed(permission);
-            return;
+            if (userScopedData.Permissions.Contains(permission.Code))
+            {
+                context.Succeed(permission);
+                return;
+            }
         }
         
         context.Fail();

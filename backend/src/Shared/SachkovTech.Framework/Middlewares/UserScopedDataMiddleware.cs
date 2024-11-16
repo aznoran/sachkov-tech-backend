@@ -47,6 +47,8 @@ public class UserScopedDataMiddleware
             .Where(c => c.Type == CustomClaims.Role)
             .Select(c => c.Value)
             .ToList();
+
+        context.Items["user-scoped-data"] = userScopedData;
         
         _logger.LogInformation("Roles and permission sets to user scoped data");
             

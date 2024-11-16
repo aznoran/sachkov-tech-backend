@@ -92,6 +92,7 @@ public static class DependencyInjection
 
     public static IServiceCollection AddFramework(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
         services.AddScoped<UserScopedData>();
 
         return services;
