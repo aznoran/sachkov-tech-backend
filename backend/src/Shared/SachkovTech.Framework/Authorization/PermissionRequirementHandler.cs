@@ -26,16 +26,14 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
             return;
         }
 
-        if (_httpContextAccessor.HttpContext.Items.TryGetValue("user-scoped-data", out var userScopedDataObj) &&
-            userScopedDataObj is UserScopedData userScopedData)
+        var userScopedData = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<UserScopedData>();
+
+        if (userScopedData.Permissions.Contains(permission.Code))
         {
-            if (userScopedData.Permissions.Contains(permission.Code))
-            {
-                context.Succeed(permission);
-                return;
-            }
+            context.Succeed(permission);
+            return;
         }
-        
+
         context.Fail();
     }
 }
