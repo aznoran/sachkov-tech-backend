@@ -1,34 +1,41 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Models;
-using SachkovTech.Framework.Models;
 
 namespace SachkovTech.Framework.Authorization;
 
 public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttribute>
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public PermissionRequirementHandler(IHttpContextAccessor httpContextAccessor)
+    public PermissionRequirementHandler(IServiceScopeFactory serviceScopeFactory)
     {
-        _httpContextAccessor = httpContextAccessor;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated 
-                                          || _httpContextAccessor.HttpContext is null)
-        {
-            context.Fail();
-            return;
-        }
+        using var scope = _serviceScopeFactory.CreateScope();
 
-        var userScopedData = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<UserScopedData>();
+        //var accountContract = scope.ServiceProvider.GetRequiredService<IAccountsContract>();
 
-        if (userScopedData.Permissions.Contains(permission.Code))
+        // var userIdString = context.User.Claims
+        //     .FirstOrDefault(claim => claim.Type == CustomClaims.Id)?.Value;
+        //
+        // if (!Guid.TryParse(userIdString, out var userId))
+        // {
+        //     context.Fail();
+        //     return;
+        // }
+
+        var permissions = context.User.Claims
+            .Where(c => c.Type == CustomClaims.Permission)
+            .Select(c => c.Value)
+            .ToList();
+
+        if (permissions.Contains(permission.Code))
         {
             context.Succeed(permission);
             return;

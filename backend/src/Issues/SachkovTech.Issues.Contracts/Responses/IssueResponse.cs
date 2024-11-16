@@ -1,16 +1,17 @@
 ﻿namespace SachkovTech.Issues.Contracts.Responses
 {
-    public record IssueResponse(
-        Guid Id,
-        Guid ModuleId,
-        string Title,
-        string Description,
-        int Position,
-        Guid? LessonId,
-        FileResponse[] Files);
+    public class IssueResponse
+    {
+        public Guid Id { get; init; }
 
-    public record FileResponse(
-        Guid Id,
-        string Link
-        );
+        public Guid ModuleId { get; init; }
+
+        public string Title { get; init; } = default!;
+
+        public string Description { get; init; } = default!;
+
+        public int? Position { get; init; }
+
+        public Guid LessonId { get; init; }
+    }
 }

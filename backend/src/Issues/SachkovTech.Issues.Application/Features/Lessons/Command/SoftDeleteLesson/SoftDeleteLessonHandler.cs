@@ -10,7 +10,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Command.SoftDeleteLess
 
 public class SoftDeleteLessonHandler(
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<AddIssueToLessonHandler> logger) : ICommandHandler<SoftDeleteLessonCommand>
 {
     public async Task<UnitResult<ErrorList>> Handle(

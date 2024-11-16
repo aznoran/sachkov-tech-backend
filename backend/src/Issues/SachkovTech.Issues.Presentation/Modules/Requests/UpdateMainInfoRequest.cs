@@ -1,4 +1,4 @@
-using SachkovTech.Issues.Application.Features.Module.Commands.UpdateMainInfo;
+using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 
 namespace SachkovTech.Issues.Presentation.Modules.Requests;
 

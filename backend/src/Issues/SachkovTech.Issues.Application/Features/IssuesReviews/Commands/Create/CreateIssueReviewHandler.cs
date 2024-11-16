@@ -14,18 +14,18 @@ namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.Create;
 
 public class CreateIssueReviewHandler : ICommandHandler<Guid, CreateIssueReviewCommand>
 {
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<CreateIssueReviewCommand> _validator;
     private readonly ILogger<CreateIssueReviewHandler> _logger;
 
     public CreateIssueReviewHandler(
-        IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        IIssuesReviewRepository issuesReviewRepository,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<CreateIssueReviewCommand> validator,
         ILogger<CreateIssueReviewHandler> logger)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -51,7 +51,7 @@ public class CreateIssueReviewHandler : ICommandHandler<Guid, CreateIssueReviewC
             return issueReview.Error.ToErrorList();
         }
 
-        await _issueReviewRepository.Add(issueReview.Value, cancellationToken);
+        await _issuesReviewRepository.Add(issueReview.Value, cancellationToken);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

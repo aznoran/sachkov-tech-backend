@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Dtos;
@@ -12,8 +13,11 @@ public class ModuleDtoConfiguration : IEntityTypeConfiguration<ModuleDto>
 
         builder.HasKey(i => i.Id);
 
-        builder.HasMany(i => i.Issues)
-            .WithOne()
-            .HasForeignKey(i => i.ModuleId);
+        builder.Property(i => i.IssuesPosition)
+            .HasConversion(
+                issues => string.Empty,
+                json => JsonSerializer.Deserialize<IssuePositionDto[]>(json, JsonSerializerOptions.Default) ??
+                        Array.Empty<IssuePositionDto>())
+            .HasColumnType("jsonb");
     }
 }

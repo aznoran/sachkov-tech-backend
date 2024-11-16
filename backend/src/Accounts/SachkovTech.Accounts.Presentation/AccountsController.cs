@@ -6,7 +6,7 @@ using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Contracts.Requests;
-using SachkovTech.Accounts.Infrastructure.Providers;
+using SachkovTech.Accounts.Presentation.Providers;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Framework.Models;

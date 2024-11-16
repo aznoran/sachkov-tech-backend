@@ -10,11 +10,11 @@
       <ProjectReference Include="..\SachkovTech.Issues.Application\SachkovTech.Issues.Application.csproj" />
     </ItemGroup>
 
-	<ItemGroup>
-		<Protobuf Include="Grpc\Protos\**\*.proto" GrpcServices="None" />
-		<Protobuf Update="Grpc\Protos\Services\**\*.proto" GrpcServices="Client" />
-		<Compile Include="obj\Debug\net8.0\Grpc\Protos\**\*.cs" />
-	</ItemGroup>
+<!--	<ItemGroup>-->
+<!--		<Protobuf Include="Grpc\Protos\**\*.proto" GrpcServices="None" />-->
+<!--		<Protobuf Update="Grpc\Protos\Services\**\*.proto" GrpcServices="Client" />-->
+<!--		<Compile Include="obj\Debug\net8.0\Grpc\Protos\**\*.cs" />-->
+<!--	</ItemGroup>-->
 
 	<ItemGroup>
       <PackageReference Include="EFCore.NamingConventions" Version="8.0.3" />

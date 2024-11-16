@@ -18,7 +18,11 @@
       "review.issues.comment",
       "files.read",
       "files.upload",
-      "accounts.enroll"
+      "accounts.enroll",
+      "modules.read",
+      "modules.create",
+      "modules.update",
+      "modules.delete"
     ],
     "Student": [
       "lessons.read",

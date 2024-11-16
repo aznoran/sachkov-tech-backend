@@ -11,7 +11,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Command.RemoveIssueFro
 public class RemoveIssueFromLessonHandler(
     IReadDbContext readDbContext,
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<RemoveIssueFromLessonHandler> logger) : ICommandHandler<RemoveIssueFromLessonCommand>
 {
     public async Task<UnitResult<ErrorList>> Handle(

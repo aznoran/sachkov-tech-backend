@@ -1,8 +1,5 @@
-using FileService.Communication;
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
-using SachkovTech.Core.Extensions;
-using SachkovTech.Framework.Middlewares;
 using SachkovTech.Web;
 using SachkovTech.Web.Middlewares;
 using Serilog;
@@ -44,7 +41,6 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddLogging(builder.Configuration);
 
-builder.Services.AddFramework();
 builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
@@ -56,15 +52,17 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAuthServices(builder.Configuration);
 
-builder.Services.AddFileHttpCommunication(builder.Configuration);
-
 var app = builder.Build();
 
-// app.Services.RunMigrations();
-
-// var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+// await using var scope = app.Services.CreateAsyncScope();
 //
-// await accountsSeeder.SeedAsync();
+// var dbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
+//
+// await dbContext.Database.MigrateAsync();
+
+var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
+
+await accountsSeeder.SeedAsync();
 
 app.UseExceptionMiddleware();
 
@@ -85,7 +83,6 @@ app.UseCors(config =>
 });
 
 app.UseAuthentication();
-app.UseScopeDataMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();

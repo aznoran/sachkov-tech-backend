@@ -127,9 +127,6 @@ public sealed class IssueReview : Entity<IssueReviewId>
             return Errors.General.NotFound(commentId.Value, "comment_id");
         }
 
-        var a = UserId != userId && ReviewerId != null && ReviewerId != userId;
-        var b = comment.UserId != userId;
-
         if (UserId != userId && ReviewerId != null && ReviewerId != userId
             || comment.UserId != userId)
         {

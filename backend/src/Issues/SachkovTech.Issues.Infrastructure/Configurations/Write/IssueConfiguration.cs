@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Domain.Module.Entities;
+using SachkovTech.Issues.Domain.Issue;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -26,29 +27,25 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
             .HasConversion(
                 id => id.Value,
                 value => IssueId.Create(value));
+        
+        builder.Property(i => i.ModuleId)
+            .HasConversion(
+                id => id.Value,
+                value => ModuleId.Create(value))
+            .IsRequired(false);
 
-        builder.ComplexProperty(i => i.LessonId,
-            lb =>
-            {
-                lb.Property(l => l.Value)
-                    .IsRequired()
-                    .HasColumnName("lesson_id");
-            });
-
+        builder.Property(i => i.LessonId)
+            .IsRequired(false)
+            .HasConversion(
+                id => id.Value,
+                value => LessonId.Create(value));
+        
         builder.ComplexProperty(i => i.Experience,
-            lb =>
+            eb =>
             {
-                lb.Property(l => l.Value)
+                eb.Property(e => e.Value)
                     .IsRequired()
                     .HasColumnName("experience");
-            });
-
-        builder.ComplexProperty(i => i.Position,
-            lb =>
-            {
-                lb.Property(l => l.Value)
-                    .IsRequired()
-                    .HasColumnName("position");
             });
 
         builder.ComplexProperty(m => m.Title, tb =>
