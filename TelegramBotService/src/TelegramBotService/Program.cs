@@ -1,7 +1,13 @@
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using Serilog;
 using Serilog.Events;
 using Telegram.Bot;
+using TelegramBotService.Abstractions;
+using TelegramBotService.Factory;
+using TelegramBotService.Handlers.Commands;
+using TelegramBotService.Handlers.Messages;
+using TelegramBotService.MongoDataAccess;
 using TelegramBotService.Options;
 using TelegramBotService.Services;
 
@@ -34,9 +40,28 @@ builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
         return new TelegramBotClient(botOptions, httpClient);
     });
 
+builder.Services.AddSingleton<IMongoClient>
+    (new MongoClient(builder.Configuration.GetConnectionString("MongoConnection")));
+
+builder.Services.AddScoped<MongoDbContext>();
+builder.Services.AddScoped<IUserStateRepository, UserStateRepository>();
+
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddScoped<ReceiverService>();
 builder.Services.AddHostedService<PollingService>();
+
+builder.Services.AddScoped<OnCommandHandler>();
+builder.Services.AddScoped<LoginCommandHandler>();
+builder.Services.AddScoped<HelpCommandHandler>();
+
+
+builder.Services.AddScoped<IUserStateRepository, UserStateRepository>();
+builder.Services.AddScoped<IUserStateProvider, UserStateProvider>();
+
+builder.Services.AddScoped<IUserStateMachineFactory, UserStateMachineFactory>();
+builder.Services.AddScoped<OnMessageHandler>();
+builder.Services.AddScoped<UserStateFactory>();
+
 
 var app = builder.Build();
 
