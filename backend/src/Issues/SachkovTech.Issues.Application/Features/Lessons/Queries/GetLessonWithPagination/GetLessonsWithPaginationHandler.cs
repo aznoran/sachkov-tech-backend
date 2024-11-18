@@ -1,6 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using FileService.Communication;
-using FileService.Contracts;
+//using FileService.Communication;
+//using FileService.Contracts;
 using FluentValidation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
@@ -12,7 +12,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonWithP
 
 public class GetLessonsWithPaginationHandler(
     IValidator<GetLessonsWithPaginationValidatorQuery> validator,
-    FileHttpClient fileHttpClient,
+    //FileHttpClient fileHttpClient,
     IReadDbContext context)
     : IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationValidatorQuery>
 {
@@ -31,8 +31,8 @@ public class GetLessonsWithPaginationHandler(
         // var videoIds = lessonsPagedList.Items.Select(l => l.VideoId);
         List<Guid> videoIds = [Guid.Parse("2572d9ad-a013-4645-be3e-b79dbfcd4c09")];
 
-        var videoUrlsResult = await fileHttpClient.GetFilesPresignedUrls(new GetFilesPresignedUrlsRequest(videoIds), cancellationToken);
-        if (videoUrlsResult.IsFailure)
+        //var videoUrlsResult = await fileHttpClient.GetFilesPresignedUrls(new GetFilesPresignedUrlsRequest(videoIds), cancellationToken);
+        //if (videoUrlsResult.IsFailure)
             return Errors.General.NotFound().ToErrorList();
 
         var videoUrl = "videoUrl";

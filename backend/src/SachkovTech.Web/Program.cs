@@ -1,4 +1,4 @@
-using FileService.Communication;
+//using FileService.Communication;
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
 using SachkovTech.Core.Extensions;
@@ -54,7 +54,7 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddAuthServices(builder.Configuration);
 
-builder.Services.AddFileHttpCommunication(builder.Configuration);
+//builder.Services.AddFileHttpCommunication(builder.Configuration);
 
 var app = builder.Build();
 
@@ -88,3 +88,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

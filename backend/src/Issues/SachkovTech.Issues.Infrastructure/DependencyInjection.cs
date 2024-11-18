@@ -17,7 +17,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
@@ -47,10 +47,15 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<IssuesWriteDbContext>();
-        services.AddScoped<IReadDbContext, IssuesReadDbContext>();
+        services.AddScoped<IssuesWriteDbContext>(provider =>
+            new IssuesWriteDbContext(configuration.GetConnectionString("Database")!));
+        
+        services.AddScoped<IReadDbContext, IssuesReadDbContext>(provider =>
+            new IssuesReadDbContext(configuration.GetConnectionString("Database")!));
 
         return services;
     }
