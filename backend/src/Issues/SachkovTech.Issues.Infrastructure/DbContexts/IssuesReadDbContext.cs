@@ -15,8 +15,6 @@ public class IssuesReadDbContext : DbContext, IReadDbContext
         _connectionString = connectionString;
     }
     
-    public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
-    
     public IQueryable<IssueDto> Issues => Set<IssueDto>();
     
     public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
