@@ -1,7 +1,10 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Models;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Web.Middlewares;
+namespace SachkovTech.Framework.Middlewares;
 
 public class ExceptionMiddleware
 {

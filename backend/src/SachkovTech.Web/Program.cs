@@ -1,7 +1,7 @@
 using Microsoft.OpenApi.Models;
 using SachkovTech.Accounts.Infrastructure.Seeding;
+using SachkovTech.Framework.Middlewares;
 using SachkovTech.Web;
-using SachkovTech.Web.Middlewares;
 using Serilog;
 
 
