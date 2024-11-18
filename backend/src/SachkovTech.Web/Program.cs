@@ -84,6 +84,7 @@ app.UseCors(config =>
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseScopeDataMiddleware();
 
 app.MapControllers();
 
