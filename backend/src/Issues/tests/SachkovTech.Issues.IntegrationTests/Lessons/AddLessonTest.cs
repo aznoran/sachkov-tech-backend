@@ -4,42 +4,31 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
-using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
-namespace SachkovTech.Issues.IntegrationTests;
+namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
-public class LessonsTests : IClassFixture<IntegrationTestsWebAppFactory>
+public class AddLessonTest : LessonsTestsBase
 {
-    private readonly IntegrationTestsWebAppFactory _factory;
     private readonly Mock<ILogger<AddLessonHandler>> _loggerMock = new ();
     
-
-    public LessonsTests(IntegrationTestsWebAppFactory factory)
+    public AddLessonTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
-        _factory = factory;
+        
     }
-
+    
     [Fact]
     public async Task Add_Lesson_Should_Add_Lesson_To_Database()
     {
         // act
-        using var scope = _factory.Services.CreateScope();
-        
-        var repository = scope.ServiceProvider.GetRequiredService<ILessonsRepository>();
-        var unitOfWork = scope.ServiceProvider.GetRequiredKeyedService<IUnitOfWork>(Modules.Issues);
-        var validator = scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
-        var writeDbContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
-        var readDbContext = scope.ServiceProvider.GetRequiredService<IReadDbContext>();
+        var validator = _scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
         var cancellationToken = new CancellationTokenSource().Token;
 
-        var moduleId = await SeedDatabase(writeDbContext, cancellationToken);
+        var moduleId = await AddModuleToDatabase(_writeDbContext, cancellationToken);
 
         var guids = new Guid[]
         {
@@ -59,24 +48,25 @@ public class LessonsTests : IClassFixture<IntegrationTestsWebAppFactory>
             guids);
 
         var handler = new AddLessonHandler(
-            readDbContext,
+            _readDbContext,
             validator,
-            repository,
-            unitOfWork,
+            _repository,
+            _unitOfWork,
             _loggerMock.Object);
         
         // arrange
         var result = await handler.Handle(command, cancellationToken); 
-        var lesson = await readDbContext.Lessons
-            .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
         
         //assert
+        var lesson = await _readDbContext.Lessons
+            .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
+        
         result.IsSuccess.Should().BeTrue();
         lesson.Should().NotBeNull();
         lesson?.Title.Should().Be(command.Title);
     }
 
-    private async Task<Guid> SeedDatabase(
+    private async Task<Guid> AddModuleToDatabase(
         IssuesWriteDbContext dbContext,
         CancellationToken cancellationToken = default)
     {
