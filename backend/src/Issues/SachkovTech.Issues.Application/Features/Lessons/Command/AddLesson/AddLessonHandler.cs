@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.Issues.Domain.Lesson;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
@@ -18,7 +18,7 @@ public class AddLessonHandler(
     IReadDbContext readDbContext,
     IValidator<AddLessonCommand> validator,
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<AddLessonHandler> logger) : ICommandHandler<Guid, AddLessonCommand>
 {
     public async Task<Result<Guid, ErrorList>> Handle(

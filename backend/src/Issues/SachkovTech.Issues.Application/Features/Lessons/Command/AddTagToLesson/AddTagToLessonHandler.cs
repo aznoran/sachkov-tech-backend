@@ -9,7 +9,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Command.AddTagToLesson
 
 public class AddTagToLessonHandler(
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<AddTagToLessonHandler> logger) : ICommandHandler<AddTagToLessonCommand>
 {
     public async Task<UnitResult<ErrorList>> Handle(AddTagToLessonCommand command, CancellationToken cancellationToken = default)

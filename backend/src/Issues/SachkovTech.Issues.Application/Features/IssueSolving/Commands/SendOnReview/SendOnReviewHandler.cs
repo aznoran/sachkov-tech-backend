@@ -16,18 +16,18 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
 {
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly ILogger<SendOnReviewHandler> _logger;
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<SendOnReviewCommand> _validator;
 
     public SendOnReviewHandler(
         IUserIssueRepository userIssueRepository,
         ILogger<SendOnReviewHandler> logger,
-        IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        IIssuesReviewRepository issuesReviewRepository,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<SendOnReviewCommand> validator)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _logger = logger;
         _userIssueRepository = userIssueRepository;
         _unitOfWork = unitOfWork;
@@ -93,7 +93,7 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
             return issueReview.Error.ToErrorList();
         }
 
-        await _issueReviewRepository.Add(issueReview.Value, cancellationToken);
+        await _issuesReviewRepository.Add(issueReview.Value, cancellationToken);
 
         return issueReview.Value.Id.Value;
     }

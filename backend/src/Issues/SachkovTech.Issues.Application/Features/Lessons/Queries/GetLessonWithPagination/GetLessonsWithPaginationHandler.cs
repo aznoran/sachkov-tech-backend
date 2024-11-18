@@ -1,6 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-//using FileService.Communication;
-//using FileService.Contracts;
 using FluentValidation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
@@ -32,8 +30,8 @@ public class GetLessonsWithPaginationHandler(
         List<Guid> videoIds = [Guid.Parse("2572d9ad-a013-4645-be3e-b79dbfcd4c09")];
 
         //var videoUrlsResult = await fileHttpClient.GetFilesPresignedUrls(new GetFilesPresignedUrlsRequest(videoIds), cancellationToken);
-        //if (videoUrlsResult.IsFailure)
-            return Errors.General.NotFound().ToErrorList();
+        // if (videoUrlsResult.IsFailure)
+        //     return Errors.General.NotFound().ToErrorList();
 
         var videoUrl = "videoUrl";
 

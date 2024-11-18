@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Issues.Domain.IssuesReviews;
-using SachkovTech.Issues.Domain.IssuesReviews.Enums;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Write;
@@ -40,9 +39,7 @@ public class IssueReviewConfiguration : IEntityTypeConfiguration<IssueReview>
 
 
         builder.Property(i => i.IssueReviewStatus)
-            .HasConversion(
-                status => status.ToString(),
-                value => (IssueReviewStatus)Enum.Parse(typeof(IssueReviewStatus), value))
+            .HasConversion<string>()
             .HasColumnName("issue_review_status")
             .IsRequired();
 

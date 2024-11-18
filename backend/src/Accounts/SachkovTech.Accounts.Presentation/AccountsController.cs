@@ -6,9 +6,10 @@ using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Contracts.Requests;
-using SachkovTech.Accounts.Infrastructure.Providers;
+using SachkovTech.Accounts.Presentation.Providers;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
+using SachkovTech.Framework.Models;
 
 namespace SachkovTech.Accounts.Presentation;
 
@@ -23,8 +24,9 @@ public class AccountsController : ApplicationController
 
     [HttpPost("test")]
     [Permission(Permissions.Issues.ReadIssue)]
-    public async Task<IActionResult> Test(CancellationToken cancellationToken)
+    public async Task<IActionResult> Test([FromServices] UserScopedData user, CancellationToken cancellationToken)
     {
+        
         return Ok("test");
     }
 
@@ -142,7 +144,7 @@ public class AccountsController : ApplicationController
 
         return Ok();
     }
-
+    
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser(
         [FromRoute] Guid userId,

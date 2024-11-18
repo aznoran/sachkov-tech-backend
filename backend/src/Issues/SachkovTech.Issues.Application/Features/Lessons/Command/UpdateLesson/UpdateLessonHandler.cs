@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
+using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 
@@ -14,7 +14,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Command.UpdateLesson;
 public class UpdateLessonHandler(
     IValidator<UpdateLessonCommand> validator,
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<UpdateLessonHandler> logger) : ICommandHandler<UpdateLessonCommand>
 {
     public async Task<UnitResult<ErrorList>> Handle(

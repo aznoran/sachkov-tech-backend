@@ -1,103 +1,24 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SachkovTech.Core.Dtos;
-using SachkovTech.Files.Contracts.Converters;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
-using SachkovTech.Issues.Application.Features.Module.Commands.AddIssue;
-using SachkovTech.Issues.Application.Features.Module.Commands.Create;
-using SachkovTech.Issues.Application.Features.Module.Commands.Delete;
-using SachkovTech.Issues.Application.Features.Module.Commands.DeleteIssue;
-using SachkovTech.Issues.Application.Features.Module.Commands.DeleteIssue.SoftDeleteIssue;
-using SachkovTech.Issues.Application.Features.Module.Commands.ForceDeleteIssue;
-using SachkovTech.Issues.Application.Features.Module.Commands.RestoreIssue;
-using SachkovTech.Issues.Application.Features.Module.Commands.UpdateIssueMainInfo;
-using SachkovTech.Issues.Application.Features.Module.Commands.UpdateIssuePosition;
-using SachkovTech.Issues.Application.Features.Module.Commands.UpdateMainInfo;
-using SachkovTech.Issues.Application.Features.Module.Commands.UploadFilesToIssue;
+using SachkovTech.Issues.Application.Features.Modules.Commands.Create;
+using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
+using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
+using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
+using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 using SachkovTech.Issues.Presentation.Modules.Requests;
-using SachkovTech.Issues.Presentation.Modules.Responses;
 
 namespace SachkovTech.Issues.Presentation.Modules;
 
 public class ModulesController : ApplicationController
 {
     [HttpGet]
-    public ActionResult Get()
+    public async Task<IActionResult> Get(
+        [FromQuery] GetModulesWithPaginationQuery query,
+        [FromServices] GetModulesWithPaginationHandler handler,
+        CancellationToken cancellationToken)
     {
-        List<ModuleDto> response =
-        [
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 1",
-                Description = "Description 1",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 2",
-                Description = "Description 2",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 3",
-                Description = "Description 3",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 4",
-                Description = "Description 4",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 5",
-                Description = "Description 5",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 6",
-                Description = "Description 6",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 7",
-                Description = "Description 7",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 8",
-                Description = "Description 8",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 9",
-                Description = "Description 9",
-                Issues = []
-            },
-            new()
-            {
-                Id = Guid.NewGuid(),
-                Title = "Module 10",
-                Description = "Description 10",
-                Issues = []
-            }
-        ];
+        var response = await handler.Handle(query, cancellationToken);
 
         return Ok(response);
     }
@@ -115,49 +36,6 @@ public class ModulesController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Issues.CreateIssue)]
-    [HttpPost("{id:guid}/issue")]
-    public async Task<ActionResult> AddIssue(
-        [FromRoute] Guid id,
-        [FromBody] AddIssueRequest request,
-        [FromServices] AddIssueHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand(id);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Files.Upload)]
-    [Permission(Permissions.Issues.UpdateIssue)]
-    [HttpPost("{moduleId:guid}/issue/{issueId:guid}/files")]
-    public async Task<ActionResult> UploadFilesToIssue(
-        [FromRoute] Guid moduleId,
-        [FromRoute] Guid issueId,
-        [FromForm] IFormFileCollection files,
-        [FromServices] UploadFilesToIssueHandler handler,
-        [FromServices] IFormFileConverter fileConverter,
-        CancellationToken cancellationToken)
-    {
-        var fileDtos = fileConverter.ToUploadFileDtos(files);
-
-        var command = new UploadFilesToIssueCommand(moduleId, issueId, fileDtos);
-
-        var result = await handler.Handle(command, cancellationToken);
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        var response = UploadFilesToIssueResponse
-            .MapFromUploadFilesResult(result.Value);
-
-        return Ok(response);
     }
 
     [Permission(Permissions.Modules.UpdateModule)]
@@ -178,11 +56,11 @@ public class ModulesController : ApplicationController
     }
 
     [Permission(Permissions.Issues.UpdateIssue)]
-    [HttpPut("{id:guid}/issue/{issueId:guid}/newPosition/{newPosition:int}")]
+    [HttpPut("{id:guid}/issue/{issueId:guid}")]
     public async Task<ActionResult> UpdateIssuePosition(
         [FromRoute] Guid id,
         [FromRoute] Guid issueId,
-        [FromRoute] int newPosition,
+        [FromBody] int newPosition,
         [FromServices] UpdateIssuePositionHandler handler,
         CancellationToken cancellationToken)
     {
@@ -195,43 +73,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.UpdateIssue)]
-    [HttpPut("{id:guid}/issue/{issueId:guid}/main-info")]
-    public async Task<ActionResult> UpdateIssueMainInfo(
-        [FromRoute] Guid id,
-        [FromRoute] Guid issueId,
-        [FromBody] UpdateIssueMainInfoRequest request,
-        [FromServices] UpdateIssueMainInfoHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand(id, issueId);
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Issues.UpdateIssue)]
-    [HttpPut("{moduleId:guid}/issue/{issueId:guid}/restore")]
-    public async Task<ActionResult> RestoreIssue(
-        [FromRoute] Guid moduleId,
-        [FromRoute] Guid issueId,
-        [FromServices] RestoreIssueHandler handler,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new RestoreIssueCommand(moduleId, issueId);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Modules.DeleteModule)]
+    //[Permission(Permissions.Modules.DeleteModule)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,
@@ -239,40 +81,6 @@ public class ModulesController : ApplicationController
         CancellationToken cancellationToken)
     {
         var command = new DeleteModuleCommand(id);
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Issues.DeleteIssue)]
-    [HttpDelete("{id:guid}/issue/{issueId:guid}/soft")]
-    public async Task<ActionResult> SoftDeleteIssue(
-        [FromRoute] Guid id,
-        [FromRoute] Guid issueId,
-        [FromServices] SoftDeleteIssueHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new DeleteIssueCommand(id, issueId);
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Issues.DeleteIssue)]
-    [HttpDelete("{id:guid}/issue/{issueId:guid}/force")]
-    public async Task<ActionResult> ForceDeleteIssue(
-        [FromRoute] Guid id,
-        [FromRoute] Guid issueId,
-        [FromServices] ForceDeleteIssueHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = new DeleteIssueCommand(id, issueId);
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
