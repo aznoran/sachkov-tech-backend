@@ -6,8 +6,17 @@ using SachkovTech.Issues.Application.Interfaces;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 
-public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IReadDbContext
+public class IssuesReadDbContext : DbContext, IReadDbContext
 {
+    private readonly string _connectionString;
+    
+    public IssuesReadDbContext(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+    
+    public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
+    
     public IQueryable<IssueDto> Issues => Set<IssueDto>();
     
     public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
@@ -21,7 +30,7 @@ public class IssuesReadDbContext(IConfiguration configuration) : DbContext, IRea
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("Database"));
+        optionsBuilder.UseNpgsql(_connectionString);
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.EnableSensitiveDataLogging();
         optionsBuilder.UseLoggerFactory(CreateLoggerFactory());

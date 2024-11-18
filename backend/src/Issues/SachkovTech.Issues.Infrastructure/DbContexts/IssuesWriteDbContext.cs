@@ -9,8 +9,15 @@ using SachkovTech.Issues.Domain.Module;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
 
-public class IssuesWriteDbContext(IConfiguration configuration) : DbContext
+public class IssuesWriteDbContext : DbContext
 {
+    private readonly string _connectionString;
+    
+    public IssuesWriteDbContext(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
+    
     public DbSet<Issue> Issues => Set<Issue>();
     
     public DbSet<Module> Modules => Set<Module>();
@@ -22,7 +29,7 @@ public class IssuesWriteDbContext(IConfiguration configuration) : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("Database"));
+        optionsBuilder.UseNpgsql(_connectionString);
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.EnableSensitiveDataLogging();
         optionsBuilder.UseLoggerFactory(CreateLoggerFactory());
