@@ -24,6 +24,14 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             fb.Property(a => a.SecondName).IsRequired(false).HasColumnName("second_name");
         });
 
+        builder.ComplexProperty(a => a.Photo, pb =>
+        {
+            pb.Property(p => p.FileId).IsRequired(false).HasColumnName("file_id");
+            pb.Property(p => p.FileName).IsRequired(false).HasColumnName("file_name");
+            pb.Property(p => p.ContentType).IsRequired(false).HasColumnName("content_type");
+            pb.Property(p => p.Size).IsRequired(false).HasColumnName("file_size");
+        });
+
         builder.HasOne(u => u.StudentAccount)
             .WithOne(s => s.User)
             .HasForeignKey<StudentAccount>("user_id")

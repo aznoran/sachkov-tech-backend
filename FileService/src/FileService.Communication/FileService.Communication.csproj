@@ -4,8 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <PackageId>FileService</PackageId>
-        <Version>1.0.1</Version>
+        <PackageId>FileService.Communication</PackageId>
+        <Version>1.0.5-beta</Version>
         <Authors>SachkovTech</Authors>
         <Company>SachkovTech</Company>
         <PackageDescription>
@@ -16,7 +16,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FileService.Contracts\FileService.Contracts.csproj" />
+      <ProjectReference Include="..\FileService.Contracts\FileService.Contracts.csproj" Version="1.0.5-beta" />
     </ItemGroup>
 
     <ItemGroup>

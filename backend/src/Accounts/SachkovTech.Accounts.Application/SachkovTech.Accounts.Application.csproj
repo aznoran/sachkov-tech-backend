@@ -7,6 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Files\SachkovTech.Files.Domain\SachkovTech.Files.Domain.csproj" />
       <ProjectReference Include="..\..\Shared\SachkovTech.Core\SachkovTech.Core.csproj" />
       <ProjectReference Include="..\..\Shared\SachkovTech.SharedKernel\SachkovTech.SharedKernel.csproj" />
       <ProjectReference Include="..\SachkovTech.Accounts.Contracts\SachkovTech.Accounts.Contracts.csproj" />
@@ -17,4 +18,9 @@
       <Folder Include="Queries\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FileService.Communication" Version="1.0.5-beta" />
+      <PackageReference Include="FileService.Contracts" Version="1.0.5-beta" />
+    </ItemGroup>
+	
 </Project>

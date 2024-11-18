@@ -1,0 +1,61 @@
+﻿using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using SachkovTech.Accounts.Domain;
+using SachkovTech.Accounts.Domain.ValueObjects;
+using SachkovTech.Core.Abstractions;
+using SachkovTech.SharedKernel;
+
+namespace SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
+public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCommand>
+{
+    private readonly FileHttpClient _fileHttpClient;
+    private readonly UserManager<User> _userManager;
+
+    public CompleteUploadPhotoHandler(
+        FileHttpClient fileHttpClient,
+        UserManager<User> userManager)
+    {
+        _fileHttpClient = fileHttpClient;
+        _userManager = userManager;
+    }
+    public async Task<UnitResult<ErrorList>> Handle(
+        CompleteUploadPhotoCommand command,
+        CancellationToken cancellationToken = default)
+    {
+        var completeRequest = new CompleteMultipartRequest(command.UploadId, command.Parts);
+
+        var user = await _userManager.Users
+            .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
+
+        if (user == null)
+        {
+            return Errors.General.NotFound(command.UserId, nameof(command.UserId)).ToErrorList();
+        }
+
+        var result = await _fileHttpClient.CompleteMultipartUpload(completeRequest, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            user.Photo = default!;
+            return Errors.General.ValueIsInvalid(result.Error).ToErrorList();
+        }
+
+        var photoResult = Photo.Create(
+            result.Value.FileId,
+            user.Photo.FileName,
+            user.Photo.ContentType,
+            user.Photo.Size);
+
+        if (!photoResult.IsSuccess)
+        {
+            return photoResult.Error.ToErrorList();
+        }
+
+        user.Photo = photoResult.Value;
+
+        return UnitResult.Success<ErrorList>();
+    }
+}

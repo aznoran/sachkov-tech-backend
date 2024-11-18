@@ -1,3 +1,5 @@
 .DS_Store
 /.vs
 /FileService/nuget.config
+/backend/nuget.config
+/.gitignore
