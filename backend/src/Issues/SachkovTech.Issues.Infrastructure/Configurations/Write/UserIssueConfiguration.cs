@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;
-using SachkovTech.Issues.Domain.IssueSolving.Enums;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Write;
@@ -42,10 +41,7 @@ public class UserIssueConfiguration : IEntityTypeConfiguration<UserIssue>
 
         builder.Property(u => u.Status)
             .IsRequired()
-            .HasConversion(
-                push => push.ToString(),
-                pull => Enum.Parse<IssueStatus>(pull)
-            );
+            .HasConversion<string>();
 
         builder.Property(u => u.StartDateOfExecution);
 

@@ -9,7 +9,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Command.RemoveTagFromL
 
 public class RemoveTagFromLessonHandler(
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<RemoveTagFromLessonHandler> logger) : ICommandHandler<RemoveTagFromLessonCommand>
 {
     public async Task<UnitResult<ErrorList>> Handle(

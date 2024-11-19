@@ -4,8 +4,6 @@ namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
 public class LessonId : ValueObject
 {
-    public static readonly LessonId Empty = new LessonId(Guid.Empty);
-
     private LessonId(Guid value)
     {
         Value = value;

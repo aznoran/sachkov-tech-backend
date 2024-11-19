@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Files.Contracts;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Contracts.Responses;
@@ -18,7 +17,6 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
 {
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly IReadDbContext _readDbContext;
-    private readonly IFilesContracts _filesContracts;
     private readonly ILogger<TakeOnWorkHandler> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -26,14 +24,13 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         IUserIssueRepository userIssueRepository,
         IReadDbContext readDbContext,
         ILogger<TakeOnWorkHandler> logger,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
-        IFilesContracts filesContracts)
+        [FromKeyedServices(SharedKernel.Modules.Issues)]
+        IUnitOfWork unitOfWork)
     {
         _userIssueRepository = userIssueRepository;
         _readDbContext = readDbContext;
         _logger = logger;
         _unitOfWork = unitOfWork;
-        _filesContracts = filesContracts;
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
@@ -53,26 +50,16 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
             return Errors.General.ValueIsInvalid().ToErrorList();
         }
 
-        if (issueResult.Value.Position > 1)
-        {
-            var previousIssueResult = await GetIssueByPosition(
-                issueResult.Value.Position - 1, cancellationToken);
+        var previousUserIssue = await _readDbContext.UserIssues
+            .FirstOrDefaultAsync(u => u.UserId == command.UserId, cancellationToken);
 
-            if (previousIssueResult.IsFailure)
-                return previousIssueResult.Error;
+        if (previousUserIssue is null)
+            return Errors.General.NotFound(null, "Previous solved issue").ToErrorList();
 
-            var previousUserIssue = await _readDbContext.UserIssues
-                .FirstOrDefaultAsync(u => u.UserId == command.UserId &&
-                                          u.IssueId == previousIssueResult.Value.Id, cancellationToken);
+        var previousUserIssueStatus = Enum.Parse<IssueStatus>(previousUserIssue.Status);
 
-            if (previousUserIssue is null)
-                return Errors.General.NotFound(null, "Previous solved issue").ToErrorList();
-
-            var previousUserIssueStatus = Enum.Parse<IssueStatus>(previousUserIssue.Status);
-
-            if (previousUserIssueStatus != IssueStatus.Completed)
-                return Error.Failure("prev.issue.not.solved", "previous issue not solved").ToErrorList();
-        }
+        if (previousUserIssueStatus != IssueStatus.Completed)
+            return Error.Failure("prev.issue.not.solved", "previous issue not solved").ToErrorList();
 
         var userIssueId = UserIssueId.NewIssueId();
         var userId = UserId.Create(command.UserId);
@@ -99,30 +86,15 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         if (issueDto is null)
             return Errors.General.NotFound(issueId).ToErrorList();
 
-        var fileLinks = await _filesContracts.GetLinkFiles(issueDto.Files);
-
-        var response = new IssueResponse(
-            issueDto.Id,
-            issueDto.ModuleId,
-            issueDto.Title,
-            issueDto.Description,
-            issueDto.Position,
-            issueDto.LessonId,
-            fileLinks.Select(f => new FileResponse(f.FileId, f.Link)).ToArray());
+        var response = new IssueResponse
+        {
+            Id = issueDto.Id,
+            ModuleId = issueDto.ModuleId.Value,
+            Title = issueDto.Title,
+            Description = issueDto.Description,
+            LessonId = issueDto.LessonId.Value,
+        };
 
         return response;
-    }
-
-    private async Task<Result<IssueDto, ErrorList>> GetIssueByPosition(
-       int position,
-        CancellationToken cancellationToken = default)
-    {
-        var issueDto = await _readDbContext.Issues
-            .FirstOrDefaultAsync(i => i.Position == position, cancellationToken);
-
-        if (issueDto is null)
-            return Errors.General.NotFound().ToErrorList();
-
-        return issueDto;
     }
 }
