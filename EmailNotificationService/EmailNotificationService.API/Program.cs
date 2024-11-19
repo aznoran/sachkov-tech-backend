@@ -4,10 +4,11 @@ using Serilog;
 using EmailNotificationService.API.Middlewares;
 using EmailNotificationService.API.Models;
 using EmailNotificationService.API.Options;
-using EmailNotificationService.API.Features;
 using EmailNotificationService.API.Common;
 using EmailNotificationService.API.Requests;
 using EmailNotificationService.API.Services;
+using EmailNotificationService.API.Handlebars;
+using EmailNotificationService.API.Features;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +20,10 @@ var config = builder.Configuration;
 services.Configure<MailOptions>(
     config.GetSection(MailOptions.SECTION_NAME));
 services.AddScoped<EmailValidator>();
-services.AddScoped<MailSender>();
-services.AddScoped<MailConfirmationService>();
+services.AddScoped<MailSenderService>();
+services.AddScoped<HandlebarsTemplateService>();
+services.AddScoped<SendEmailConfirmation>();
+services.AddMemoryCache();
 
 Log.Logger = new LoggerConfiguration()
            .WriteTo.Console()
@@ -51,7 +54,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapPost("send", async (MailData mailData, MailSender mailSender) =>
+app.MapPost("send", async (MailData mailData, MailSenderService mailSender) =>
     { 
         var result = await mailSender.Send(mailData);
 
@@ -62,7 +65,7 @@ app.MapPost("send", async (MailData mailData, MailSender mailSender) =>
         return response;
     });
 
-app.MapPost("confirm-email", async (MailConfirmationRequest request, MailConfirmationService service) =>
+app.MapPost("confirm-email", async (MailConfirmationRequest request, SendEmailConfirmation service) =>
 {
     var result = await service.Execute(request);
 });

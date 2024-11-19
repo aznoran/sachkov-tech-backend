@@ -5,17 +5,17 @@ using CSharpFunctionalExtensions;
 using EmailNotificationService.API.Models;
 using EmailNotificationService.API.Options;
 
-namespace EmailNotificationService.API.Features;
+namespace EmailNotificationService.API.Services;
 
-public class MailSender
+public class MailSenderService
 {
     private readonly MailOptions _options;
-    private readonly ILogger<MailSender> _logger;
+    private readonly ILogger<MailSenderService> _logger;
     private readonly EmailValidator _validator;
 
-    public MailSender(
+    public MailSenderService(
         IOptions<MailOptions> options,
-        ILogger<MailSender> logger,
+        ILogger<MailSenderService> logger,
         EmailValidator validator)
     {
         _options = options.Value;
