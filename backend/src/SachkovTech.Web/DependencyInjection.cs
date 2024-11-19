@@ -14,6 +14,7 @@ using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Models;
+using SachkovTech.Accounts.Application;
 
 namespace SachkovTech.Web;
 
@@ -23,6 +24,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddAccountsInfrastructure(configuration);
+        services.AddAccountsApplication(configuration);
         services.AddAccountsPresentation();
 
         return services;

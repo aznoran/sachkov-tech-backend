@@ -24,8 +24,7 @@ public static class DependencyInjection
             .AddDbContexts()
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
-            .AddProviders()
-            .AddFileHttpCommunication(configuration);
+            .AddProviders();
         
         
         return services;
