@@ -25,10 +25,10 @@ public class AddLessonTest : LessonsTestsBase
     public async Task Add_Lesson_Should_Add_Lesson_To_Database()
     {
         // act
-        var validator = _scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
+        var validator = Scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
         var cancellationToken = new CancellationTokenSource().Token;
 
-        var moduleId = await AddModuleToDatabase(_writeDbContext, cancellationToken);
+        var moduleId = await AddModuleToDatabase(WriteDbContext, cancellationToken);
 
         var guids = new Guid[]
         {
@@ -48,17 +48,17 @@ public class AddLessonTest : LessonsTestsBase
             guids);
 
         var handler = new AddLessonHandler(
-            _readDbContext,
+            ReadDbContext,
             validator,
-            _repository,
-            _unitOfWork,
+            Repository,
+            UnitOfWork,
             _loggerMock.Object);
         
         // arrange
         var result = await handler.Handle(command, cancellationToken); 
         
         //assert
-        var lesson = await _readDbContext.Lessons
+        var lesson = await ReadDbContext.Lessons
             .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
         
         result.IsSuccess.Should().BeTrue();

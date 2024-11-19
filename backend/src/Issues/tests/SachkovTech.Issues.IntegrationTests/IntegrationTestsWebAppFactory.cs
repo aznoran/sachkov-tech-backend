@@ -14,7 +14,7 @@ public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAs
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres")
         .WithDatabase("sachkov_tech")
-        .WithUsername("postrges")
+        .WithUsername("postgres")
         .WithPassword("postgres")
         .Build();
     
@@ -34,10 +34,10 @@ public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAs
             if (readContext is not null)
                 services.Remove(readContext);
 
-            services.AddScoped<IssuesWriteDbContext>(provider =>
+            services.AddScoped<IssuesWriteDbContext>(_ =>
                 new IssuesWriteDbContext(_dbContainer.GetConnectionString()));
             
-            services.AddScoped<IReadDbContext, IssuesReadDbContext>(provider =>
+            services.AddScoped<IReadDbContext, IssuesReadDbContext>(_ =>
                 new IssuesReadDbContext(_dbContainer.GetConnectionString()));
         });
     }
