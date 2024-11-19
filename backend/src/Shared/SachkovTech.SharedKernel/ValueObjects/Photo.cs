@@ -1,7 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Accounts.Domain.ValueObjects;
+namespace SachkovTech.SharedKernel.ValueObjects;
 
 public class Photo : ValueObject
 {
@@ -15,12 +15,12 @@ public class Photo : ValueObject
 
     private Photo(Guid fileId)
     {
-        FileId = fileId;      
+        FileId = fileId;
     }
 
-    public Guid FileId { get; }    
+    public Guid FileId { get; }
 
-    public static Result<Photo, Error> Create(Guid fileId) => new Photo(fileId);    
+    public static Result<Photo, Error> Create(Guid fileId) => new Photo(fileId);
 
     public static UnitResult<Error> Validate(
         string fileName,

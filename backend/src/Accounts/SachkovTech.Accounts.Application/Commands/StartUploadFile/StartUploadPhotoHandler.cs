@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Accounts.Domain;
-using SachkovTech.Accounts.Domain.ValueObjects;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
+using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Application.Commands.StartUploadFile;
 public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse, StartUploadPhotoCommand>
