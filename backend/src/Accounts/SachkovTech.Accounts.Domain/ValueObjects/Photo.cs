@@ -13,24 +13,18 @@ public class Photo : ValueObject
 
     private static long MAX_FILE_SIZE = 5242880;
 
-    private Photo(Guid fileId, string fileName, string contentType, long size)
+    private Photo(Guid fileId)
     {
-        FileId = fileId;
-        FileName = fileName;
-        ContentType = contentType;
-        Size = size;
+        FileId = fileId;      
     }
 
-    public Guid FileId { get; }
-    public string FileName { get; } = default!;
-    public string ContentType { get; } = default!;
-    public long Size { get; }
+    public Guid FileId { get; }    
 
+    public static Result<Photo, Error> Create(Guid fileId) => new Photo(fileId);    
 
-    public static Result<Photo, Error> Create(
-        Guid fileId, 
-        string fileName, 
-        string contentType, 
+    public static UnitResult<Error> Validate(
+        string fileName,
+        string contentType,
         long size)
     {
         if (string.IsNullOrWhiteSpace(fileName))
@@ -42,7 +36,7 @@ public class Photo : ValueObject
 
         if (!PERMITED_EXTENSIONS.Any(x => x == fileExtension))
         {
-            return Errors.General.ValueIsInvalid(fileName);
+            return Errors.Files.InvalidExtension();
         }
 
         if (!PERMITED_FILES_TYPE.Any(x => x == contentType))
@@ -52,10 +46,10 @@ public class Photo : ValueObject
 
         if (size > MAX_FILE_SIZE)
         {
-            return Errors.General.ValueIsInvalid($"File size > {MAX_FILE_SIZE}");
+            return Errors.Files.InvalidSize();
         }
 
-        return new Photo(fileId, fileName, contentType, size);
+        return Result.Success<Error>();
     }
 
     protected override IEnumerable<IComparable> GetEqualityComponents()

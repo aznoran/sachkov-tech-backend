@@ -22,21 +22,16 @@ public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse,
     }
 
     public async Task<Result<StartUploadPhotoResponse, ErrorList>> Handle(
-
         StartUploadPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
-        var startMultipartRequest = new StartMultipartUploadRequest(
-            command.Filename,
+        var validateResult = Photo.Validate(
+            command.FileName,
             command.ContentType,
             command.FileSize);
 
-        var result = await _fileHttpClient.StartMultipartUpload(
-            startMultipartRequest,
-            cancellationToken);
-
-        if (result.IsFailure)
-            return Errors.General.ValueIsInvalid(result.Error).ToErrorList();
+        if (validateResult.IsFailure)
+            return validateResult.Error.ToErrorList();
 
         var user = await _userManager.Users
             .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
@@ -46,18 +41,17 @@ public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse,
             return Errors.General.NotFound(command.UserId, nameof(command.UserId)).ToErrorList();
         }
 
-        var photoResult = Photo.Create(
-            result.Value.FileId,
-            user.Photo.FileName,
-            user.Photo.ContentType,
-            user.Photo.Size);
+        var startMultipartRequest = new StartMultipartUploadRequest(
+            command.FileName,
+            command.ContentType,
+            command.FileSize);
 
-        if (!photoResult.IsSuccess)
-        {
-            return photoResult.Error.ToErrorList();
-        }
+        var result = await _fileHttpClient.StartMultipartUpload(
+            startMultipartRequest,
+            cancellationToken);
 
-        user.Photo = photoResult.Value;
+        if (result.IsFailure)
+            return Errors.General.ValueIsInvalid(result.Error).ToErrorList();        
 
         return new StartUploadPhotoResponse(result.Value.FileId, result.Value.PresignedUrl);
     }

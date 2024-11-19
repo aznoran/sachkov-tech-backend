@@ -25,7 +25,13 @@ public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCom
         CompleteUploadPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
-        var completeRequest = new CompleteMultipartRequest(command.UploadId, command.Parts);
+        var validateResult = Photo.Validate(
+            command.FileName,
+            command.ContentType,
+            command.FileSize);
+
+        if (validateResult.IsFailure)
+            return validateResult.Error.ToErrorList();
 
         var user = await _userManager.Users
             .FirstOrDefaultAsync(u => u.Id == command.UserId, cancellationToken);
@@ -35,19 +41,16 @@ public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCom
             return Errors.General.NotFound(command.UserId, nameof(command.UserId)).ToErrorList();
         }
 
+        var completeRequest = new CompleteMultipartRequest(command.UploadId, command.Parts);
+
         var result = await _fileHttpClient.CompleteMultipartUpload(completeRequest, cancellationToken);
 
         if (result.IsFailure)
-        {
-            user.Photo = default!;
+        {            
             return Errors.General.ValueIsInvalid(result.Error).ToErrorList();
         }
 
-        var photoResult = Photo.Create(
-            result.Value.FileId,
-            user.Photo.FileName,
-            user.Photo.ContentType,
-            user.Photo.Size);
+        var photoResult = Photo.Create(result.Value.FileId);
 
         if (!photoResult.IsSuccess)
         {

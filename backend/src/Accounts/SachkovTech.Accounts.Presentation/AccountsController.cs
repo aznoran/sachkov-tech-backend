@@ -168,7 +168,7 @@ public class AccountsController : ApplicationController
     [HttpPost]
     public async Task<IActionResult> StartUploadPhoto(
         [FromServices] StartUploadPhotoHandler handler,
-        [FromBody] IFormFile formFile,
+        [FromBody] FileMetadataRequest request,
         CancellationToken cancellationToken = default)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
@@ -182,9 +182,9 @@ public class AccountsController : ApplicationController
 
         var command = new StartUploadPhotoCommand(
             UserId,
-            formFile.FileName,
-            formFile.ContentType,
-            formFile.Length);
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -198,6 +198,7 @@ public class AccountsController : ApplicationController
     public async Task<IActionResult> CompleteUploadPhoto(
         [FromServices] CompleteUploadPhotoHandler handler,
         [FromBody] CompleteMultipartRequest request,
+        [FromBody] FileMetadataRequest fileRequest,
         CancellationToken cancellationToken = default)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
@@ -209,7 +210,13 @@ public class AccountsController : ApplicationController
 
         var UserId = Guid.Parse(userId);
 
-        var command = new CompleteUploadPhotoCommand(UserId, request.UploadId, request.Parts);
+        var command = new CompleteUploadPhotoCommand(
+            UserId,
+            fileRequest.FileName,
+            fileRequest.ContentType,
+            fileRequest.FileSize,
+            request.UploadId, 
+            request.Parts);
 
         var result = await handler.Handle(command, cancellationToken);
 

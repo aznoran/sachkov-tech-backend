@@ -3,6 +3,6 @@
 namespace SachkovTech.Accounts.Application.Commands.StartUploadFile;
 public record StartUploadPhotoCommand(
     Guid UserId,
-    string Filename, 
+    string FileName, 
     string ContentType, 
     long FileSize) : ICommand;
