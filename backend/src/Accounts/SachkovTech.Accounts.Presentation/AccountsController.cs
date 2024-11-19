@@ -1,11 +1,18 @@
+using FileService.Contracts;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
 using SachkovTech.Accounts.Application.Commands.Logout;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
+using SachkovTech.Accounts.Application.Commands.StartUploadFile;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Contracts.Requests;
+using SachkovTech.Accounts.Infrastructure.Providers;
+using SachkovTech.Core.Models;
+using SachkovTech.SharedKernel;
 using SachkovTech.Accounts.Presentation.Providers;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
@@ -110,7 +117,7 @@ public class AccountsController : ApplicationController
         {
             return Unauthorized();
         }
-        
+
         var result = await handler.Handle(
             new LogoutCommand(getRefreshSessionCookieRes.Value),
             cancellationToken);
@@ -124,7 +131,7 @@ public class AccountsController : ApplicationController
         {
             return deleteRefreshSessionCookieRes.Error.ToResponse();
         }
-        
+
         return Ok();
     }
 
@@ -159,5 +166,66 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> StartUploadPhoto(
+        [FromServices] StartUploadPhotoHandler handler,
+        [FromBody] FileMetadataRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Errors.General.ValueIsInvalid(nameof(userId)).ToResponse();
+        }
+
+        var UserId = Guid.Parse(userId);
+
+        var command = new StartUploadPhotoCommand(
+            UserId,
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CompleteUploadPhoto(
+        [FromServices] CompleteUploadPhotoHandler handler,
+        [FromBody] CompleteMultipartRequest request,
+        [FromBody] FileMetadataRequest fileRequest,
+        CancellationToken cancellationToken = default)
+    {
+        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Errors.General.ValueIsInvalid(nameof(userId)).ToResponse();
+        }
+
+        var UserId = Guid.Parse(userId);
+
+        var command = new CompleteUploadPhotoCommand(
+            UserId,
+            fileRequest.FileName,
+            fileRequest.ContentType,
+            fileRequest.FileSize,
+            request.UploadId, 
+            request.Parts);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok();
     }
 }
