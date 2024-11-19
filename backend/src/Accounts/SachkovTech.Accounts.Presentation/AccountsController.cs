@@ -33,7 +33,7 @@ public class AccountsController : ApplicationController
     [Permission(Permissions.Issues.ReadIssue)]
     public async Task<IActionResult> Test([FromServices] UserScopedData user, CancellationToken cancellationToken)
     {
-        
+
         return Ok("test");
     }
 
@@ -151,7 +151,7 @@ public class AccountsController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser(
         [FromRoute] Guid userId,
@@ -171,20 +171,12 @@ public class AccountsController : ApplicationController
     [HttpPost]
     public async Task<IActionResult> StartUploadPhoto(
         [FromServices] StartUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
         [FromBody] FileMetadataRequest request,
         CancellationToken cancellationToken = default)
     {
-        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
-
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            return Errors.General.ValueIsInvalid(nameof(userId)).ToResponse();
-        }
-
-        var UserId = Guid.Parse(userId);
-
         var command = new StartUploadPhotoCommand(
-            UserId,
+            userScopedData.UserId,
             request.FileName,
             request.ContentType,
             request.FileSize);
@@ -200,25 +192,17 @@ public class AccountsController : ApplicationController
     [HttpPost]
     public async Task<IActionResult> CompleteUploadPhoto(
         [FromServices] CompleteUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
         [FromBody] CompleteMultipartRequest request,
         [FromBody] FileMetadataRequest fileRequest,
         CancellationToken cancellationToken = default)
     {
-        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
-
-        if (string.IsNullOrWhiteSpace(userId))
-        {
-            return Errors.General.ValueIsInvalid(nameof(userId)).ToResponse();
-        }
-
-        var UserId = Guid.Parse(userId);
-
         var command = new CompleteUploadPhotoCommand(
-            UserId,
+            userScopedData.UserId,
             fileRequest.FileName,
             fileRequest.ContentType,
             fileRequest.FileSize,
-            request.UploadId, 
+            request.UploadId,
             request.Parts);
 
         var result = await handler.Handle(command, cancellationToken);
