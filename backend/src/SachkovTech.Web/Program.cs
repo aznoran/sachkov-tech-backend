@@ -45,6 +45,7 @@ builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
 builder.Services.AddApplicationLayers();
+builder.Services.AddFramework();
 
 builder.Services.AddControllers();
 
