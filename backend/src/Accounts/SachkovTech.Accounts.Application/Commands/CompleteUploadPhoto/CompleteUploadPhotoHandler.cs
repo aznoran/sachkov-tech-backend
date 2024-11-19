@@ -4,9 +4,9 @@ using FileService.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Accounts.Domain;
-using SachkovTech.Accounts.Domain.ValueObjects;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
+using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCommand>

@@ -1,4 +1,3 @@
-using FileService.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
@@ -9,6 +8,7 @@ using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Commands.StartUploadFile;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
+using SachkovTech.Accounts.Application.Requests;
 using SachkovTech.Accounts.Contracts.Requests;
 using SachkovTech.Accounts.Infrastructure.Providers;
 using SachkovTech.Core.Models;
@@ -165,7 +165,8 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPost]
+    [HttpPost("/start-upload-photo")]
+    [Permission(Permissions.Issues.UpdateIssue)]
     public async Task<IActionResult> StartUploadPhoto(
         [FromServices] StartUploadPhotoHandler handler,
         [FromBody] FileMetadataRequest request,
@@ -194,11 +195,11 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPost]
+    [HttpPost("/complete-upload-photo")]
+    [Permission(Permissions.Issues.UpdateIssue)]
     public async Task<IActionResult> CompleteUploadPhoto(
         [FromServices] CompleteUploadPhotoHandler handler,
-        [FromBody] CompleteMultipartRequest request,
-        [FromBody] FileMetadataRequest fileRequest,
+        [FromBody] CompleteMultipartUploadRequest request,
         CancellationToken cancellationToken = default)
     {
         var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
@@ -212,10 +213,10 @@ public class AccountsController : ApplicationController
 
         var command = new CompleteUploadPhotoCommand(
             UserId,
-            fileRequest.FileName,
-            fileRequest.ContentType,
-            fileRequest.FileSize,
-            request.UploadId, 
+            request.FileMetadata.FileName,
+            request.FileMetadata.ContentType,
+            request.FileMetadata.FileSize,
+            request.UploadId,
             request.Parts);
 
         var result = await handler.Handle(command, cancellationToken);

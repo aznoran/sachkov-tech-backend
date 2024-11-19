@@ -1,3 +1,4 @@
+using FileService.Communication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +24,8 @@ public static class DependencyInjection
             .AddDbContexts()
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
-            .AddProviders();
+            .AddProviders()
+            .AddFileHttpCommunication(configuration);
         
         
         return services;
