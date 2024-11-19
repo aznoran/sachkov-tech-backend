@@ -141,7 +141,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpGet]
-    //[Permission(Permissions.Lessons.ReadLesson)]
+    [Permission(Permissions.Lessons.ReadLesson)]
     public async Task<IActionResult> GetLessonsWithPagination(
         [FromQuery] int page,
         [FromQuery] int pageSize,

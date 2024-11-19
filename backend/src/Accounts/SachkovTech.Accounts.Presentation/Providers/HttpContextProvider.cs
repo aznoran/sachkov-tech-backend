@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Accounts.Infrastructure.Providers;
+namespace SachkovTech.Accounts.Presentation.Providers;
 
 public class HttpContextProvider
 {

@@ -1,11 +1,9 @@
-using Grpc.Net.Client;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.Issues.Infrastructure.Grpc.Client;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
 
@@ -17,14 +15,13 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
-            .AddServices()
-            .AddGrpcNotificationServiceClient(configuration);
+            .AddServices();
 
-        return services;   
+        return services;
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
@@ -41,16 +38,23 @@ public static class DependencyInjection
     {
         services.AddScoped<ILessonsRepository, LessonsRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
-        services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
+        services.AddScoped<IIssuesReviewRepository, IssuesReviewRepository>();
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
-        
+        services.AddScoped<IModulesRepository, ModulesRepository>();
+        services.AddScoped<IIssuesRepository, IssuesesRepository>();
+
         return services;
     }
 
-    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<IssuesWriteDbContext>();
-        services.AddScoped<IReadDbContext, IssuesReadDbContext>();
+        services.AddScoped<IssuesWriteDbContext>(provider =>
+            new IssuesWriteDbContext(configuration.GetConnectionString("Database")!));
+        
+        services.AddScoped<IReadDbContext, IssuesReadDbContext>(provider =>
+            new IssuesReadDbContext(configuration.GetConnectionString("Database")!));
 
         return services;
     }
@@ -69,20 +73,22 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services, IConfiguration configuration)
-    {
-        var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
-
-        services.AddKeyedSingleton<GrpcChannel>(
-            implementationInstance: GrpcChannel.ForAddress(uri!),
-            serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
-
-        services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
-            {
-                GrpcChannel channel = sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
-                return new GrpcNotificationServiceClient(channel);
-            });
-
-        return services;
-    }
+    // private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services,
+    //     IConfiguration configuration)
+    // {
+    //     var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+    //
+    //     services.AddKeyedSingleton<GrpcChannel>(
+    //         implementationInstance: GrpcChannel.ForAddress(uri!),
+    //         serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+    //
+    //     // services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
+    //     // {
+    //     //     GrpcChannel channel =
+    //     //         sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
+    //     //     return new GrpcNotificationServiceClient(channel);
+    //     // });
+    //
+    //     return services;
+    // }
 }

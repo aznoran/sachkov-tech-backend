@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SachkovTech.Core.Dtos;
+using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Domain.Module;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -35,11 +38,15 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
                 .HasColumnName("description");
         });
 
-        builder.HasMany(m => m.Issues)
-            .WithOne(m => m.Module)
-            .HasForeignKey("module_id")
-            .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+        builder.Property(i => i.IssuesPosition)
+            .ValueObjectsCollectionJsonConversion(
+                valueObject => new IssuePositionDto
+                {
+                    IssueId = valueObject.IssueId,
+                    Position = valueObject.Position
+                },
+                issuePosition => new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
+            .HasColumnName("issues_position");
 
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
@@ -48,5 +55,7 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
         builder.Property(m => m.DeletionDate)
             .IsRequired(false)
             .HasColumnName("deletion_date");
+
+        builder.HasQueryFilter(f => f.IsDeleted == false);
     }
 }

@@ -18,30 +18,29 @@ public class ModulesRepository : IModulesRepository
         _dbContext = dbContext;
     }
 
-    public async Task<Guid> Add(Module module, CancellationToken cancellationToken = default)
+    public async Task<Guid> Add(Module issue, CancellationToken cancellationToken = default)
     {
-        await _dbContext.Modules.AddAsync(module, cancellationToken);
-        return module.Id;
+        await _dbContext.Modules.AddAsync(issue, cancellationToken);
+        return issue.Id;
     }
 
-    public Guid Save(Module module, CancellationToken cancellationToken = default)
+    public Guid Save(Module issue, CancellationToken cancellationToken = default)
     {
-        _dbContext.Modules.Attach(module);
-        return module.Id.Value;
+        _dbContext.Modules.Attach(issue);
+        return issue.Id.Value;
     }
 
-    public Guid Delete(Module module)
+    public Guid Delete(Module issue)
     {
-        _dbContext.Modules.Remove(module);
+        _dbContext.Modules.Remove(issue);
 
-        return module.Id;
+        return issue.Id;
     }
 
     public async Task<Result<Module, Error>> GetById(
         ModuleId moduleId, CancellationToken cancellationToken = default)
     {
         var module = await _dbContext.Modules
-            .Include(m => m.Issues)
             .FirstOrDefaultAsync(m => m.Id == moduleId, cancellationToken);
 
         if (module is null)
@@ -54,7 +53,6 @@ public class ModulesRepository : IModulesRepository
         Title title, CancellationToken cancellationToken = default)
     {
         var module = await _dbContext.Modules
-            .Include(m => m.Issues)
             .FirstOrDefaultAsync(m => m.Title == title, cancellationToken);
 
         if (module is null)

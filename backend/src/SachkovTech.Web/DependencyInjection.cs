@@ -13,6 +13,7 @@ using SachkovTech.Core.Options;
 using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
+using SachkovTech.Framework.Models;
 
 namespace SachkovTech.Web;
 
@@ -86,6 +87,13 @@ public static class DependencyInjection
 
         services.AddSerilog();
 
+        return services;
+    }
+    
+    public static IServiceCollection AddFramework(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor();
+        services.AddScoped<UserScopedData>();
         return services;
     }
 

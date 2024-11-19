@@ -9,7 +9,7 @@ namespace SachkovTech.Issues.Application.Features.Lessons.Command.RestoreLesson;
 
 public class RestoreLessonHandler(
     ILessonsRepository lessonsRepository,
-    [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+    [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<RestoreLessonHandler> logger) : ICommandHandler<RestoreLessonCommand>
 {
     public async Task<UnitResult<ErrorList>> Handle(
