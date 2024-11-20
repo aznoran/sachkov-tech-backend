@@ -1,11 +1,18 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
 using SachkovTech.Accounts.Application.Commands.Logout;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
+using SachkovTech.Accounts.Application.Commands.StartUploadFile;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
+using SachkovTech.Accounts.Application.Requests;
 using SachkovTech.Accounts.Contracts.Requests;
+using SachkovTech.Accounts.Infrastructure.Providers;
+using SachkovTech.Core.Models;
+using SachkovTech.SharedKernel;
 using SachkovTech.Accounts.Presentation.Providers;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
@@ -26,7 +33,7 @@ public class AccountsController : ApplicationController
     [Permission(Permissions.Issues.ReadIssue)]
     public async Task<IActionResult> Test([FromServices] UserScopedData user, CancellationToken cancellationToken)
     {
-        
+
         return Ok("test");
     }
 
@@ -110,7 +117,7 @@ public class AccountsController : ApplicationController
         {
             return Unauthorized();
         }
-        
+
         var result = await handler.Handle(
             new LogoutCommand(getRefreshSessionCookieRes.Value),
             cancellationToken);
@@ -124,7 +131,7 @@ public class AccountsController : ApplicationController
         {
             return deleteRefreshSessionCookieRes.Error.ToResponse();
         }
-        
+
         return Ok();
     }
 
@@ -144,7 +151,7 @@ public class AccountsController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser(
         [FromRoute] Guid userId,
@@ -159,5 +166,51 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok(result.Value);
+    }
+
+    [HttpPost("/start-upload-photo")]
+    [Permission(Permissions.Issues.UpdateIssue)]
+    public async Task<IActionResult> StartUploadPhoto(
+        [FromServices] StartUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        [FromBody] FileMetadataRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new StartUploadPhotoCommand(
+            userScopedData.UserId,
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("/complete-upload-photo")]
+    [Permission(Permissions.Issues.UpdateIssue)]
+    public async Task<IActionResult> CompleteUploadPhoto(
+        [FromServices] CompleteUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        [FromBody] CompleteMultipartUploadRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new CompleteUploadPhotoCommand(
+            userScopedData.UserId,
+            request.FileMetadata.FileName,
+            request.FileMetadata.ContentType,
+            request.FileMetadata.FileSize,
+            request.UploadId,
+            request.Parts);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok();
     }
 }

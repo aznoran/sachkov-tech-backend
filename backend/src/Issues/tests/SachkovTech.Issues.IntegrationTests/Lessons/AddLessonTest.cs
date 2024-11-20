@@ -1,3 +1,4 @@
+using AutoFixture;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -14,51 +15,38 @@ namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
 public class AddLessonTest : LessonsTestsBase
 {
-    private readonly Mock<ILogger<AddLessonHandler>> _loggerMock = new ();
+    private readonly ILogger<AddLessonHandler> _logger;
+    private readonly IValidator<AddLessonCommand> _validator;
     
     public AddLessonTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
-        
+        _logger = Scope.ServiceProvider.GetRequiredService<ILogger<AddLessonHandler>>();
+        _validator = Scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
     }
     
     [Fact]
-    public async Task Add_Lesson_Should_Add_Lesson_To_Database()
+    public async Task Add_Lesson_To_Database()
     {
         // act
-        var validator = _scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
         var cancellationToken = new CancellationTokenSource().Token;
+        var fixture = new Fixture();
 
-        var moduleId = await AddModuleToDatabase(_writeDbContext, cancellationToken);
+        var moduleId = await AddModuleToDatabase(WriteDbContext, cancellationToken);
 
-        var guids = new Guid[]
-        {
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            Guid.NewGuid()
-        };
-
-        var command = new AddLessonCommand(
-            moduleId,
-            "title",
-            "description",
-            3,
-            Guid.NewGuid(),
-            Guid.NewGuid(),
-            guids,
-            guids);
+        var command = fixture.Build<AddLessonCommand>().With(c => c.ModuleId, moduleId).Create();
 
         var handler = new AddLessonHandler(
-            _readDbContext,
-            validator,
-            _repository,
-            _unitOfWork,
-            _loggerMock.Object);
+            ReadDbContext,
+            _validator,
+            Repository,
+            UnitOfWork,
+            _logger);
         
         // arrange
         var result = await handler.Handle(command, cancellationToken); 
         
         //assert
-        var lesson = await _readDbContext.Lessons
+        var lesson = await ReadDbContext.Lessons
             .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
         
         result.IsSuccess.Should().BeTrue();

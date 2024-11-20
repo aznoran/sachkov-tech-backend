@@ -10,30 +10,32 @@ public class User : IdentityUser<Guid>
     private User() { }
 
     public DateTime RegistrationDate { get; set; }
-    
+
     public FullName FullName { get; set; }
+
+    public Photo Photo { get; set; }
 
     public IReadOnlyList<Role> Roles => _roles;
     private List<Role> _roles = [];
-    
+
     public IReadOnlyList<SocialNetwork> SocialNetworks => _socialNetworks;
     private List<SocialNetwork> _socialNetworks = [];
 
     public StudentAccount? StudentAccount;
-    
+
     public SupportAccount? SupportAccount;
-    
+
     public AdminAccount? AdminAccount;
 
     public static Result<User, Error> CreateAdmin(
-        string userName, 
-        string email, 
-        FullName fullName, 
+        string userName,
+        string email,
+        FullName fullName,
         Role role)
     {
         if (role.Name != AdminAccount.ADMIN)
             return Errors.User.InvalidRole();
-        
+
         return new User
         {
             UserName = userName,
@@ -46,7 +48,7 @@ public class User : IdentityUser<Guid>
     }
 
     public static Result<User, Error> CreateParticipant(
-        string userName, 
+        string userName,
         string email,
         Role role)
     {

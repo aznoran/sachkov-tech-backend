@@ -24,6 +24,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             fb.Property(a => a.SecondName).IsRequired(false).HasColumnName("second_name");
         });
 
+        builder.ComplexProperty(a => a.Photo, pb =>
+        {
+            pb.Property(p => p.FileId).IsRequired(false).HasColumnName("file_id");           
+        });
+
         builder.HasOne(u => u.StudentAccount)
             .WithOne(s => s.User)
             .HasForeignKey<StudentAccount>("user_id")

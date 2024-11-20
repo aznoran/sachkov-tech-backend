@@ -49,6 +49,7 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
             accessToken.AccessToken,
             refreshToken,
             oldRefreshSession.Value.User.Id,
-            oldRefreshSession.Value.User.Email!);
+            oldRefreshSession.Value.User.Email!,
+            oldRefreshSession.Value.User.Roles.Select(r => r.Name?.ToLower())!);
     }
 }
