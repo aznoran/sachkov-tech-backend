@@ -31,9 +31,9 @@ public class UpdateHandlerTests : TelegramServiceTestsBase
         var sut = new UpdateHandler(telegramServiceMock, _logger);
 
         var expectedResponse = string.Format(ReceivedMessageTemplate, update.Message!.Text);
+        var token = new CancellationTokenSource().Token;
 
         // Act
-        var token = new CancellationTokenSource().Token;
         await sut.HandleUpdateAsync(_botClient, update, token);
 
         // Assert
