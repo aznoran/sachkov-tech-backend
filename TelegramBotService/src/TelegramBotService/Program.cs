@@ -28,11 +28,13 @@ builder.Services.Configure<TelegramBotOptions>(builder.Configuration.GetSection(
 builder.Services.AddHttpClient("telegram_bot_client").RemoveAllLoggers()
     .AddTypedClient<ITelegramBotClient>((httpClient, sp) =>
     {
-        TelegramBotOptions? options = sp.GetService<IOptions<TelegramBotOptions>>()?.Value;
+        var options = sp.GetService<IOptions<TelegramBotOptions>>()?.Value;
         ArgumentNullException.ThrowIfNull(options);
         TelegramBotClientOptions botOptions = new(options.BotToken);
         return new TelegramBotClient(botOptions, httpClient);
     });
+
+builder.Services.AddScoped<ITelegramService, TelegramService>();
 
 builder.Services.AddScoped<UpdateHandler>();
 builder.Services.AddScoped<ReceiverService>();
@@ -50,3 +52,7 @@ app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program
+{
+}

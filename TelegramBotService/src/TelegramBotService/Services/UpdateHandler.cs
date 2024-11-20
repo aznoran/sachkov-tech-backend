@@ -7,20 +7,20 @@ namespace TelegramBotService.Services;
 
 public class UpdateHandler : IUpdateHandler
 {
+    private readonly ITelegramService _telegramService;
     private readonly ILogger<UpdateHandler> _logger;
-    private readonly ITelegramBotClient _botClient;
 
     public UpdateHandler(
-        ITelegramBotClient botClient,
+        ITelegramService telegramService,
         ILogger<UpdateHandler> logger)
     {
-        _botClient = botClient;
+        _telegramService = telegramService;
         _logger = logger;
     }
-    
+
     public async Task HandleUpdateAsync(
-        ITelegramBotClient botClient, 
-        Update update, 
+        ITelegramBotClient botClient,
+        Update update,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -39,7 +39,7 @@ public class UpdateHandler : IUpdateHandler
         if (string.IsNullOrEmpty(message.Text))
             return;
 
-        await _botClient.SendTextMessageAsync(message.Chat, $"Сообщение было получено: {message.Text}");
+        await _telegramService.SendTextMessageAsync(message.Chat, $"Сообщение было получено: {message.Text}");
     }
 
     private Task UnknownUpdateHandler(Update update)
@@ -50,8 +50,8 @@ public class UpdateHandler : IUpdateHandler
     }
 
     public async Task HandlePollingErrorAsync(
-        ITelegramBotClient botClient, 
-        Exception exception, 
+        ITelegramBotClient botClient,
+        Exception exception,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("HandleError: {exception}", exception);
