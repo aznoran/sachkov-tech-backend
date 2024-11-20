@@ -9,6 +9,11 @@ public class FileId : ComparableValueObject
         Value = value;
     }
 
+    public FileId()
+    {
+        
+    }
+
     public Guid Value { get; }
 
     public static FileId NewFileId() => new(Guid.NewGuid());
