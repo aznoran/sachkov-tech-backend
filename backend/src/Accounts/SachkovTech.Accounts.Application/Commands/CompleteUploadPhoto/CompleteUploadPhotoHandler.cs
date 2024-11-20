@@ -11,11 +11,11 @@ using SachkovTech.SharedKernel.ValueObjects;
 namespace SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCommand>
 {
-    private readonly FileHttpClient _fileHttpClient;
+    private readonly IFileService _fileHttpClient;
     private readonly UserManager<User> _userManager;
 
     public CompleteUploadPhotoHandler(
-        FileHttpClient fileHttpClient,
+        IFileService fileHttpClient,
         UserManager<User> userManager)
     {
         _fileHttpClient = fileHttpClient;

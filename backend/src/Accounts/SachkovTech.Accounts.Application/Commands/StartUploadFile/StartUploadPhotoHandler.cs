@@ -12,10 +12,10 @@ using SachkovTech.SharedKernel.ValueObjects;
 namespace SachkovTech.Accounts.Application.Commands.StartUploadFile;
 public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse, StartUploadPhotoCommand>
 {
-    private readonly FileHttpClient _fileHttpClient;
+    private readonly IFileService _fileHttpClient;
     private readonly UserManager<User> _userManager;
 
-    public StartUploadPhotoHandler(FileHttpClient fileHttpClient, UserManager<User> userManager)
+    public StartUploadPhotoHandler(IFileService fileHttpClient, UserManager<User> userManager)
     {
         _fileHttpClient = fileHttpClient;
         _userManager = userManager;
