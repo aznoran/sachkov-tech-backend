@@ -1,41 +1,44 @@
+using AutoFixture;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 
 namespace SachkovTech.Issues.IntegrationTests.Modules;
 
 public class UpdateMainInfoTest : ModulesTestsBase
 {
-    private Mock<ILogger<UpdateMainInfoHandler>> _loggerMock = new();
+    private readonly ILogger<UpdateMainInfoHandler> _logger;
+    private readonly IValidator<UpdateMainInfoCommand> _validator;
     
     public UpdateMainInfoTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
-        
+        _logger = Scope.ServiceProvider.GetRequiredService<ILogger<UpdateMainInfoHandler>>();
+        _validator = Scope.ServiceProvider.GetRequiredService<IValidator<UpdateMainInfoCommand>>();
     }
 
     [Fact]
-    public async Task Update_Main_Info_Should_Update()
+    public async Task Update_Module_Main_Information()
     {
         // act
-        var validator = Scope.ServiceProvider.GetRequiredService<IValidator<UpdateMainInfoCommand>>();
         var cancellationToken = new CancellationTokenSource().Token;
+
+        var fixture = new Fixture();
 
         var moduleId = await Seeding.AddModuleToDatabase(
             WriteDbContext,
             UnitOfWork,
             cancellationToken);
-        
-        var command = new UpdateMainInfoCommand(moduleId, "Updated title", "Updated description");
+
+        var command = fixture.Build<UpdateMainInfoCommand>().With(c => c.ModuleId, moduleId).Create();
 
         var handler = new UpdateMainInfoHandler(
             Repository,
             UnitOfWork,
-            validator,
-            _loggerMock.Object);
+            _validator,
+            _logger);
 
         // arrange
         var result = await handler.Handle(command, cancellationToken);

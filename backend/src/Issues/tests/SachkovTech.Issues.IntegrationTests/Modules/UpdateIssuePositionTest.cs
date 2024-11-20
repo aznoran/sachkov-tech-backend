@@ -3,25 +3,25 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
 
 namespace SachkovTech.Issues.IntegrationTests.Modules;
 
 public class UpdateIssuePositionTest : ModulesTestsBase
 {
-    private readonly Mock<ILogger<UpdateIssuePositionHandler>> _loggerMock = new();
+    private readonly ILogger<UpdateIssuePositionHandler> _logger;
+    private readonly IValidator<UpdateIssuePositionCommand> _validator;
     
     public UpdateIssuePositionTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
-        
+        _logger = Scope.ServiceProvider.GetRequiredService<ILogger<UpdateIssuePositionHandler>>();
+        _validator = Scope.ServiceProvider.GetRequiredService<IValidator<UpdateIssuePositionCommand>>();
     }
 
     [Fact]
-    public async Task Update_Issue_Position_Should_Move_Issue()
+    public async Task Move_Issue_To_New_Position_In_Module()
     {
         // act
-        var validator = Scope.ServiceProvider.GetRequiredService<IValidator<UpdateIssuePositionCommand>>();
         var cancellationToken = new CancellationTokenSource().Token;
 
         var seedResult = await Seeding.AddModuleWithIssuesToDatabase(
@@ -34,8 +34,8 @@ public class UpdateIssuePositionTest : ModulesTestsBase
         var handler = new UpdateIssuePositionHandler(
             Repository,
             UnitOfWork,
-            validator,
-            _loggerMock.Object);
+            _validator,
+            _logger);
 
         // arrange
         var result = await handler.Handle(command, cancellationToken);

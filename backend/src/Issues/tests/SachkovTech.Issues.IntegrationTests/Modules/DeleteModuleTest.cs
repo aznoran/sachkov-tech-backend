@@ -2,25 +2,25 @@ using FluentAssertions;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
 
 namespace SachkovTech.Issues.IntegrationTests.Modules;
 
 public class DeleteModuleTest : ModulesTestsBase
 {
-    private readonly Mock<ILogger<DeleteModuleHandler>> _loggerMock = new();
+    private readonly ILogger<DeleteModuleHandler> _logger;
+    private readonly IValidator<DeleteModuleCommand> _validator;
     
     public DeleteModuleTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
-        
+        _logger = Scope.ServiceProvider.GetRequiredService<ILogger<DeleteModuleHandler>>();
+        _validator = Scope.ServiceProvider.GetRequiredService<IValidator<DeleteModuleCommand>>();
     }
 
     [Fact]
-    public async Task Delete_Module_Should_Be_Is_Deleted()
+    public async Task Soft_Delete_Module()
     {
         // act
-        var validator = Scope.ServiceProvider.GetRequiredService<IValidator<DeleteModuleCommand>>();
         var cancellationToken = new CancellationTokenSource().Token;
 
         var moduleId = await Seeding.AddModuleToDatabase(
@@ -33,8 +33,8 @@ public class DeleteModuleTest : ModulesTestsBase
         var handler = new DeleteModuleHandler(
             Repository,
             UnitOfWork,
-            validator,
-            _loggerMock.Object);
+            _validator,
+            _logger);
         
         // arrange
         var result = await handler.Handle(command, cancellationToken);
