@@ -6,8 +6,6 @@ namespace EmailNotificationService.API.Handlebars;
 
 public class HandlebarsTemplateService
 {
-    private const string KEY = "EmailConfirmation";
-
     private readonly IMemoryCache _cache;
 
     public HandlebarsTemplateService(IMemoryCache cache)
@@ -15,9 +13,9 @@ public class HandlebarsTemplateService
         _cache = cache;
     }
 
-    public string Process(EmailConfirmationDetails details)
+    public string Process(EmailConfirmationDetails details, string templateKey)
     {
-        if (!_cache.TryGetValue(KEY, out HandlebarsTemplate<object, object> compiledTemplate))
+        if (!_cache.TryGetValue(templateKey, out HandlebarsTemplate<object, object> compiledTemplate))
         {
             compiledTemplate = HandlebarsDotNet.Handlebars.Compile(
                 File.ReadAllText(Path.Combine(
@@ -26,7 +24,7 @@ public class HandlebarsTemplateService
                     "Templates", 
                     "EmailConfirmation.html")));
 
-            _cache.Set(KEY, compiledTemplate);
+            _cache.Set(templateKey, compiledTemplate);
         }
 
         if (compiledTemplate is null)
@@ -34,5 +32,4 @@ public class HandlebarsTemplateService
 
         return compiledTemplate(details);
     }
-
 }
