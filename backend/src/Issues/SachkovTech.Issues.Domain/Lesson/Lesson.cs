@@ -17,6 +17,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
     public Guid PreviewId { get; private set; }
     public Guid[] Tags { get; private set; }
     public Guid[] Issues { get; private set; }
+    public Video Video { get; private set; }
 
     public Lesson(
         LessonId id,
@@ -121,5 +122,10 @@ public class Lesson : SoftDeletableEntity<LessonId>
 
         Issues = Issues.Where(id => id != issueId).ToArray();
         return UnitResult.Success<Error>();
+    }
+
+    public void SetVideo(Video video)
+    {
+        Video = video;
     }
 }

@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
+using SachkovTech.Framework.Models;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddIssueToLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddTagToLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.RemoveIssueFromLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.RestoreLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.SoftDeleteLesson;
+using SachkovTech.Issues.Application.Features.Lessons.Command.StartUploadVideo;
 using SachkovTech.Issues.Application.Features.Lessons.Command.UpdateLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonWithPagination;
 using SachkovTech.Issues.Presentation.Lessons.Requests;
+using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Issues.Presentation.Lessons;
 
@@ -168,6 +171,26 @@ public class LessonsController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("{lessonId:guid}/start-upload-video")]
+    [Permission(Permissions.Lessons.UpdateLesson)]
+    public async Task<IActionResult> StartUploadVideo(
+        [FromServices] StartUploadVideoHandler handler,        
+        [FromBody] FileMetadataRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new StartUploadVideoCommand(            
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
 
         return Ok(result.Value);
     }

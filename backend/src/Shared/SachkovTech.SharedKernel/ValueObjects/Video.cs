@@ -2,24 +2,22 @@
 
 namespace SachkovTech.SharedKernel.ValueObjects;
 
-public class Photo : ComparableValueObject
+public class Video : ComparableValueObject
 {
     private static string[] PERMITED_FILES_TYPE =
-            { "image/jpg", "image/jpeg", "image/png", "image/gif" };
+            { "video/mp4", "video/mkv", "video/avi", "video/mov" };
 
     private static string[] PERMITED_EXTENSIONS =
-            { "jpg", "jpeg", "png", "gif" };
+            { "mp4", "mkv", "avi", "mov" };
 
-    private static long MAX_FILE_SIZE = 5242880;
+    private static long MAX_FILE_SIZE = 4294967296;
 
-    public Photo(Guid fileId)
+    public Video(Guid fileId)
     {
         FileId = fileId;
     }
 
-    public Guid FileId { get; }
-
-    // public static Result<Photo, Error> Create(Guid fileId) => new Photo(fileId);
+    public Guid FileId { get; }   
 
     public static UnitResult<Error> Validate(
         string fileName,

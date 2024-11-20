@@ -18,6 +18,8 @@ public static class FileServiceExtensions
             config.BaseAddress = new Uri(fileOptions.Url);
         });
 
+        services.AddSingleton<IFileService, FileHttpClient>();
+
         return services;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using FileService.Contracts;
+using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Application.Requests;
 public record CompleteMultipartUploadRequest(

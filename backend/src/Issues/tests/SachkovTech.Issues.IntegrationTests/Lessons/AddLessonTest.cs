@@ -1,4 +1,7 @@
 using AutoFixture;
+using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts;
 using FluentAssertions;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +13,7 @@ using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
+using System.Threading;
 
 namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
@@ -17,17 +21,19 @@ public class AddLessonTest : LessonsTestsBase
 {
     private readonly ILogger<AddLessonHandler> _logger;
     private readonly IValidator<AddLessonCommand> _validator;
+    private readonly IFileService _fileService;
     
     public AddLessonTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
         _logger = Scope.ServiceProvider.GetRequiredService<ILogger<AddLessonHandler>>();
         _validator = Scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
-    }
-    
+        _fileService = SetFileServiceMock();
+    }    
+
     [Fact]
     public async Task Add_Lesson_To_Database()
     {
-        // act
+        // arrange
         var cancellationToken = new CancellationTokenSource().Token;
         var fixture = new Fixture();
 
@@ -39,10 +45,11 @@ public class AddLessonTest : LessonsTestsBase
             ReadDbContext,
             _validator,
             Repository,
+            _fileService,
             UnitOfWork,
             _logger);
         
-        // arrange
+        // act
         var result = await handler.Handle(command, cancellationToken); 
         
         //assert
@@ -68,5 +75,18 @@ public class AddLessonTest : LessonsTestsBase
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return module.Id;
+    }
+
+    private IFileService SetFileServiceMock()
+    {
+        var fileServiceMock = new Mock<IFileService>();
+
+        var response = new FileResponse(Guid.NewGuid(), "testUrl");
+
+        fileServiceMock
+            .Setup(f => f.CompleteMultipartUpload(It.IsAny<CompleteMultipartRequest>(), It.IsAny<CancellationToken>()))
+            .Returns(Task.Run(() => Result.Success<FileResponse, string>(response)));
+
+        return fileServiceMock.Object;
     }
 }
