@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
-using SachkovTech.Accounts.Domain.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 

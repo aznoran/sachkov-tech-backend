@@ -1,4 +1,3 @@
-using FileService.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
@@ -9,6 +8,7 @@ using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Commands.StartUploadFile;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
+using SachkovTech.Accounts.Application.Requests;
 using SachkovTech.Accounts.Contracts.Requests;
 using SachkovTech.Accounts.Infrastructure.Providers;
 using SachkovTech.Core.Models;
@@ -168,7 +168,8 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPost]
+    [HttpPost("/start-upload-photo")]
+    [Permission(Permissions.Issues.UpdateIssue)]
     public async Task<IActionResult> StartUploadPhoto(
         [FromServices] StartUploadPhotoHandler handler,
         [FromServices] UserScopedData userScopedData,
@@ -189,19 +190,19 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPost]
+    [HttpPost("/complete-upload-photo")]
+    [Permission(Permissions.Issues.UpdateIssue)]
     public async Task<IActionResult> CompleteUploadPhoto(
         [FromServices] CompleteUploadPhotoHandler handler,
         [FromServices] UserScopedData userScopedData,
-        [FromBody] CompleteMultipartRequest request,
-        [FromBody] FileMetadataRequest fileRequest,
+        [FromBody] CompleteMultipartUploadRequest request,
         CancellationToken cancellationToken = default)
     {
         var command = new CompleteUploadPhotoCommand(
             userScopedData.UserId,
-            fileRequest.FileName,
-            fileRequest.ContentType,
-            fileRequest.FileSize,
+            request.FileMetadata.FileName,
+            request.FileMetadata.ContentType,
+            request.FileMetadata.FileSize,
             request.UploadId,
             request.Parts);
 
