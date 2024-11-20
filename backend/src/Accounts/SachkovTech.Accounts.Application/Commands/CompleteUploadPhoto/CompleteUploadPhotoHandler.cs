@@ -49,15 +49,10 @@ public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCom
         {            
             return Errors.General.ValueIsInvalid(result.Error).ToErrorList();
         }
-
-        var photoResult = Photo.Create(result.Value.FileId);
-
-        if (!photoResult.IsSuccess)
-        {
-            return photoResult.Error.ToErrorList();
-        }
-
-        user.Photo = photoResult.Value;
+        
+        var photo = new Photo(result.Value.FileId);
+        
+        user.Photo = photo;
 
         return UnitResult.Success<ErrorList>();
     }

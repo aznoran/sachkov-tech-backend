@@ -6,6 +6,7 @@ public class Notification
 {
     //EF CORE
     private Notification(){}
+    
     private Notification(List<Guid> roleIds,
         List<Guid> userIds,
         MessageData messageData)
@@ -18,6 +19,7 @@ public class Notification
         CreatedAt = DateTime.UtcNow;
         Status = NotificationStatusEnum.Pending;
     }
+    
     public Guid Id { get; private set; }
 
     public List<Guid> RoleIds { get; private set; }
@@ -38,6 +40,7 @@ public class Notification
     {
         return new(roleIds, userIds, messageData);
     }
+    
     public void SetNotificationStatus(NotificationStatusEnum status)
     {
         Status = status;
@@ -48,6 +51,7 @@ public class Notification
         IsSend = true;
         Status = NotificationStatusEnum.Sent;
     }
+    
     public void SendingNotificationFailed()
     {
         Status = NotificationStatusEnum.Failed;

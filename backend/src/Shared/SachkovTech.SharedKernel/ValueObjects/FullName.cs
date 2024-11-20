@@ -2,13 +2,9 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.SharedKernel.ValueObjects;
 
-public record FullName
+public class FullName : ComparableValueObject
 {
     public static FullName Empty = new FullName(null, null);
-    private FullName()
-    {
-        
-    }
     
     private FullName(string? firstName, string? secondName)
     {
@@ -29,5 +25,11 @@ public record FullName
 
 
         return new FullName(firstName, secondName);
+    }
+
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
+    {
+        yield return FirstName;
+        yield return SecondName;
     }
 }

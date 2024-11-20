@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
-public class LessonId : ValueObject
+public class LessonId : ComparableValueObject
 {
     private LessonId(Guid value)
     {
@@ -23,7 +23,7 @@ public class LessonId : ValueObject
         return lessonId.Value;
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

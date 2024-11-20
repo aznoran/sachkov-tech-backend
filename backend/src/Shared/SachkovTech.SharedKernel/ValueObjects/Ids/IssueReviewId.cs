@@ -2,7 +2,7 @@
 
 namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
-public class IssueReviewId : ValueObject
+public class IssueReviewId : ComparableValueObject
 {
     private IssueReviewId(Guid value)
     {
@@ -15,10 +15,10 @@ public class IssueReviewId : ValueObject
     public static IssueReviewId Empty() => new(Guid.Empty);
     public static IssueReviewId Create(Guid id) => new(id);
     
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    public static implicit operator Guid(IssueReviewId issueReviewId) => issueReviewId.Value;
+
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-    public static implicit operator Guid(IssueReviewId issueReviewId) => issueReviewId.Value;
-    
 }

@@ -1,9 +1,10 @@
+using CSharpFunctionalExtensions;
 using SachkovTech.Files.Domain.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Files.Domain;
 
-public class FileData : CSharpFunctionalExtensions.Entity<FileId>
+public class FileData : Entity<FileId>
 {
     private List<FileAttribute> _attributes = [];
 

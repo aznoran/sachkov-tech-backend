@@ -4,7 +4,6 @@ using SachkovTech.Framework.Middlewares;
 using SachkovTech.Web;
 using Serilog;
 
-
 DotNetEnv.Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,4 +90,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+namespace SachkovTech.Web
+{
+    public partial class Program { }
+}

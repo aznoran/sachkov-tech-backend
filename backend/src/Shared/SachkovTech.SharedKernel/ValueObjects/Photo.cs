@@ -1,9 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
-using SachkovTech.SharedKernel;
 
 namespace SachkovTech.SharedKernel.ValueObjects;
 
-public class Photo : ValueObject
+public class Photo : ComparableValueObject
 {
     private static string[] PERMITED_FILES_TYPE =
             { "image/jpg", "image/jpeg", "image/png", "image/gif" };
@@ -13,14 +12,14 @@ public class Photo : ValueObject
 
     private static long MAX_FILE_SIZE = 5242880;
 
-    private Photo(Guid fileId)
+    public Photo(Guid fileId)
     {
         FileId = fileId;
     }
 
     public Guid FileId { get; }
 
-    public static Result<Photo, Error> Create(Guid fileId) => new Photo(fileId);
+    // public static Result<Photo, Error> Create(Guid fileId) => new Photo(fileId);
 
     public static UnitResult<Error> Validate(
         string fileName,
@@ -52,7 +51,7 @@ public class Photo : ValueObject
         return Result.Success<Error>();
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return FileId;
     }

@@ -31,5 +31,4 @@ public class ExceptionHandler
             await httpContext.Response.WriteAsJsonAsync(response);
         }
     }
-
 }

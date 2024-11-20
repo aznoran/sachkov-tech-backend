@@ -4,7 +4,7 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Module.ValueObjects;
 
-public class IssuePosition : ValueObject
+public class IssuePosition : ComparableValueObject
 {
     public IssuePosition(IssueId issueId, Position position)
     {
@@ -40,7 +40,7 @@ public class IssuePosition : ValueObject
         return newIssuePosition;
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return IssueId;
         yield return Position;

@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Domain.Module.ValueObjects;
 
-public class Position : ValueObject
+public class Position : ComparableValueObject
 {
     public static readonly Position First = new(1);
 
@@ -19,6 +19,9 @@ public class Position : ValueObject
 
     public Result<Position, Error> Back()
         => Create(Value - 1);
+    
+    public static implicit operator int(Position position) =>
+        position.Value;
 
     public static Result<Position, Error> Create(int number)
     {
@@ -28,11 +31,8 @@ public class Position : ValueObject
         return new Position(number);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
-    public static implicit operator int(Position position) =>
-        position.Value;
 }

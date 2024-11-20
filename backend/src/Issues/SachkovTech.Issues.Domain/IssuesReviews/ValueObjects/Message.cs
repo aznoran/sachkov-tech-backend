@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Domain.IssuesReviews.ValueObjects;
 
-public class Message : ValueObject
+public class Message : ComparableValueObject
 {
     private Message(string value)
     {
@@ -27,7 +27,7 @@ public class Message : ValueObject
         return new Message(value);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

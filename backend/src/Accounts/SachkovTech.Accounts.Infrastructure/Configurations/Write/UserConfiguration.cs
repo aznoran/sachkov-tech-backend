@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Extensions;
+using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Infrastructure.Configurations.Write;
 
@@ -24,10 +25,13 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             fb.Property(a => a.SecondName).IsRequired(false).HasColumnName("second_name");
         });
 
-        builder.ComplexProperty(a => a.Photo, pb =>
-        {
-            pb.Property(p => p.FileId).IsRequired(false).HasColumnName("file_id");           
-        });
+        builder.Property(a => a.Photo)
+            .IsRequired(false)
+            .HasConversion(
+                photo => photo.FileId, 
+                value => new Photo(value)
+            )
+            .HasColumnName("photo");
 
         builder.HasOne(u => u.StudentAccount)
             .WithOne(s => s.User)
@@ -38,15 +42,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(s => s.User)
             .HasForeignKey<SupportAccount>("user_id")
             .IsRequired(false);
-        
+
         builder.HasOne(u => u.AdminAccount)
             .WithOne(s => s.User)
             .HasForeignKey<AdminAccount>("user_id")
             .IsRequired(false);
-        
+
         builder.Property(s => s.SocialNetworks)
             .ValueObjectsCollectionJsonConversion(
-                input => input, 
+                input => input,
                 output => output)
             .HasColumnName("social_networks");
     }

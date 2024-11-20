@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Files.Domain.ValueObjects;
 
-public class FileType : ValueObject
+public class FileType : ComparableValueObject
 {
     public static readonly FileType Image = new(nameof(Image).ToUpper());
     public static readonly FileType Video = new(nameof(Video).ToUpper());
@@ -44,7 +44,7 @@ public class FileType : ValueObject
         return new FileType(fileType);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
