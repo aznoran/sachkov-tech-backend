@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Files.Domain.ValueObjects;
 
-public class OwnerType : ValueObject
+public class OwnerType : ComparableValueObject
 {
     public static readonly OwnerType Issue = new(nameof(Issue).ToUpper());
 
@@ -27,12 +27,12 @@ public class OwnerType : ValueObject
 
         return new OwnerType(fileOwnerType);
     }
+    
+    public static implicit operator string(OwnerType ownerType) =>
+        ownerType.Value;
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
-    public static implicit operator string(OwnerType ownerType) =>
-        ownerType.Value;
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.Web;
 using Testcontainers.PostgreSql;
 
 namespace SachkovTech.Issues.IntegrationTests;

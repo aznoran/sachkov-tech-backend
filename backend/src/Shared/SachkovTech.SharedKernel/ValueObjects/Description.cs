@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.SharedKernel.ValueObjects;
 
-public class Description : ValueObject
+public class Description : ComparableValueObject
 {
     public const int MAX_LENGTH = 2000;
 
@@ -21,7 +21,7 @@ public class Description : ValueObject
         return new Description(value);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

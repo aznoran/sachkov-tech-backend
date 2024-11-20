@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Files.Domain.ValueObjects;
 
-public class FilePath : ValueObject
+public class FilePath : ComparableValueObject
 {
     public string Value { get; }
 
@@ -35,14 +35,14 @@ public class FilePath : ValueObject
 
         return new FilePath(string.Join("/", pathParts));
     }
+    
+    public static implicit operator string(FilePath filePath) =>
+        filePath.Value;
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
-    public static implicit operator string(FilePath filePath) =>
-        filePath.Value;
 
     private string GetBucketName()
     {

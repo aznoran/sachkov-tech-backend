@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Domain.Issue.ValueObjects;
 
-public class Experience : ValueObject
+public class Experience : ComparableValueObject
 {
     private const int MAX_VALUE = 1000;
     public int Value { get; }
@@ -20,7 +20,7 @@ public class Experience : ValueObject
         return new Experience(experience);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

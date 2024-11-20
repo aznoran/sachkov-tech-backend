@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Files.Domain.ValueObjects;
 
-public class FileAttribute : ValueObject
+public class FileAttribute : ComparableValueObject
 {
     public string Value { get; }
 
@@ -11,6 +11,9 @@ public class FileAttribute : ValueObject
     {
         Value = value;
     }
+    
+    public static implicit operator string(FileAttribute fileAttribute) =>
+        fileAttribute.Value;
 
     public static Result<FileAttribute, Error> Create(string fileAttribute)
     {
@@ -20,11 +23,8 @@ public class FileAttribute : ValueObject
         return new FileAttribute(fileAttribute);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
-    public static implicit operator string(FileAttribute fileAttribute) =>
-        fileAttribute.Value;
 }
