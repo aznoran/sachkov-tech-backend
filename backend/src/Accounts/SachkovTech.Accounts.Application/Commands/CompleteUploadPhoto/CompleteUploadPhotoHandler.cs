@@ -11,14 +11,14 @@ using SachkovTech.SharedKernel.ValueObjects;
 namespace SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCommand>
 {
-    private readonly IFileService _fileHttpClient;
+    private readonly IFileService _fileService;
     private readonly UserManager<User> _userManager;
 
     public CompleteUploadPhotoHandler(
-        IFileService fileHttpClient,
+        IFileService fileService,
         UserManager<User> userManager)
     {
-        _fileHttpClient = fileHttpClient;
+        _fileService = fileService;
         _userManager = userManager;
     }
     public async Task<UnitResult<ErrorList>> Handle(
@@ -43,7 +43,7 @@ public class CompleteUploadPhotoHandler : ICommandHandler<CompleteUploadPhotoCom
 
         var completeRequest = new CompleteMultipartRequest(command.UploadId, command.Parts);
 
-        var result = await _fileHttpClient.CompleteMultipartUpload(completeRequest, cancellationToken);
+        var result = await _fileService.CompleteMultipartUpload(completeRequest, cancellationToken);
 
         if (result.IsFailure)
         {            
