@@ -2,19 +2,20 @@
 using MimeKit;
 using MailKit.Net.Smtp;
 using CSharpFunctionalExtensions;
-using System.ComponentModel.DataAnnotations;
+using EmailNotificationService.API.Models;
+using EmailNotificationService.API.Options;
 
-namespace EmailNotificationService.API;
+namespace EmailNotificationService.API.Services;
 
-public class MailSender
+public class MailSenderService
 {
     private readonly MailOptions _options;
-    private readonly ILogger<MailSender> _logger;
+    private readonly ILogger<MailSenderService> _logger;
     private readonly EmailValidator _validator;
 
-    public MailSender(
+    public MailSenderService(
         IOptions<MailOptions> options,
-        ILogger<MailSender> logger,
+        ILogger<MailSenderService> logger,
         EmailValidator validator)
     {
         _options = options.Value;
@@ -22,7 +23,7 @@ public class MailSender
         _validator = validator;
     }
 
-    public async Task<UnitResult<string>> Send(MailData mailData) 
+    public async Task<UnitResult<string>> Send(MailData mailData)
     {
         var validationResult = _validator.Execute(mailData.To);
         if (validationResult.IsFailure)
@@ -39,7 +40,7 @@ public class MailSender
             MailboxAddress.TryParse(address, out var mailAddress);
             mail.To.Add(mailAddress!);
         }
-            
+
         var body = new BodyBuilder { HtmlBody = mailData.Body };
 
         mail.Body = body.ToMessageBody();
