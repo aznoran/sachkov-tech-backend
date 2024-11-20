@@ -12,12 +12,12 @@ using SachkovTech.SharedKernel.ValueObjects;
 namespace SachkovTech.Accounts.Application.Commands.StartUploadFile;
 public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse, StartUploadPhotoCommand>
 {
-    private readonly FileHttpClient _fileHttpClient;
+    private readonly IFileService _fileService;
     private readonly UserManager<User> _userManager;
 
-    public StartUploadPhotoHandler(FileHttpClient fileHttpClient, UserManager<User> userManager)
+    public StartUploadPhotoHandler(IFileService fileService, UserManager<User> userManager)
     {
-        _fileHttpClient = fileHttpClient;
+        _fileService = fileService;
         _userManager = userManager;
     }
 
@@ -46,7 +46,7 @@ public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse,
             command.ContentType,
             command.FileSize);
 
-        var result = await _fileHttpClient.StartMultipartUpload(
+        var result = await _fileService.StartMultipartUpload(
             startMultipartRequest,
             cancellationToken);
 
