@@ -41,21 +41,18 @@ public class AddLessonHandler(
         if (isLessonExists.IsSuccess)
             return Errors.General.AlreadyExist().ToErrorList();
 
-        var lesson = CreateLesson(command);
-
         var videoResult = await CompleteUploadVideo(
             command.FileName,
             command.ContentType,
             command.FileSize,
             command.UploadId,
             command.Parts,
-            fileService,
             cancellationToken);
 
-        if (videoResult.IsSuccess)
-        {
-            lesson.SetVideo(videoResult.Value);
-        }
+        if (videoResult.IsFailure)
+            return videoResult.Error.ToErrorList();
+
+        var lesson = CreateLesson(command, videoResult.Value);
 
         await lessonsRepository.Add(lesson, cancellationToken);
         await unitOfWork.SaveChanges(cancellationToken);
@@ -65,13 +62,13 @@ public class AddLessonHandler(
         return lesson.Id.Value;
     }
 
-    private Lesson CreateLesson(AddLessonCommand command) =>
+    private Lesson CreateLesson(AddLessonCommand command, Video video) =>
         new(LessonId.NewLessonId(),
             command.ModuleId,
             Title.Create(command.Title).Value,
             Description.Create(command.Description).Value,
             Experience.Create(command.Experience).Value,
-            command.VideoId,
+            video,
             command.PreviewId,
             command.Tags.ToArray(),
     command.Issues.ToArray());
@@ -82,7 +79,6 @@ public class AddLessonHandler(
         long fileSize,
         string uploadId,
         List<PartETagInfo> parts,
-        IFileService fileService,
         CancellationToken cancellationToken)
     {
         var validateResult = Video.Validate(

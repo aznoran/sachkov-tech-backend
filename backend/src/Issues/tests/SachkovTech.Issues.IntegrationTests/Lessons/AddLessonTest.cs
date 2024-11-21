@@ -85,7 +85,7 @@ public class AddLessonTest : LessonsTestsBase
 
         fileServiceMock
             .Setup(f => f.CompleteMultipartUpload(It.IsAny<CompleteMultipartRequest>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.Run(() => Result.Success<FileResponse, string>(response)));
+            .ReturnsAsync(Result.Success<FileResponse, string>(response));
 
         return fileServiceMock.Object;
     }

@@ -45,10 +45,6 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
                 .HasColumnName("experience");
         });
 
-        builder.Property(l => l.VideoId)
-            .IsRequired()
-            .HasColumnName("video_id");
-
         builder.Property(l => l.PreviewId)
             .IsRequired()
             .HasColumnName("preview_id");
@@ -63,7 +59,7 @@ public class LessonConfiguration : IEntityTypeConfiguration<Lesson>
 
         builder.Property(l => l.Video)
             .HasConversion(v => v.FileId, value => new Video(value))
-            .IsRequired(false)
+            .IsRequired()
             .HasColumnName("video_id");
     }
 }
