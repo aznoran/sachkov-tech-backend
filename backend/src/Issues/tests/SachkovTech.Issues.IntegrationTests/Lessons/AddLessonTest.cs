@@ -21,11 +21,10 @@ public class AddLessonTest : LessonsTestsBase
     {
         // act
         var cancellationToken = new CancellationTokenSource().Token;
-        var fixture = new Fixture();
 
         var moduleId = await SeedModuleToDatabase(WriteDbContext, cancellationToken);
 
-        var command = fixture.Build<AddLessonCommand>()
+        var command = Fixture.Build<AddLessonCommand>()
             .With(c => c.ModuleId, moduleId)
             .Create();
 

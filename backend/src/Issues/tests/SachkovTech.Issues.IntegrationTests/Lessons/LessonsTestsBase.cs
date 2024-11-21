@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using AutoFixture;
+using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 
@@ -9,6 +10,7 @@ public abstract class LessonsTestsBase : IClassFixture<IntegrationTestsWebAppFac
     protected readonly IssuesWriteDbContext WriteDbContext;
     protected readonly IReadDbContext ReadDbContext;
     protected readonly IServiceScope Scope;
+    protected readonly Fixture Fixture;
 
     private readonly Func<Task> _resetDatabase;
 
@@ -20,6 +22,8 @@ public abstract class LessonsTestsBase : IClassFixture<IntegrationTestsWebAppFac
 
         WriteDbContext = Scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
         ReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();
+
+        Fixture = new Fixture();
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
