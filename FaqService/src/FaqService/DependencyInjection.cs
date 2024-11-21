@@ -2,14 +2,17 @@ using FaqService.Api.Contracts;
 using FaqService.Extensions;
 using FaqService.Features.Commands.Answer.ChangeRating;
 using FaqService.Features.Commands.Answer.CreateAnswer;
+using FaqService.Features.Commands.Answer.Delete;
 using FaqService.Features.Commands.Answer.UpdateMainInfo;
 using FaqService.Features.Commands.Post.CreatePost;
+using FaqService.Features.Commands.Post.Delete;
 using FaqService.Features.Commands.Post.SelectSolution;
 using FaqService.Features.Commands.Post.UpdatePostMainInfo;
 using FaqService.Features.Commands.Post.UpdateRefsAndTags;
 using FaqService.Features.Queries;
 using FaqService.Infrastructure;
 using FaqService.Infrastructure.Repositories;
+using Nest;
 using Serilog;
 using Serilog.Events;
 
@@ -38,7 +41,7 @@ public static class DependencyInjection
     public static IServiceCollection AddHandlers(this IServiceCollection services)
     {
         services.AddScoped<CreatePostHandler>();
-        services.AddScoped<PostSelectSolutionHandler>();
+        services.AddScoped<SelectSolutionForPostHandler>();
         services.AddScoped<UpdatePostMainInfoHandler>();
         services.AddScoped<UpdatePostRefAndTagsHandler>();
         services.AddScoped<DeletePostHandler>();
@@ -49,8 +52,8 @@ public static class DependencyInjection
         services.AddScoped<UpdateAnswerMainInfoHandler>();
         services.AddScoped<DeleteAnswerHandler>();
 
-        services.AddScoped<GetPostsWithPaginationAndFiltersHandler>();
-        services.AddScoped<GetAnswersWithPaginationHandler>();
+        services.AddScoped<GetPostsWithCursorPaginationHandler>();
+        services.AddScoped<GetAnswersWithCursorHandler>();
         services.AddScoped<GetAnswerAtPostByIdHandler>();
         
         return services;
@@ -63,16 +66,25 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddRepositories(this IServiceCollection services)
+    public static IServiceCollection AddElasticSearch(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<PostsRepository>();
+        var elasticSearchSettings = configuration.GetConnectionString("ElasticSearch");
+        var settings = new ConnectionSettings(new Uri(elasticSearchSettings))
+            .DefaultIndex("posts"); 
+
+        var client = new ElasticClient(settings);
+        
+        services.AddSingleton<IElasticClient>(client);
+        
+        services.AddScoped<SearchRepository>();
 
         return services;
     }
 
-    public static IServiceCollection AddDatabaseSetup(this IServiceCollection services)
+    public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddHostedService<DatabaseSetupService>();
+        services.AddScoped<PostsRepository>();
+        services.AddScoped<SearchRepository>();
 
         return services;
     }

@@ -13,7 +13,7 @@ builder.Services
     .AddHandlers()
     .AddDbContext()
     .AddRepositories()
-    .AddDatabaseSetup();
+    .AddElasticSearch(builder.Configuration);
 
 var app = builder.Build();
 

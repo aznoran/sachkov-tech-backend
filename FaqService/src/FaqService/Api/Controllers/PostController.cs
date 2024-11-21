@@ -2,12 +2,15 @@ using FaqService.Api.Contracts;
 using FaqService.Enums;
 using FaqService.Features.Commands.Answer.ChangeRating;
 using FaqService.Features.Commands.Answer.CreateAnswer;
+using FaqService.Features.Commands.Answer.Delete;
 using FaqService.Features.Commands.Answer.UpdateMainInfo;
 using FaqService.Features.Commands.Post.CreatePost;
+using FaqService.Features.Commands.Post.Delete;
 using FaqService.Features.Commands.Post.SelectSolution;
 using FaqService.Features.Commands.Post.UpdatePostMainInfo;
 using FaqService.Features.Commands.Post.UpdateRefsAndTags;
 using FaqService.Features.Queries;
+using FaqService.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using SharedKernel;
 
@@ -57,7 +60,7 @@ public class PostController : ApplicationController
     public async Task<IActionResult> SelectSolution(
         [FromRoute] Guid id,
         [FromRoute] Guid answerId,
-        [FromServices] PostSelectSolutionHandler handler,
+        [FromServices] SelectSolutionForPostHandler handler,
         CancellationToken cancellationToken)
     {
         var command = new PostSelectSolutionCommand(id, answerId);
@@ -124,43 +127,32 @@ public class PostController : ApplicationController
 
     [HttpGet]
     public async Task<IActionResult> GetPosts(
-        [FromQuery] int pageNumber,
-        [FromQuery] int pageSize,
-        [FromQuery] string? searchText,
-        [FromQuery] Status? status,
-        [FromQuery] bool? sortByDateDescending,
-        [FromQuery] List<Guid>? tags,
-        [FromQuery] Guid? issueId,
-        [FromQuery] Guid? lessonId,
-        [FromServices] GetPostsWithPaginationAndFiltersHandler handler,
+        [FromQuery] GetPostsQuery query,
+        [FromServices] SearchRepository searchRepository,
+        [FromServices] GetPostsWithCursorPaginationHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var paginatedPosts = await handler.Handle(
-            pageNumber,
-            pageSize,
-            searchText,
-            status,
-            sortByDateDescending,
-            tags,
-            issueId,
-            lessonId,
-            cancellationToken);
-
+        var postIds = await searchRepository.SearchPosts(query, cancellationToken);
+        var paginatedPosts = await handler.Handle(postIds, query.Cursor, query.Limit,cancellationToken);
         return Ok(paginatedPosts);
     }
     
     [HttpGet("{id:guid}/answers")]
     public async Task<IActionResult> GetAllAnswersOfPost(
         [FromRoute] Guid id,
-        [FromQuery] int pageNumber,
-        [FromQuery] int pageSize,
-        [FromServices] GetAnswersWithPaginationHandler handler,
+        [FromQuery] Guid? cursor,
+        [FromServices] GetAnswersWithCursorHandler handler,
+        [FromQuery] int limit = 10,
         CancellationToken cancellationToken = default)
     {
+        if (limit <= 0)
+        {
+            return BadRequest("Limit must be greater than 0.");
+        }
         var answers = await handler.Handle(
             id,
-            pageNumber,
-            pageSize,
+            cursor,
+            limit,
             cancellationToken);
 
         return Ok(answers);
@@ -196,7 +188,7 @@ public class PostController : ApplicationController
     }
     
     [HttpDelete("{postId:guid}/answer/{answerId:guid}")]
-    public async Task<IActionResult> DeletePost(
+    public async Task<IActionResult> DeleteAnswer(
         [FromRoute] Guid postId,
         [FromRoute] Guid answerId,
         [FromServices] DeleteAnswerHandler handler,

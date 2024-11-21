@@ -3,6 +3,7 @@ using FaqService.Entities;
 using FaqService.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using NpgsqlTypes;
 using SharedKernel;
 
 namespace FaqService.Infrastructure.Configuration;
@@ -68,15 +69,9 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasGeneratedTsVectorColumn(
-                p => p.GinIndex,
-                "russian",
-                p => new { p.Title, p.Description })
-            .HasIndex(p => p.GinIndex)
-            .HasMethod("GIN");
-        
-        builder.HasIndex(p => p.TrgmIndex)
+        builder.HasIndex(p => new {p.Title, p.Description})
             .HasMethod("GIN")
+            .IsTsVectorExpressionIndex("russian")
             .HasOperators("gin_trgm_ops");
     }
 }

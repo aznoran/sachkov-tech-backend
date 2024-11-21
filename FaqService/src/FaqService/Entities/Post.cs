@@ -29,18 +29,15 @@ public class Post : Entity<Guid>
         Tags = tags;
         Status = Status.Opened;
         CreatedAt = DateTime.UtcNow;
-        UpdateGinIndex();
     }
 
-    public NpgsqlTsVector GinIndex { get; private set; }
-    public string TrgmIndex { get; private set;}
     public string Title { get; private set; } 
     public string Description { get; private set; } 
     public string ReplLink { get; private set; } 
     public Guid UserId { get; private set; } = default!;
     public Guid? IssueId { get; private set; } = default!;
     public Guid? LessonId { get; private set; } = default!;
-    public List<Guid>? Tags { get; private set; }
+    public List<Guid> Tags { get; private set; }
     public Status Status { get; private set; } = default!;
     public Guid? AnswerId { get; private set; } = default!;
     public DateTime CreatedAt { get; private set; } = default!;
@@ -82,12 +79,6 @@ public class Post : Entity<Guid>
         return Result.Success<Error>();
     }
 
-    private void UpdateGinIndex()
-    {
-        GinIndex = NpgsqlTsVector.Parse($"{Title} {Description}");
-        TrgmIndex = $"{Title} {Description}";
-    }
-
     public UnitResult<Error> UpdateMainInfo(
         string title,
         string description)
@@ -98,7 +89,6 @@ public class Post : Entity<Guid>
             return Error.Validation("Description");
         Title = title;
         Description = description;
-        UpdateGinIndex();
         return Result.Success<Error>();
     }
 

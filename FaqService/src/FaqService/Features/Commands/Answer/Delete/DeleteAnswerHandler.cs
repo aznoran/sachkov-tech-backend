@@ -1,9 +1,8 @@
 using CSharpFunctionalExtensions;
-using FaqService.Api.Contracts;
 using FaqService.Infrastructure.Repositories;
 using SharedKernel;
 
-namespace FaqService.Features.Commands.Post.SelectSolution;
+namespace FaqService.Features.Commands.Answer.Delete;
 
 public class DeleteAnswerHandler
 {

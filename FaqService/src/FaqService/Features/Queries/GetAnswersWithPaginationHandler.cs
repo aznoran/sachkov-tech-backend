@@ -1,35 +1,38 @@
 using FaqService.Dtos;
-using FaqService.Entities;
 using FaqService.Extensions;
 using FaqService.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace FaqService.Features.Queries;
 
-public class GetAnswersWithPaginationHandler
+public class GetAnswersWithCursorHandler
 {
     private readonly ApplicationDbContext _dbContext;
 
-    public GetAnswersWithPaginationHandler(ApplicationDbContext dbContext)
+    public GetAnswersWithCursorHandler(ApplicationDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public async Task<PaginatedList<AnswerDto>> Handle(
-        Guid postId,  
-        int pageNumber,
-        int pageSize,
+    public async Task<CursorList<AnswerDto>> Handle(
+        Guid postId,
+        Guid? cursor,
+        int limit = 10,
         CancellationToken cancellationToken = default)
     {
         var query = _dbContext.Posts
             .Where(p => p.Id == postId)
             .SelectMany(p => p.Answers)
-            .OrderByDescending(a => a.CreatedAt);
-                
-        var totalCount = await query.CountAsync(cancellationToken);
+            .OrderByDescending(a => a.CreatedAt)
+            .AsQueryable();
+
+        if (cursor.HasValue)
+        {
+            query = query.Where(a => a.Id < cursor.Value);
+        }
+        
         var items = await query
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize)
+            .Take(limit + 1) 
             .Select(a => new AnswerDto
             {
                 Id = a.Id,
@@ -41,7 +44,18 @@ public class GetAnswersWithPaginationHandler
                 CreatedAt = a.CreatedAt,
             })
             .ToListAsync(cancellationToken);
+        
+        Guid? nextCursor = null;
+        if (items.Count > limit)
+        {
+            nextCursor = items.Last().Id;
+            items = items.Take(limit).ToList();
+        }
 
-        return new PaginatedList<AnswerDto>(items, pageNumber, pageSize, totalCount);
+        return new CursorList<AnswerDto>(
+            items: items,
+            cursor: cursor,
+            nextCursor: nextCursor,
+            limit: limit);
     }
 }

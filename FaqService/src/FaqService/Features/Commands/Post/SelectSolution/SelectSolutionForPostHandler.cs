@@ -4,16 +4,19 @@ using SharedKernel;
 
 namespace FaqService.Features.Commands.Post.SelectSolution;
 
-public class PostSelectSolutionHandler
+public class SelectSolutionForPostHandler
 {
     private readonly PostsRepository _repository;
-    private readonly ILogger<PostSelectSolutionHandler> _logger;
+    private readonly ILogger<SelectSolutionForPostHandler> _logger;
+    private readonly SearchRepository _searchRepository;
 
-    public PostSelectSolutionHandler(PostsRepository repository,
-        ILogger<PostSelectSolutionHandler> logger)
+    public SelectSolutionForPostHandler(PostsRepository repository,
+        ILogger<SelectSolutionForPostHandler> logger,
+        SearchRepository searchRepository)
     {
         _repository = repository;
         _logger = logger;
+        _searchRepository = searchRepository;
     }
 
     public async Task<Result<Guid, Error>> Handle(PostSelectSolutionCommand command,
@@ -29,6 +32,7 @@ public class PostSelectSolutionHandler
             return result.Error;
 
         await _repository.Save(cancellationToken);
+        await _searchRepository.IndexPost(postResult.Value);
         _logger.LogInformation("For post {PostId} selected solution {AnswerId}.", postResult.Value, command.AnswerId);
 
         return postResult.Value.Id;

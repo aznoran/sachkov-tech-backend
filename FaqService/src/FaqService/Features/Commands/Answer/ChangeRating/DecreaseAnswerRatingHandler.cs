@@ -31,7 +31,7 @@ public class DecreaseAnswerRatingHandler
 
         await _repository.Save(cancellationToken);
 
-        _logger.LogInformation($"Decreased answer rating with id: {command.PostId}");
+        _logger.LogInformation($"Decreased answer rating with id: {command.AnswerId}");
 
         return answer.Id;
     }

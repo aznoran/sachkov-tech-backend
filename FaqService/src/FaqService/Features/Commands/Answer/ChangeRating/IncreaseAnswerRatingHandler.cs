@@ -31,7 +31,7 @@ public class IncreaseAnswerRatingHandler
 
         await _repository.Save(cancellationToken);
 
-        _logger.LogInformation($"Increased answer rating with id: {command.PostId}");
+        _logger.LogInformation($"Increased answer rating with id: {command.AnswerId}");
 
         return answer.Id;
     }

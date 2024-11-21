@@ -49,4 +49,13 @@ public class PostsRepository
         _dbContext.Posts.Remove(post);
         return Result.Success<Error>();
     }
+    public async Task <Result<List<Post>, Error>> GetPostsByIds(List<Guid> postIds, CancellationToken cancellationToken)
+    {
+        var posts = await _dbContext.Posts
+            .Include(p => p.Answers)
+            .Where(p => postIds.Contains(p.Id))
+            .ToListAsync(cancellationToken);
+        
+        return posts;
+    }
 }

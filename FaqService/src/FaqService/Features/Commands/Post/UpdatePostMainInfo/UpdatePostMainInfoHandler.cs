@@ -8,12 +8,15 @@ public class UpdatePostMainInfoHandler
 {
     private readonly PostsRepository _repository;
     private readonly ILogger<UpdatePostMainInfoHandler> _logger;
+    private readonly SearchRepository _searchRepository;
 
     public UpdatePostMainInfoHandler(PostsRepository repository,
-        ILogger<UpdatePostMainInfoHandler> logger)
+        ILogger<UpdatePostMainInfoHandler> logger,
+        SearchRepository searchRepository)
     {
         _repository = repository;
         _logger = logger;
+        _searchRepository = searchRepository;
     }
 
     public async Task<Result<Guid, Error>> Handle(UpdatePostMainInfoCommand command,
@@ -29,6 +32,7 @@ public class UpdatePostMainInfoHandler
             return result.Error;
 
         await _repository.Save(cancellationToken);
+        await _searchRepository.IndexPost(postResult.Value);
         _logger.LogInformation("Updated main info post {PostId}.", postResult.Value);
 
         return postResult.Value.Id;
