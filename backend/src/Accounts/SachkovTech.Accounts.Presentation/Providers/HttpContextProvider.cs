@@ -14,7 +14,7 @@ public class HttpContextProvider
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Result<Guid,Error> GetRefreshSessionCookie()
+    public Result<Guid, Error> GetRefreshSessionCookie()
     {
         if (_httpContextAccessor.HttpContext is null)
         {
@@ -28,19 +28,19 @@ public class HttpContextProvider
 
         return Guid.Parse(refreshToken);
     }
-    
+
     public UnitResult<Error> SetRefreshSessionCookie(Guid refreshToken)
     {
         if (_httpContextAccessor.HttpContext is null)
         {
             return Errors.General.Failure();
         }
-        
+
         _httpContextAccessor.HttpContext.Response.Cookies.Append(REFRESH_TOKEN, refreshToken.ToString());
 
         return UnitResult.Success<Error>();
     }
-    
+
     public UnitResult<Error> DeleteRefreshSessionCookie()
     {
         if (_httpContextAccessor.HttpContext is null)
