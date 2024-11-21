@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Domain.Issue;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 

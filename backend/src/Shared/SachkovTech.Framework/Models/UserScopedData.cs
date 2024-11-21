@@ -1,6 +1,4 @@
-﻿using SachkovTech.Framework.Authorization;
-
-namespace SachkovTech.Framework.Models;
+﻿namespace SachkovTech.Framework.Models;
 
 public class UserScopedData
 {

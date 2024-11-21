@@ -2,7 +2,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;

@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
@@ -10,9 +9,6 @@ using SachkovTech.Accounts.Application.Commands.StartUploadFile;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Application.Requests;
 using SachkovTech.Accounts.Contracts.Requests;
-using SachkovTech.Accounts.Infrastructure.Providers;
-using SachkovTech.Core.Models;
-using SachkovTech.SharedKernel;
 using SachkovTech.Accounts.Presentation.Providers;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;

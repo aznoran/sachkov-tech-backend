@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Files.Contracts;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;
