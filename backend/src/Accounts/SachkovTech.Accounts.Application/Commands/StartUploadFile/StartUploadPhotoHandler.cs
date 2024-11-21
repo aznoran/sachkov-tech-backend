@@ -6,11 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Abstractions;
+using SachkovTech.Core.Responses;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Application.Commands.StartUploadFile;
-public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse, StartUploadPhotoCommand>
+public class StartUploadPhotoHandler : ICommandHandler<StartUploadFileResponse, StartUploadPhotoCommand>
 {
     private readonly IFileService _fileService;
     private readonly UserManager<User> _userManager;
@@ -21,7 +22,7 @@ public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse,
         _userManager = userManager;
     }
 
-    public async Task<Result<StartUploadPhotoResponse, ErrorList>> Handle(
+    public async Task<Result<StartUploadFileResponse, ErrorList>> Handle(
         StartUploadPhotoCommand command,
         CancellationToken cancellationToken = default)
     {
@@ -53,6 +54,6 @@ public class StartUploadPhotoHandler : ICommandHandler<StartUploadPhotoResponse,
         if (result.IsFailure)
             return Errors.General.ValueIsInvalid(result.Error).ToErrorList();        
 
-        return new StartUploadPhotoResponse(result.Value.FileId, result.Value.PresignedUrl);
+        return new StartUploadFileResponse(result.Value.FileId, result.Value.PresignedUrl);
     }
 }

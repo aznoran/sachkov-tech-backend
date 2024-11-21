@@ -1,4 +1,7 @@
 using AutoFixture;
+using CSharpFunctionalExtensions;
+using FileService.Communication;
+using FileService.Contracts;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,6 +10,7 @@ using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
+using System.Threading;
 
 namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
@@ -19,7 +23,7 @@ public class AddLessonTest : LessonsTestsBase
     [Fact]
     public async Task Add_lesson_to_database()
     {
-        // act
+        // arrange
         var cancellationToken = new CancellationTokenSource().Token;
 
         var moduleId = await SeedModuleToDatabase(WriteDbContext, cancellationToken);
@@ -29,10 +33,10 @@ public class AddLessonTest : LessonsTestsBase
             .Create();
 
         var handler = Scope.ServiceProvider.GetRequiredService<AddLessonHandler>();
-
-        // arrange
-        var result = await handler.Handle(command, cancellationToken);
-
+        
+        // act
+        var result = await handler.Handle(command, cancellationToken); 
+        
         //assert
         var lesson = await ReadDbContext.Lessons
             .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
@@ -80,5 +84,18 @@ public class AddLessonTest : LessonsTestsBase
         await dbContext.SaveChangesAsync(cancellationToken);
 
         return module.Id;
+    }
+
+    private IFileService SetFileServiceMock()
+    {
+        var fileServiceMock = new Mock<IFileService>();
+
+        var response = new FileResponse(Guid.NewGuid(), "testUrl");
+
+        fileServiceMock
+            .Setup(f => f.CompleteMultipartUpload(It.IsAny<CompleteMultipartRequest>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(Result.Success<FileResponse, string>(response));
+
+        return fileServiceMock.Object;
     }
 }
