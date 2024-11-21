@@ -3,3 +3,4 @@
 /FileService/nuget.config
 /backend/nuget.config
 /.gitignore
+FaqService/docker-compose.yml

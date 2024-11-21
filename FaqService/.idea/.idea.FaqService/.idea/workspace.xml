@@ -10,40 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b928dddb-e292-4781-87cf-b74774cc345c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.FaqService/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FaqService/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Api/Controllers/PostController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Api/Controllers/PostController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/DependencyInjection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/DependencyInjection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Entities/Post.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Entities/Post.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Extensions/DatabaseSetupService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Extensions/PaginatedList.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/FaqService.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/FaqService.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/ChangeRating/DecreaseAnswerRatingHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/ChangeRating/DecreaseAnswerRatingHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/ChangeRating/IncreaseAnswerRatingHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/ChangeRating/IncreaseAnswerRatingHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/Delete/DeleteAnswerCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/Delete/DeleteAnswerCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/Delete/DeleteAnswerHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Answer/Delete/DeleteAnswerHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/CreatePost/CreatePostHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/CreatePost/CreatePostHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/Delete/DeletePostCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/Delete/DeletePostCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/Delete/DeletePostHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/Delete/DeletePostHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/SelectSolution/PostSelectSolutionHandler.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/UpdatePostMainInfo/UpdatePostMainInfoHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/UpdatePostMainInfo/UpdatePostMainInfoHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/UpdateRefsAndTags/UpdatePostRefAndTagsHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Commands/Post/UpdateRefsAndTags/UpdatePostRefAndTagsHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Queries/GetAnswersWithPaginationHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Features/Queries/GetAnswersWithPaginationHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Features/Queries/GetPostsWithPaginationAndFiltersHandler.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Infrastructure/Configuration/PostConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Infrastructure/Configuration/PostConfiguration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Infrastructure/Repositories/PostsRepository.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Infrastructure/Repositories/PostsRepository.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FaqService/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/FaqService/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/bin/Debug/net8.0/SharedKernel.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/bin/Debug/net8.0/SharedKernel.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/bin/Debug/net8.0/SharedKernel.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/bin/Debug/net8.0/SharedKernel.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.AssemblyInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.AssemblyInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.AssemblyInfoInputs.cache" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.AssemblyInfoInputs.cache" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.sourcelink.json" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/SharedKernel.sourcelink.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/ref/SharedKernel.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/ref/SharedKernel.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/refint/SharedKernel.dll" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/Debug/net8.0/refint/SharedKernel.dll" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/rider.project.model.nuget.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/rider.project.model.nuget.info" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/SharedKernel/obj/rider.project.restore.info" beforeDir="false" afterPath="$PROJECT_DIR$/src/SharedKernel/obj/rider.project.restore.info" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -206,7 +175,7 @@
       <workItem from="1731528081882" duration="8000" />
       <workItem from="1731528502587" duration="21672000" />
       <workItem from="1731698682206" duration="26000" />
-      <workItem from="1731698736581" duration="45440000" />
+      <workItem from="1731698736581" duration="46419000" />
     </task>
     <servers />
   </component>
