@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Issues.Domain.Issue;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;

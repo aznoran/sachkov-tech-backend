@@ -1,7 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Files.Contracts;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.SharedKernel;

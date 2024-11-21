@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using SachkovTech.Core.Models;
 using SachkovTech.Framework.Models;
 
 namespace SachkovTech.Framework.Authorization;

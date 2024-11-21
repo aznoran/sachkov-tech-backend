@@ -3,11 +3,8 @@ using CSharpFunctionalExtensions;
 using FileService.Communication;
 using FileService.Contracts;
 using FluentAssertions;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Moq;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
@@ -19,35 +16,23 @@ namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
 public class AddLessonTest : LessonsTestsBase
 {
-    private readonly ILogger<AddLessonHandler> _logger;
-    private readonly IValidator<AddLessonCommand> _validator;
-    private readonly IFileService _fileService;
-    
     public AddLessonTest(IntegrationTestsWebAppFactory factory) : base(factory)
     {
-        _logger = Scope.ServiceProvider.GetRequiredService<ILogger<AddLessonHandler>>();
-        _validator = Scope.ServiceProvider.GetRequiredService<IValidator<AddLessonCommand>>();
-        _fileService = SetFileServiceMock();
-    }    
+    }
 
     [Fact]
-    public async Task Add_Lesson_To_Database()
+    public async Task Add_lesson_to_database()
     {
         // arrange
         var cancellationToken = new CancellationTokenSource().Token;
-        var fixture = new Fixture();
 
-        var moduleId = await AddModuleToDatabase(WriteDbContext, cancellationToken);
+        var moduleId = await SeedModuleToDatabase(WriteDbContext, cancellationToken);
 
-        var command = fixture.Build<AddLessonCommand>().With(c => c.ModuleId, moduleId).Create();
+        var command = Fixture.Build<AddLessonCommand>()
+            .With(c => c.ModuleId, moduleId)
+            .Create();
 
-        var handler = new AddLessonHandler(
-            ReadDbContext,
-            _validator,
-            Repository,
-            _fileService,
-            UnitOfWork,
-            _logger);
+        var handler = Scope.ServiceProvider.GetRequiredService<AddLessonHandler>();
         
         // act
         var result = await handler.Handle(command, cancellationToken); 
@@ -55,13 +40,37 @@ public class AddLessonTest : LessonsTestsBase
         //assert
         var lesson = await ReadDbContext.Lessons
             .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
-        
+
         result.IsSuccess.Should().BeTrue();
         lesson.Should().NotBeNull();
         lesson?.Title.Should().Be(command.Title);
     }
 
-    private async Task<Guid> AddModuleToDatabase(
+    [Fact]
+    public async Task Cant_add_lesson_to_database()
+    {
+        // act
+        var cancellationToken = new CancellationTokenSource().Token;
+        var fixture = new Fixture();
+
+        var command = fixture.Build<AddLessonCommand>()
+            .With(c => c.ModuleId, Guid.Empty)
+            .Create();
+
+        var handler = Scope.ServiceProvider.GetRequiredService<AddLessonHandler>();
+
+        // arrange
+        var result = await handler.Handle(command, cancellationToken);
+
+        //assert
+        var lesson = await ReadDbContext.Lessons
+            .FirstOrDefaultAsync(cancellationToken);
+
+        result.IsFailure.Should().BeTrue();
+        lesson.Should().BeNull();
+    }
+
+    private async Task<Guid> SeedModuleToDatabase(
         IssuesWriteDbContext dbContext,
         CancellationToken cancellationToken = default)
     {
