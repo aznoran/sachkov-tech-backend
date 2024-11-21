@@ -18,7 +18,7 @@ public class PermissionManager(AccountsWriteDbContext accountsWriteContext)
                 .AnyAsync(p => p.Code == permissionCode, cancellationToken);
 
             if (isPermissionExist)
-                return;
+                continue;
 
             await accountsWriteContext.Permissions.AddAsync(new Permission { Code = permissionCode }, cancellationToken);
         }

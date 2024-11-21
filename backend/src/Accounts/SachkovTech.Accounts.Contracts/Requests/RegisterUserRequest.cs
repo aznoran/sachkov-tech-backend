@@ -1,5 +1,3 @@
-using SachkovTech.Core.Dtos;
-
 namespace SachkovTech.Accounts.Contracts.Requests;
 
 public record RegisterUserRequest(

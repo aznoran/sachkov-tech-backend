@@ -2,7 +2,7 @@ syntax = "proto3";
 
 option csharp_namespace = "NotificationService.Grpc";
 
-package NotificationServiceGrpc;
+package SachkovTech.Grpc;
 
 message GuidGrpc
 {

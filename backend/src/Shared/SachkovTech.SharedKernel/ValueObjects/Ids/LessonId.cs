@@ -2,33 +2,29 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
-public class LessonId : ValueObject
+public class LessonId : ComparableValueObject
 {
-    private LessonId(Guid? value)
+    private LessonId(Guid value)
     {
         Value = value;
     }
 
-    public Guid? Value { get; }
+    public Guid Value { get; }
 
-    public static LessonId NewLessonId() => Guid.NewGuid();
+    public static LessonId NewLessonId() => new LessonId(Guid.NewGuid());
 
-    public static LessonId Empty() => new LessonId(null);
+    public static LessonId Create(Guid id) => new(id);
 
-    public static LessonId Create(Guid? id) => new(id);
-
-    public static implicit operator LessonId(Guid? id) => new(id);
+    public static implicit operator LessonId(Guid id) => new(id);
 
     public static implicit operator Guid(LessonId lessonId)
     {
         ArgumentNullException.ThrowIfNull(lessonId);
-        ArgumentNullException.ThrowIfNull(lessonId.Value);
-        return lessonId.Value.Value;
+        return lessonId.Value;
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
-        if (Value != null)
-            yield return Value;
+        yield return Value;
     }
 }

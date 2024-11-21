@@ -1,10 +1,17 @@
-using FluentValidation;
+using FileService.Communication;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SachkovTech.Core.Abstractions;
 
 namespace SachkovTech.Accounts.Application;
 
-public class DependencyInjection
+public static class DependencyInjection
 {
-    
+    public static IServiceCollection AddAccountsApplication(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddFileHttpCommunication(configuration);
+
+        return services;
+    }
 }

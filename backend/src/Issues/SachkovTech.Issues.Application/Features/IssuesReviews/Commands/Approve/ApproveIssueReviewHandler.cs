@@ -7,28 +7,26 @@ using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Threading;
 
 namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.Approve;
 
 public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueReviewCommand>
 {
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<ApproveIssueReviewCommand> _validator;
     private readonly ILogger<ApproveIssueReviewHandler> _logger;
 
     public ApproveIssueReviewHandler(
-        IIssueReviewRepository issueReviewRepository,
+        IIssuesReviewRepository issuesReviewRepository,
         IUserIssueRepository userIssueRepository,
-        [FromKeyedServices(Modules.Issues)]
+        [FromKeyedServices(SharedKernel.Modules.Issues)]
         IUnitOfWork unitOfWork,
         IValidator<ApproveIssueReviewCommand> validator,
         ILogger<ApproveIssueReviewHandler> logger)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _userIssueRepository = userIssueRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
@@ -45,7 +43,7 @@ public class ApproveIssueReviewHandler : ICommandHandler<Guid, ApproveIssueRevie
             return validationResult.ToList();
         }
 
-        var issueReviewResult = await _issueReviewRepository
+        var issueReviewResult = await _issuesReviewRepository
             .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)

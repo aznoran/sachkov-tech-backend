@@ -5,7 +5,16 @@ EXPOSE 8080
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
+ARG NUGET_USERNAME
+ARG NUGET_PASSWORD
 WORKDIR /src
+
+RUN dotnet nuget add source https://nuget.pkg.github.com/SachkovTech/index.json \
+    -n github \
+    --username $NUGET_USERNAME \
+    --password $NUGET_PASSWORD \
+    --store-password-in-clear-text
+
 COPY ["src/SachkovTech.Web/SachkovTech.Web.csproj", "src/SachkovTech.Web/"]
 COPY ["src/Accounts/SachkovTech.Accounts.Infrastructure/SachkovTech.Accounts.Infrastructure.csproj", "src/Accounts/SachkovTech.Accounts.Infrastructure/"]
 COPY ["src/Shared/SachkovTech.Framework/SachkovTech.Framework.csproj", "src/Shared/SachkovTech.Framework/"]
@@ -14,10 +23,10 @@ COPY ["src/Shared/SachkovTech.Core/SachkovTech.Core.csproj", "src/Shared/Sachkov
 COPY ["src/Shared/SachkovTech.SharedKernel/SachkovTech.SharedKernel.csproj", "src/Shared/SachkovTech.SharedKernel/"]
 COPY ["src/Accounts/SachkovTech.Accounts.Application/SachkovTech.Accounts.Application.csproj", "src/Accounts/SachkovTech.Accounts.Application/"]
 COPY ["src/Accounts/SachkovTech.Accounts.Domain/SachkovTech.Accounts.Domain.csproj", "src/Accounts/SachkovTech.Accounts.Domain/"]
+COPY ["src/Files/SachkovTech.Files.Domain/SachkovTech.Files.Domain.csproj", "src/Files/SachkovTech.Files.Domain/"]
 COPY ["src/Accounts/SachkovTech.Accounts.Presentation/SachkovTech.Accounts.Presentation.csproj", "src/Accounts/SachkovTech.Accounts.Presentation/"]
 COPY ["src/Files/SachkovTech.Files.Application/SachkovTech.Files.Application.csproj", "src/Files/SachkovTech.Files.Application/"]
 COPY ["src/Files/SachkovTech.Files.Contracts/SachkovTech.Files.Contracts.csproj", "src/Files/SachkovTech.Files.Contracts/"]
-COPY ["src/Files/SachkovTech.Files.Domain/SachkovTech.Files.Domain.csproj", "src/Files/SachkovTech.Files.Domain/"]
 COPY ["src/Files/SachkovTech.Files.Infrastructure/SachkovTech.Files.Infrastructure.csproj", "src/Files/SachkovTech.Files.Infrastructure/"]
 COPY ["src/Files/SachkovTech.Files.Presentation/SachkovTech.Files.Presentation.csproj", "src/Files/SachkovTech.Files.Presentation/"]
 COPY ["src/Issues/SachkovTech.Issues.Infrastructure/SachkovTech.Issues.Infrastructure.csproj", "src/Issues/SachkovTech.Issues.Infrastructure/"]

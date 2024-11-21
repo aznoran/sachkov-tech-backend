@@ -1,5 +1,4 @@
 using System.Data.Common;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Core.Abstractions;

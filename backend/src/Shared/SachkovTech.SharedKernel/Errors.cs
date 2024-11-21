@@ -29,7 +29,7 @@ public static class Errors
 
         public static Error Failure()
         {
-            return Error.Failure("failure", "Failure");
+            return Error.Failure("server.failure", "Server failure");
         }
 
         public static Error NotAllowed()

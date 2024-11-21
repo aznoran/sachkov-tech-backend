@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Domain.Module.Entities;
+using SachkovTech.Issues.Domain.Issue;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -19,7 +20,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
         {
             eb.Property(e => e.Value)
                 .HasColumnName("experience")
-                .IsRequired(true);
+                .IsRequired();
         });
 
         builder.Property(i => i.Id)
@@ -27,28 +28,24 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                 id => id.Value,
                 value => IssueId.Create(value));
 
-        builder.ComplexProperty(i => i.LessonId,
-            lb =>
-            {
-                lb.Property(l => l.Value)
-                    .IsRequired(false)
-                    .HasColumnName("lesson_id");
-            });
+        builder.Property(i => i.ModuleId)
+            .HasConversion(
+                id => id.Value,
+                value => ModuleId.Create(value))
+            .IsRequired();
+
+        builder.Property(i => i.LessonId)
+            .IsRequired(false)
+            .HasConversion(
+                id => id!.Value,
+                value => LessonId.Create(value));
 
         builder.ComplexProperty(i => i.Experience,
-            lb =>
+            eb =>
             {
-                lb.Property(l => l.Value)
+                eb.Property(e => e.Value)
                     .IsRequired()
                     .HasColumnName("experience");
-            });
-
-        builder.ComplexProperty(i => i.Position,
-            lb =>
-            {
-                lb.Property(l => l.Value)
-                    .IsRequired()
-                    .HasColumnName("position");
             });
 
         builder.ComplexProperty(m => m.Title, tb =>
@@ -73,7 +70,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
                 FileId.Create)
             .HasColumnName("files");
 
-        builder.Property<bool>("_isDeleted")
+        builder.Property<bool>("IsDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");
 

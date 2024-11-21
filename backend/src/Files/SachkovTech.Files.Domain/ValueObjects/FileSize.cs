@@ -3,7 +3,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Files.Domain.ValueObjects;
 
-public class FileSize : ValueObject
+public class FileSize : ComparableValueObject
 {
     public long Value { get; }
     
@@ -20,11 +20,11 @@ public class FileSize : ValueObject
         return new FileSize(fileLength);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    public static implicit operator long(FileSize fileSize) =>
+        fileSize.Value;
+    
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
-    public static implicit operator long(FileSize fileSize) =>
-        fileSize.Value;
 }

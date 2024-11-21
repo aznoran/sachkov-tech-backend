@@ -2,12 +2,9 @@ using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Models;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Application.Commands.RefreshTokens;
-
-public record RefreshTokensCommand(Guid RefreshToken) : ICommand;
 
 public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokensCommand>
 {
@@ -46,12 +43,13 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
             .GenerateAccessToken(oldRefreshSession.Value.User, cancellationToken);
 
         var refreshToken = await _tokenProvider
-            .GenerateRefreshToken(oldRefreshSession.Value.User, accessToken.Jti, cancellationToken);
+            .GenerateRefreshToken(oldRefreshSession.Value.User, cancellationToken);
 
         return new LoginResponse(
             accessToken.AccessToken,
             refreshToken,
             oldRefreshSession.Value.User.Id,
-            oldRefreshSession.Value.User.Email!);
+            oldRefreshSession.Value.User.Email!,
+            oldRefreshSession.Value.User.Roles.Select(r => r.Name?.ToLower())!);
     }
 }

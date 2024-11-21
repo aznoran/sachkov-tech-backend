@@ -12,18 +12,18 @@ namespace SachkovTech.Issues.Application.Features.IssuesReviews.Commands.StartRe
 
 public class StartReviewHandler : ICommandHandler<Guid, StartReviewCommand>
 {
-    private readonly IIssueReviewRepository _issueReviewRepository;
+    private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<StartReviewCommand> _validator;
     private readonly ILogger<StartReviewHandler> _logger;
 
     public StartReviewHandler(
-        IIssueReviewRepository issueReviewRepository,
-        [FromKeyedServices(Modules.Issues)] IUnitOfWork unitOfWork,
+        IIssuesReviewRepository issuesReviewRepository,
+        [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
         IValidator<StartReviewCommand> validator,
         ILogger<StartReviewHandler> logger)
     {
-        _issueReviewRepository = issueReviewRepository;
+        _issuesReviewRepository = issuesReviewRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
         _logger = logger;
@@ -39,7 +39,7 @@ public class StartReviewHandler : ICommandHandler<Guid, StartReviewCommand>
             return validationResult.ToList();
         }
 
-        var issueReviewResult = await _issueReviewRepository
+        var issueReviewResult = await _issuesReviewRepository
             .GetById(IssueReviewId.Create(command.IssueReviewId), cancellationToken);
 
         if (issueReviewResult.IsFailure)

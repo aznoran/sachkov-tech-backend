@@ -1,12 +1,8 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Accounts.Infrastructure.Seeding;
-using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.Framework.Middlewares;
 using SachkovTech.Web;
-using SachkovTech.Web.Middlewares;
 using Serilog;
-
 
 DotNetEnv.Env.Load();
 
@@ -48,6 +44,7 @@ builder.Services.AddAccountsModule(builder.Configuration);
 builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
 builder.Services.AddApplicationLayers();
+builder.Services.AddFramework();
 
 builder.Services.AddControllers();
 
@@ -86,8 +83,14 @@ app.UseCors(config =>
 });
 
 app.UseAuthentication();
+app.UseScopeDataMiddleware();
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+namespace SachkovTech.Web
+{
+    public partial class Program { }
+}

@@ -1,5 +1,3 @@
-using SachkovTech.Core.Dtos;
-
 namespace SachkovTech.Accounts.Contracts.Dtos;
 
 public class SupportAccountDto

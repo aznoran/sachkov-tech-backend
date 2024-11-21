@@ -9,6 +9,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\SachkovTech.Core\SachkovTech.Core.csproj" />
       <ProjectReference Include="..\..\Shared\SachkovTech.SharedKernel\SachkovTech.SharedKernel.csproj" />
+      <ProjectReference Include="..\SachkovTech.Issues.Domain\SachkovTech.Issues.Domain.csproj" />
     </ItemGroup>
 
 </Project>

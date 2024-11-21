@@ -1,6 +1,4 @@
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
-using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Application.Commands.Register;
 

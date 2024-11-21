@@ -2,17 +2,12 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.SharedKernel.ValueObjects;
 
-public class SocialNetwork : ValueObject
+public class SocialNetwork : ComparableValueObject
 {
     public SocialNetwork(string name, string link)
     {
         Name = name;
         Link = link;
-    }
-    
-    private SocialNetwork()
-    {
-        
     }
     
     public string Name { get; }
@@ -29,11 +24,10 @@ public class SocialNetwork : ValueObject
                 
         return new SocialNetwork(link, name);
     }
-    
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Name;
-        
         yield return Link;
     }
 }

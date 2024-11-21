@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Extensions;
-using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Accounts.Infrastructure.Configurations.Read;
 

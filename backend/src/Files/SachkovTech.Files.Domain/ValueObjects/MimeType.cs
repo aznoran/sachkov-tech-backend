@@ -4,7 +4,7 @@ using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Files.Domain.ValueObjects;
 
-public class MimeType : ValueObject
+public class MimeType : ComparableValueObject
 {
     public static readonly MimeType Png = new(MediaTypeNames.Image.Png);
     public static readonly MimeType Jpeg = new(MediaTypeNames.Image.Jpeg);
@@ -59,12 +59,12 @@ public class MimeType : ValueObject
 
         return Errors.General.ValueIsInvalid("mime type");
     }
+    
+    public static implicit operator string(MimeType type) =>
+        type.Value;
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
-    public static implicit operator string(MimeType type) =>
-        type.Value;
 }

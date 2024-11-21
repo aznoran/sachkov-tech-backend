@@ -15,13 +15,13 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
             .AddServices();
 
-        return services;   
+        return services;
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services)
@@ -36,24 +36,32 @@ public static class DependencyInjection
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
+        services.AddScoped<ILessonsRepository, LessonsRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
-        services.AddScoped<IIssueReviewRepository, IssueReviewRepository>();
+        services.AddScoped<IIssuesReviewRepository, IssuesReviewRepository>();
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
-        
+        services.AddScoped<IModulesRepository, ModulesRepository>();
+        services.AddScoped<IIssuesRepository, IssuesesRepository>();
+
         return services;
     }
 
-    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<IssuesWriteDbContext>();
-        services.AddScoped<IReadDbContext, IssuesReadDbContext>();
+        services.AddScoped<IssuesWriteDbContext>(provider =>
+            new IssuesWriteDbContext(configuration.GetConnectionString("Database")!));
+        
+        services.AddScoped<IReadDbContext, IssuesReadDbContext>(provider =>
+            new IssuesReadDbContext(configuration.GetConnectionString("Database")!));
 
         return services;
     }
 
     private static IServiceCollection AddHostedServices(this IServiceCollection services)
     {
-        services.AddHostedService<DeleteExpiredIssuesBackgroundService>();
+        //services.AddHostedService<DeleteExpiredIssuesBackgroundService>();
 
         return services;
     }
@@ -64,4 +72,23 @@ public static class DependencyInjection
 
         return services;
     }
+
+    // private static IServiceCollection AddGrpcNotificationServiceClient(this IServiceCollection services,
+    //     IConfiguration configuration)
+    // {
+    //     var uri = configuration.GetConnectionString(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+    //
+    //     services.AddKeyedSingleton<GrpcChannel>(
+    //         implementationInstance: GrpcChannel.ForAddress(uri!),
+    //         serviceKey: Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey);
+    //
+    //     // services.AddScoped<IGrpcNotificationServiceClient, GrpcNotificationServiceClient>(sp =>
+    //     // {
+    //     //     GrpcChannel channel =
+    //     //         sp.GetKeyedService<GrpcChannel>(Constants.GRPC_NOTIFICATIONSERVICE_ConnectionStringKey)!;
+    //     //     return new GrpcNotificationServiceClient(channel);
+    //     // });
+    //
+    //     return services;
+    // }
 }

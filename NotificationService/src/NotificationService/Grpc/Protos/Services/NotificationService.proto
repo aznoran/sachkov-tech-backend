@@ -2,14 +2,14 @@ syntax = "proto3";
 
 option csharp_namespace = "NotificationService.Grpc";
 
-package NotificationServiceGrpc;
+package SachkovTech.Grpc;
 
 import "Grpc/Protos/Shared/GuidGrpc.proto";
 
 service NotificationService
 {
-  rpc Add (AddNotificationSettingsRequest) returns (GuidGrpc);
-  rpc Push (PushNotificationRequest) returns (GuidGrpc);
+  rpc AddNotificationSettings (AddNotificationSettingsRequest) returns (GuidGrpc);
+  rpc PushNotification (PushNotificationRequest) returns (GuidGrpc);
 }
 
 message AddNotificationSettingsRequest 

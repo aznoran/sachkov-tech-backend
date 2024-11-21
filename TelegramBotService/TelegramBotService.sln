@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotService", "src\T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{478B3F84-2565-42F5-931D-E93E02FDFBAF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TelegramBotService.IntegrationTests", "src\IntegrationTests\TelegramBotService.IntegrationTests\TelegramBotService.IntegrationTests.csproj", "{A5B60934-6EA2-4338-AA7F-627DE833E77E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -20,8 +22,13 @@ Global
 		{DAB52012-6C2A-41EA-BF4B-719FE4911B77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DAB52012-6C2A-41EA-BF4B-719FE4911B77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DAB52012-6C2A-41EA-BF4B-719FE4911B77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5B60934-6EA2-4338-AA7F-627DE833E77E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5B60934-6EA2-4338-AA7F-627DE833E77E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5B60934-6EA2-4338-AA7F-627DE833E77E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5B60934-6EA2-4338-AA7F-627DE833E77E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DAB52012-6C2A-41EA-BF4B-719FE4911B77} = {478B3F84-2565-42F5-931D-E93E02FDFBAF}
+		{A5B60934-6EA2-4338-AA7F-627DE833E77E} = {478B3F84-2565-42F5-931D-E93E02FDFBAF}
 	EndGlobalSection
 EndGlobal

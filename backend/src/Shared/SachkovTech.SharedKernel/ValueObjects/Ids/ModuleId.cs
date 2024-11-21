@@ -2,18 +2,18 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
-public class ModuleId : ValueObject
+public class ModuleId : ComparableValueObject
 {
+    public static readonly ModuleId Empty = new ModuleId(Guid.Empty);
+    
     private ModuleId(Guid value)
     {
         Value = value;
     }
-
+    
     public Guid Value { get; }
 
     public static ModuleId NewModuleId() => new(Guid.NewGuid());
-
-    public static ModuleId Empty() => new(Guid.Empty);
 
     public static ModuleId Create(Guid id) => new(id);
 
@@ -25,7 +25,7 @@ public class ModuleId : ValueObject
         return moduleId.Value;
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Core.Models;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
+using SachkovTech.Framework.Models;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.SendOnReview;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.StopWorking;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.TakeOnWork;
@@ -20,11 +20,11 @@ public class IssueSolvingController : ApplicationController
         [FromRoute] Guid moduleId,
         [FromRoute] Guid issueId,
         [FromServices] TakeOnWorkHandler handler,
+        [FromServices] UserScopedData userScopedData,
         CancellationToken cancellationToken = default)
     {
-        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
 
-        var command = new TakeOnWorkCommand(Guid.Parse(userId), issueId, moduleId);
+        var command = new TakeOnWorkCommand(userScopedData.UserId, issueId, moduleId);
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -39,12 +39,11 @@ public class IssueSolvingController : ApplicationController
     public async Task<ActionResult> SendOnReview(
         [FromRoute] Guid userIssueId,
         [FromServices] SendOnReviewHandler handler,
+        [FromServices] UserScopedData userScopedData,
         [FromBody] SendOnReviewRequest request,
         CancellationToken cancellationToken = default)
     {
-        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
-
-        var command = new SendOnReviewCommand(userIssueId, Guid.Parse(userId), request.PullRequestUrl);
+        var command = new SendOnReviewCommand(userIssueId, userScopedData.UserId, request.PullRequestUrl);
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -59,11 +58,10 @@ public class IssueSolvingController : ApplicationController
     public async Task<ActionResult> StopWorking(
         [FromRoute] Guid userIssueId,
         [FromServices] StopWorkingHandler handler,
+        [FromServices] UserScopedData userScopedData,
         CancellationToken cancellationToken = default)
     {
-        var userId = HttpContext.User.Claims.First(c => c.Type == CustomClaims.Id).Value;
-
-        var command = new StopWorkingCommand(userIssueId, Guid.Parse(userId));
+        var command = new StopWorkingCommand(userIssueId, userScopedData.UserId);
 
         var result = await handler.Handle(command, cancellationToken);
 

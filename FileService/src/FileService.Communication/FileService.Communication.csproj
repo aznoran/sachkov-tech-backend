@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackageId>FileService.Communication</PackageId>
+        <Version>1.0.5</Version>
+        <Authors>SachkovTech</Authors>
+        <Company>SachkovTech</Company>
+        <PackageDescription>
+			FileService intended to get files URLs from file repositiry, 
+		    to make multipart file upload.
+	    </PackageDescription>
+        <RepositoryUrl>https://github.com/SachkovTech/sachkov-tech-backend</RepositoryUrl>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\FileService.Contracts\FileService.Contracts.csproj" Version="1.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CSharpFunctionalExtensions" Version="3.2.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+      <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    </ItemGroup>
+
+</Project>

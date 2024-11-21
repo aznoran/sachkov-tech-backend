@@ -1,12 +1,9 @@
-using CSharpFunctionalExtensions;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
-using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Application.Features.IssueSolving.Queries.GetUserIssuesByModuleWithPagination;
 

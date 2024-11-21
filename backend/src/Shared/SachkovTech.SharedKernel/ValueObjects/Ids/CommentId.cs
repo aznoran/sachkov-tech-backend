@@ -2,7 +2,7 @@
 
 namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
-public class CommentId : ValueObject
+public class CommentId : ComparableValueObject
 {
     private CommentId(Guid value)
     {
@@ -14,7 +14,8 @@ public class CommentId : ValueObject
     public static CommentId NewCommentId() => new(Guid.NewGuid());
     public static CommentId Empty() => new(Guid.Empty);
     public static CommentId Create(Guid id) => new(id);
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

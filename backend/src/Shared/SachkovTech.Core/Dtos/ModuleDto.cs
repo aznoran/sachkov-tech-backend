@@ -8,5 +8,14 @@ public class ModuleDto
 
     public string Description { get; init; } = string.Empty;
 
-    public IssueDto[] Issues { get; init; } = [];
+    public IssuePositionDto[] IssuesPosition { get; init; } = [];
+
+    public bool IsDeleted { get; init; }
+}
+
+public class IssuePositionDto
+{
+    public Guid IssueId { get; init; }
+
+    public int Position { get; init; } = default!;
 }

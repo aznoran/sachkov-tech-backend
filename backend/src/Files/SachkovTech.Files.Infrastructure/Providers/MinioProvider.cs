@@ -1,4 +1,5 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Runtime.CompilerServices;
+using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
@@ -6,7 +7,6 @@ using SachkovTech.Files.Application.Dtos;
 using SachkovTech.Files.Application.Interfaces;
 using SachkovTech.Files.Domain.ValueObjects;
 using SachkovTech.SharedKernel;
-using System.Runtime.CompilerServices;
 
 namespace SachkovTech.Files.Infrastructure.Providers;
 

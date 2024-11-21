@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace NotificationService.Entities.ValueObjects;
 
-public class MessageData : ValueObject
+public class MessageData : ComparableValueObject
 {
     public string Title { get; } = null!;
     public string Message { get; } = null!;
@@ -12,7 +12,7 @@ public class MessageData : ValueObject
         Message = message;
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Title;
         yield return Message;

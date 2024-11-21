@@ -45,8 +45,13 @@ public class LoginHandler : ICommandHandler<LoginResponse, LoginCommand>
         }
 
         var accessToken = await _tokenProvider.GenerateAccessToken(user, cancellationToken);
-        var refreshToken = await _tokenProvider.GenerateRefreshToken(user, accessToken.Jti, cancellationToken);
+        var refreshToken = await _tokenProvider.GenerateRefreshToken(user, cancellationToken);
 
-        return new LoginResponse(accessToken.AccessToken, refreshToken, user.Id, user.Email!);
+        return new LoginResponse(
+            accessToken.AccessToken,
+            refreshToken,
+            user.Id,
+            user.Email!,
+            user.Roles.Select(r => r.Name?.ToLower())!);   
     }
 }
