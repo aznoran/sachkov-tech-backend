@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
-using SachkovTech.Framework.Models;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddIssueToLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddTagToLesson;

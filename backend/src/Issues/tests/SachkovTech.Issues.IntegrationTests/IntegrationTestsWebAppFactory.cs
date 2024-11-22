@@ -27,32 +27,34 @@ public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAs
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureTestServices(services =>
-        {
-            var writeContext = services.SingleOrDefault(s =>
-                s.ServiceType == typeof(IssuesWriteDbContext));
+        builder.ConfigureTestServices(ConfigureDefaultServices);
+    }
 
-            var readContext = services.SingleOrDefault(s =>
-                s.ServiceType == typeof(IReadDbContext));
+    protected virtual void ConfigureDefaultServices(IServiceCollection services)
+    {
+        var writeContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(IssuesWriteDbContext));
 
-            if (writeContext is not null)
-                services.Remove(writeContext);
+        var readContext = services.SingleOrDefault(s =>
+            s.ServiceType == typeof(IReadDbContext));
 
-            if (readContext is not null)
-                services.Remove(readContext);
+        if (writeContext is not null)
+            services.Remove(writeContext);
 
-            services.AddScoped<IssuesWriteDbContext>(_ =>
-                new IssuesWriteDbContext(_dbContainer.GetConnectionString()));
+        if (readContext is not null)
+            services.Remove(readContext);
 
-            services.AddScoped<IReadDbContext, IssuesReadDbContext>(_ =>
-                new IssuesReadDbContext(_dbContainer.GetConnectionString()));
-        });
+        services.AddScoped<IssuesWriteDbContext>(_ =>
+            new IssuesWriteDbContext(_dbContainer.GetConnectionString()));
+
+        services.AddScoped<IReadDbContext, IssuesReadDbContext>(_ =>
+            new IssuesReadDbContext(_dbContainer.GetConnectionString()));
     }
 
     public async Task InitializeAsync()
     {
         await _dbContainer.StartAsync();
-        
+
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
         await dbContext.Database.MigrateAsync();

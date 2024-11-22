@@ -4,39 +4,42 @@ namespace SachkovTech.SharedKernel.ValueObjects;
 
 public class Video : ComparableValueObject
 {
-    private static string[] PERMITED_FILES_TYPE =
-            { "video/mp4", "video/mkv", "video/avi", "video/mov" };
+    public static readonly string[] PermitedFilesType =
+        ["video/mp4", "video/mkv", "video/avi", "video/mov"];
 
-    private static string[] PERMITED_EXTENSIONS =
-            { "mp4", "mkv", "avi", "mov" };
+    public static readonly string[] PermitedExtensions =
+        ["mp4", "mkv", "avi", "mov"];
 
-    private static long MAX_FILE_SIZE = 4294967296;
+    public const long MAX_FILE_SIZE = 4294967296;
 
     public Video(Guid fileId)
     {
         FileId = fileId;
     }
 
-    public Guid FileId { get; }   
+    public Guid FileId { get; }
 
-    public static UnitResult<Error> Validate(
-        string fileName,
-        string contentType,
-        long size)
+    public static UnitResult<Error> Validate(string fileName, string contentType, long size)
     {
         if (string.IsNullOrWhiteSpace(fileName))
         {
             return Errors.General.ValueIsInvalid(fileName);
         }
 
-        var fileExtension = fileName[fileName.LastIndexOf('.')..];
-
-        if (!PERMITED_EXTENSIONS.Any(x => x == fileExtension))
+        var lastDotIndex = fileName.LastIndexOf('.');
+        if (lastDotIndex == -1 || lastDotIndex == fileName.Length - 1)
         {
             return Errors.Files.InvalidExtension();
         }
 
-        if (!PERMITED_FILES_TYPE.Any(x => x == contentType))
+        // Извлекаем расширение без точки
+        var fileExtension = fileName[(lastDotIndex + 1)..];
+        if (!PermitedExtensions.Contains(fileExtension, StringComparer.OrdinalIgnoreCase))
+        {
+            return Errors.Files.InvalidExtension();
+        }
+
+        if (!PermitedFilesType.Contains(contentType, StringComparer.OrdinalIgnoreCase))
         {
             return Errors.General.ValueIsInvalid(contentType);
         }

@@ -55,12 +55,12 @@ public static class Errors
     {
         public static Error InvalidCredentials()
         {
-            return Error.Validation("credentials.is.invalid", "Your credentials is invalid");
+            return Error.Validation("credentials.is.invalid", "Неверные учетные данные");
         }
 
         public static Error InvalidRole()
         {
-            return Error.Failure("invalid.role", "Invalid role");
+            return Error.Failure("role.is.invalid", "Неверная роль пользователя");
         }
     }
 

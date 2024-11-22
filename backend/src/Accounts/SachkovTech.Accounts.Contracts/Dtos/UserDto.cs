@@ -8,15 +8,17 @@ public class UserDto
 
     public string SecondName { get; init; } = default!;
 
-    public StudentAccountDto StudentAccount { get; init; } = default!;
+    public string Email { get; init; } = default!;
 
-    public SupportAccountDto SupportAccount { get; init; } = default!;
-    
-    public AdminAccountDto AdminAccount { get; init; } = default!;
-    
+    public StudentAccountDto? StudentAccount { get; init; }
+
+    public SupportAccountDto? SupportAccount { get; init; }
+
+    public AdminAccountDto? AdminAccount { get; init; }
+
     public List<UserRolesDto> UserRoles { get; init; } = default!;
 
     public List<RoleDto> Roles { get; init; } = [];
-    
+
     public IReadOnlyList<SocialNetworkDto> SocialNetworks { get; init; } = [];
 }

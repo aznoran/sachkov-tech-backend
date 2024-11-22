@@ -71,7 +71,7 @@ public class AddLessonHandler(
             video,
             command.PreviewId,
             command.Tags.ToArray(),
-    command.Issues.ToArray());
+            command.Issues.ToArray());
 
     private async Task<Result<Video, Error>> CompleteUploadVideo(
         string fileName,

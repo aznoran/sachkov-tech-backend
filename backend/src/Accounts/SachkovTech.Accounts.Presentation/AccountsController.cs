@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SachkovTech.Accounts.Application;
 using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
@@ -74,6 +75,22 @@ public class AccountsController : ApplicationController
         }
 
         return Ok(result.Value);
+    }
+
+    [HttpGet("me")]
+    [Permission(Permissions.Issues.ReadIssue)]
+    public async Task<IActionResult> GetMe([FromServices] IRefreshSessionManager refreshSessionManager, CancellationToken cancellationToken)
+    {
+        var getRefreshSessionCookieRes = _httpContextProvider.GetRefreshSessionCookie();
+
+        if (getRefreshSessionCookieRes.IsFailure)
+        {
+            return Unauthorized();
+        }
+
+        var refreshSession = await refreshSessionManager.GetByRefreshToken(getRefreshSessionCookieRes.Value, cancellationToken);
+
+        return Ok(refreshSession.Value.UserId);
     }
 
     [HttpPost("refresh")]

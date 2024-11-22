@@ -32,10 +32,10 @@ public class LoginHandler : ICommandHandler<LoginResponse, LoginCommand>
         var user = await _userManager.Users
             .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken);
-            
+
         if (user is null)
         {
-            return Errors.General.NotFound().ToErrorList();
+            return Errors.User.InvalidCredentials().ToErrorList();
         }
 
         var passwordConfirmed = await _userManager.CheckPasswordAsync(user, command.Password);
@@ -47,11 +47,14 @@ public class LoginHandler : ICommandHandler<LoginResponse, LoginCommand>
         var accessToken = await _tokenProvider.GenerateAccessToken(user, cancellationToken);
         var refreshToken = await _tokenProvider.GenerateRefreshToken(user, cancellationToken);
 
+        var roles = user.Roles
+            .Where(r => !string.IsNullOrEmpty(r.Name))
+            .Select(r => r.Name!.ToLower());
+
         return new LoginResponse(
             accessToken.AccessToken,
             refreshToken,
             user.Id,
-            user.Email!,
-            user.Roles.Select(r => r.Name?.ToLower())!);   
+            roles);
     }
 }
