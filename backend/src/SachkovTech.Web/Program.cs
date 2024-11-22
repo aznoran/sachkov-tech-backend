@@ -41,7 +41,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddLogging(builder.Configuration);
 
 builder.Services.AddAccountsModule(builder.Configuration);
-builder.Services.AddFilesModule(builder.Configuration);
 builder.Services.AddIssuesModule(builder.Configuration);
 builder.Services.AddApplicationLayers();
 builder.Services.AddFramework();
@@ -53,12 +52,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddAuthServices(builder.Configuration);
 
 var app = builder.Build();
-
-// await using var scope = app.Services.CreateAsyncScope();
-//
-// var dbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
-//
-// await dbContext.Database.MigrateAsync();
 
 var accountsSeeder = app.Services.GetRequiredService<AccountsSeeder>();
 
@@ -90,7 +83,4 @@ app.MapControllers();
 
 app.Run();
 
-namespace SachkovTech.Web
-{
-    public partial class Program { }
-}
+public partial class Program;

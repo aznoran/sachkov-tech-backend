@@ -121,7 +121,7 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
-    [HttpPost("logout")]
+    [HttpPost("logOut")]
     public async Task<IActionResult> Logout([FromServices] LogoutHandler handler,
         CancellationToken cancellationToken)
     {

@@ -1,8 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using SachkovTech.Accounts.Infrastructure;
-using SachkovTech.Files.Infrastructure;
-using SachkovTech.Files.Presentation;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Infrastructure;
 using SachkovTech.Issues.Presentation;
@@ -26,15 +24,6 @@ public static class DependencyInjection
         services.AddAccountsInfrastructure(configuration);
         services.AddAccountsApplication(configuration);
         services.AddAccountsPresentation();
-
-        return services;
-    }
-
-    public static IServiceCollection AddFilesModule(
-        this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddFilesInfrastructure(configuration);
-        services.AddFilesPresentation();
 
         return services;
     }
@@ -73,7 +62,7 @@ public static class DependencyInjection
 
         return services;
     }
-    
+
     public static IServiceCollection AddLogging(
         this IServiceCollection services, IConfiguration configuration)
     {
@@ -91,7 +80,7 @@ public static class DependencyInjection
 
         return services;
     }
-    
+
     public static IServiceCollection AddFramework(this IServiceCollection services)
     {
         services.AddHttpContextAccessor();
@@ -103,9 +92,7 @@ public static class DependencyInjection
     {
         var assemblies = new[]
         {
-            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.Files.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
+            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly, typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
         };
 
         services.Scan(scan => scan.FromAssemblies(assemblies)

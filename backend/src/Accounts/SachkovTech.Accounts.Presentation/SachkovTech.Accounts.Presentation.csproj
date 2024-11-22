@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Files\SachkovTech.Files.Domain\SachkovTech.Files.Domain.csproj" />
       <ProjectReference Include="..\..\Shared\SachkovTech.Framework\SachkovTech.Framework.csproj" />
       <ProjectReference Include="..\SachkovTech.Accounts.Application\SachkovTech.Accounts.Application.csproj" />
       <ProjectReference Include="..\SachkovTech.Accounts.Contracts\SachkovTech.Accounts.Contracts.csproj" />
