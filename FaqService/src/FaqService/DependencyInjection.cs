@@ -75,8 +75,6 @@ public static class DependencyInjection
         var client = new ElasticClient(settings);
         
         services.AddSingleton<IElasticClient>(client);
-        
-        services.AddScoped<SearchRepository>();
 
         return services;
     }
@@ -85,6 +83,7 @@ public static class DependencyInjection
     {
         services.AddScoped<PostsRepository>();
         services.AddScoped<SearchRepository>();
+        services.AddScoped<UnitOfWork>();
 
         return services;
     }

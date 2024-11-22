@@ -12,33 +12,37 @@ namespace FaqService.Features.Queries;
 public class GetPostsWithCursorPaginationHandler
 {
     private readonly PostsRepository _repository;
+    private readonly SearchRepository _searchRepository;
 
-    public GetPostsWithCursorPaginationHandler(PostsRepository repository)
+    public GetPostsWithCursorPaginationHandler(
+        PostsRepository repository,
+        SearchRepository searchRepository)
     {
         _repository = repository;
+        _searchRepository = searchRepository;
     }
 
     public async Task<CursorList<PostDto>> Handle(
-        List<Guid> postIds, 
-        Guid? cursor, 
-        int limit,
+        GetPostsQuery query,
         CancellationToken cancellationToken = default)
     {
-        var cursorIndex = cursor.HasValue ? postIds.IndexOf(cursor.Value) : -1;
+        var postIds = await _searchRepository.SearchPosts(query, cancellationToken);
         
-        if (cursor.HasValue && cursorIndex == -1)
+        var cursorIndex = query.Cursor.HasValue ? postIds.IndexOf(query.Cursor.Value) : -1;
+        
+        if (query.Cursor.HasValue && cursorIndex == -1)
         {
             return new CursorList<PostDto>(
                 items: new List<PostDto>(),
-                cursor: cursor,
+                cursor: query.Cursor,
                 nextCursor: null,
-                limit: limit
+                limit: query.Limit
             );
         }
         
         var paginatedPostIds = cursorIndex >= 0
-            ? postIds.Skip(cursorIndex + 1).Take(limit).ToList()
-            : postIds.Take(limit).ToList();
+            ? postIds.Skip(cursorIndex + 1).Take(query.Limit).ToList()
+            : postIds.Take(query.Limit).ToList();
         
         var posts = await _repository.GetPostsByIds(paginatedPostIds, cancellationToken);
 
@@ -58,17 +62,17 @@ public class GetPostsWithCursorPaginationHandler
         }).ToList();
 
         Guid? nextCursor = null;
-        if (postIds.Count > cursorIndex + 1 + limit)
+        if (postIds.Count > cursorIndex + 1 + query.Limit)
         {
-            var nextCursorIndex = cursorIndex + limit + 1;
+            var nextCursorIndex = cursorIndex + query.Limit + 1;
             nextCursor = postIds[nextCursorIndex];
         }
 
         return new CursorList<PostDto>(
             items: postDtos,
-            cursor: cursor,
+            cursor: query.Cursor,
             nextCursor: nextCursor,
-            limit: limit,
+            limit: query.Limit,
             totalCount: postIds.Count
         );
     }

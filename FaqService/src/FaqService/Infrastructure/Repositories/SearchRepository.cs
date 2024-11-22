@@ -98,7 +98,8 @@ public class SearchRepository
                 )
                 .Sort(sd => sd
                     .Descending(p => p.CreatedAt)
-                ),
+                )
+                .Size(100),
             cancellationToken
         );
     }

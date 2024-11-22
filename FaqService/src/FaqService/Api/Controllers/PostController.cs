@@ -132,27 +132,20 @@ public class PostController : ApplicationController
         [FromServices] GetPostsWithCursorPaginationHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var postIds = await searchRepository.SearchPosts(query, cancellationToken);
-        var paginatedPosts = await handler.Handle(postIds, query.Cursor, query.Limit,cancellationToken);
+        var paginatedPosts = await handler.Handle(query,cancellationToken);
         return Ok(paginatedPosts);
     }
     
     [HttpGet("{id:guid}/answers")]
     public async Task<IActionResult> GetAllAnswersOfPost(
         [FromRoute] Guid id,
-        [FromQuery] Guid? cursor,
+        [FromQuery] GetAnswerQuery query,
         [FromServices] GetAnswersWithCursorHandler handler,
-        [FromQuery] int limit = 10,
         CancellationToken cancellationToken = default)
     {
-        if (limit <= 0)
-        {
-            return BadRequest("Limit must be greater than 0.");
-        }
         var answers = await handler.Handle(
             id,
-            cursor,
-            limit,
+            query,
             cancellationToken);
 
         return Ok(answers);

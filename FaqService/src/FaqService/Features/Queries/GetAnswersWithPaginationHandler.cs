@@ -16,23 +16,22 @@ public class GetAnswersWithCursorHandler
 
     public async Task<CursorList<AnswerDto>> Handle(
         Guid postId,
-        Guid? cursor,
-        int limit = 10,
+        GetAnswerQuery query,
         CancellationToken cancellationToken = default)
     {
-        var query = _dbContext.Posts
+        var answers = _dbContext.Posts
             .Where(p => p.Id == postId)
             .SelectMany(p => p.Answers)
             .OrderByDescending(a => a.CreatedAt)
             .AsQueryable();
 
-        if (cursor.HasValue)
+        if (query.Cursor.HasValue)
         {
-            query = query.Where(a => a.Id < cursor.Value);
+            answers = answers.Where(a => a.Id < query.Cursor.Value);
         }
         
-        var items = await query
-            .Take(limit + 1) 
+        var items = await answers
+            .Take(query.Limit + 1) 
             .Select(a => new AnswerDto
             {
                 Id = a.Id,
@@ -46,16 +45,16 @@ public class GetAnswersWithCursorHandler
             .ToListAsync(cancellationToken);
         
         Guid? nextCursor = null;
-        if (items.Count > limit)
+        if (items.Count > query.Limit)
         {
             nextCursor = items.Last().Id;
-            items = items.Take(limit).ToList();
+            items = items.Take(query.Limit).ToList();
         }
 
         return new CursorList<AnswerDto>(
             items: items,
-            cursor: cursor,
+            cursor: query.Cursor,
             nextCursor: nextCursor,
-            limit: limit);
+            limit: query.Limit);
     }
 }
