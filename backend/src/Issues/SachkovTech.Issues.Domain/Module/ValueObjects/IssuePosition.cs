@@ -4,7 +4,7 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Module.ValueObjects;
 
-public class IssuePosition : ComparableValueObject
+public class IssuePosition : ComparableValueObject, IPositionable
 {
     public IssuePosition(IssueId issueId, Position position)
     {
@@ -16,8 +16,8 @@ public class IssuePosition : ComparableValueObject
 
     public Position Position { get; }
 
-    public IssuePosition Move(Position newPosition) => new IssuePosition(IssueId, newPosition);
-
+    public IPositionable Move(Position newPosition) => new IssuePosition(IssueId, newPosition);
+    public IssuePosition OldMove(Position newPosition) => new IssuePosition(IssueId, newPosition);
     public Result<IssuePosition, Error> MoveForward()
     {
         var issuePositionResult = Position.Forward();

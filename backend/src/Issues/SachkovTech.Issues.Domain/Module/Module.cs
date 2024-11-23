@@ -32,7 +32,7 @@ public class Module : SoftDeletableEntity<ModuleId>
     {
         IssuesPosition = issuesPosition.ToList();
     }
-    
+
     public void UpdateLessonsPosition(IEnumerable<LessonPosition> lessonsPosition)
     {
         LessonsPosition = lessonsPosition.ToList();
@@ -55,7 +55,7 @@ public class Module : SoftDeletableEntity<ModuleId>
 
         UpdateIssuesPosition(newIssuesPosition);
     }
-    
+
     public void AddLesson(LessonId lessonId, Position position)
     {
         var newLessonPosition = new LessonPosition(lessonId, position);
@@ -146,7 +146,7 @@ public class Module : SoftDeletableEntity<ModuleId>
 
         var updatedIssue = updatedPositions
             .First(i => i.Position == currentPosition)
-            .Move(newPosition);
+            .OldMove(newPosition);
 
         var updatedIssueIndex = updatedPositions
             .FindIndex(i => i.Position == currentPosition);
@@ -200,4 +200,52 @@ public class Module : SoftDeletableEntity<ModuleId>
 
         return lastPosition.Value;
     }
+
+    private Result<List<IPositionable>,Error> AdjustPosition(
+        List<IPositionable> items, int originalPosition, int positionToMove)
+    {
+        if (originalPosition == positionToMove 
+            || originalPosition < 1 
+            || positionToMove < 1 
+            || originalPosition > items.Count 
+            || positionToMove > items.Count)
+        {
+            return Errors.General.ValueIsInvalid(nameof(Position)); // No adjustment needed or invalid positions
+        }
+        
+        bool movingDown = positionToMove > originalPosition;
+        
+        List<IPositionable> rearrangedItems = [];
+        
+        foreach (var obj in items)
+        {
+            var currentPosition = obj.Position.Value;
+
+            if (currentPosition == originalPosition)
+            {
+                var item = obj.Move(Position.Create(positionToMove).Value);
+                rearrangedItems.Add(item);
+            }
+            else if (movingDown && currentPosition > originalPosition && currentPosition <= positionToMove)
+            {
+                var newPosition = Position.Create(currentPosition - 1).Value;
+                var item = obj.Move(Position.Create(newPosition).Value);
+                rearrangedItems.Add(item);
+            }
+            else if (!movingDown && currentPosition < originalPosition && currentPosition >= positionToMove)
+            {
+                var newPosition = Position.Create(currentPosition + 1).Value;
+                var item = obj.Move(Position.Create(newPosition).Value);
+                rearrangedItems.Add(item);
+            }
+        }
+
+        return rearrangedItems;
+    }
+}
+
+public interface IPositionable
+{
+    Position Position { get; }
+    IPositionable Move(Position position);
 }
