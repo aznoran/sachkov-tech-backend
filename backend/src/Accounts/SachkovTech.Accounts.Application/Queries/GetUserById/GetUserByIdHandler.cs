@@ -25,6 +25,10 @@ public class GetUserByIdHandler : IQueryHandler<UserDto?, GetUserByIdQuery>
         var userQueryBuilder = new UserQueryBuilder(_accountsReadDbContext.Users);
         
         return await userQueryBuilder
+            .IncludeStudentAccount()
+            .IncludeAdminAccount()
+            .IncludeSupportAccount()
+            .IncludeRoles()
             .Build()
             .FirstOrDefaultAsync(u => u.Id == query.UserId, cancellationToken);
     }

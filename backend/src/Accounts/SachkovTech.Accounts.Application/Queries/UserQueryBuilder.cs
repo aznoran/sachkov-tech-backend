@@ -11,7 +11,7 @@ internal class UserQueryBuilder
     
     public UserQueryBuilder(IQueryable<UserDto> userQuery)
     {
-        Init(userQuery);
+        _userQuery = userQuery;
     }
 
     /// <summary>
@@ -176,20 +176,56 @@ internal class UserQueryBuilder
     }
 
     /// <summary>
+    /// Include student account
+    /// </summary>
+    /// <returns></returns>
+    public UserQueryBuilder IncludeStudentAccount()
+    {
+        _userQuery = _userQuery.Include(u => u.StudentAccount);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Include support account
+    /// </summary>
+    /// <returns></returns>
+    public UserQueryBuilder IncludeSupportAccount()
+    {
+        _userQuery = _userQuery.Include(u => u.SupportAccount);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Include admin account
+    /// </summary>
+    /// <returns></returns>
+    public UserQueryBuilder IncludeAdminAccount()
+    {
+        _userQuery = _userQuery.Include(u => u.AdminAccount);
+
+        return this;
+    }
+    
+    /// <summary>
+    /// Include roles
+    /// </summary>
+    /// <returns></returns>
+    public UserQueryBuilder IncludeRoles()
+    {
+        _userQuery = _userQuery.Include(u => u.Roles);
+
+        return this;
+    }
+
+    /// <summary>
     /// Builds the query
     /// </summary>
     /// <returns></returns>
     public IQueryable<UserDto> Build()
     {
         return _userQuery;
-    }
-    private void Init(IQueryable<UserDto> userQuery)
-    {
-        _userQuery = userQuery
-            .Include(u => u.StudentAccount)
-            .Include(u => u.SupportAccount)
-            .Include(u => u.Roles)
-            .Include(u => u.AdminAccount);
     }
 
     private Expression<Func<UserDto, object>> KeySelector(string? sortBy)

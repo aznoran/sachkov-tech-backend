@@ -25,6 +25,10 @@ public class GetUsersHandler : IQueryHandler<PagedList<UserDto>, GetUsersQuery>
         var userQueryBuilder = new UserQueryBuilder(_accountsReadDbContext.Users);
         
         return await userQueryBuilder
+            .IncludeAdminAccount()
+            .IncludeStudentAccount()
+            .IncludeSupportAccount()
+            .IncludeRoles()
             .WithFirstName(query.FirstName)
             .WithSecondName(query.SecondName)
             .WithThirdName(query.ThirdName)
