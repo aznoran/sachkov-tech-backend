@@ -3,12 +3,13 @@ using FileService.Communication;
 using FileService.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
+using NSubstitute;
 
 namespace SachkovTech.Issues.IntegrationTests.Lessons.AddLessonTests;
 
 public class AddLessonTestWebAppFactory : IntegrationTestsWebAppFactory
 {
-    private Mock<IFileService> _fileServiceMock = default!;
+    private readonly IFileService _fileServiceMock = Substitute.For<IFileService>();
 
     protected override void ConfigureDefaultServices(IServiceCollection services)
     {
@@ -18,22 +19,21 @@ public class AddLessonTestWebAppFactory : IntegrationTestsWebAppFactory
         if (fileServiceDescriptor != null)
             services.Remove(fileServiceDescriptor);
 
-        _fileServiceMock = new Mock<IFileService>();
-        services.AddTransient<IFileService>(_ => _fileServiceMock.Object);
+        services.AddTransient<IFileService>(_ => _fileServiceMock);
     }
 
     public void SetupSuccessFileServiceMock()
     {
         var response = new FileResponse(Guid.NewGuid(), "testUrl");
         _fileServiceMock
-            .Setup(f => f.CompleteMultipartUpload(It.IsAny<CompleteMultipartRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result.Success<FileResponse, string>(response));
+            .CompleteMultipartUpload(Arg.Any<CompleteMultipartRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Success<FileResponse, string>(response));
     }
 
     public void SetupFailureFileServiceMock()
     {
         _fileServiceMock
-            .Setup(f => f.CompleteMultipartUpload(It.IsAny<CompleteMultipartRequest>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(Result.Failure<FileResponse, string>("Failed to upload file"));
+            .CompleteMultipartUpload(Arg.Any<CompleteMultipartRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Failure<FileResponse, string>("Failed to upload file"));
     }
 }
