@@ -13,6 +13,19 @@ internal class UserQueryBuilder
     {
         _userQuery = userQuery;
     }
+    
+    /// <summary>
+    /// Get users with the specified id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithId(Guid? id)
+    {
+        _userQuery = _userQuery.WhereIf(id is not null,
+            ud => ud.Id == id!.Value);
+        
+        return this;
+    }
 
     /// <summary>
     /// Get users with the specified role
