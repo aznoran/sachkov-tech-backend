@@ -13,7 +13,7 @@ using Testcontainers.PostgreSql;
 
 namespace SachkovTech.Issues.IntegrationTests;
 
-public class IntegrationTestsWebAppFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
         .WithImage("postgres")

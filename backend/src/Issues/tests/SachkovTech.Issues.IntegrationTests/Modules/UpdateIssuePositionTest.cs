@@ -12,7 +12,7 @@ public class UpdateIssuePositionTest : ModulesTestsBase
     private readonly ILogger<UpdateIssuePositionHandler> _logger;
     private readonly IValidator<UpdateIssuePositionCommand> _validator;
     
-    public UpdateIssuePositionTest(IntegrationTestsWebAppFactory factory) : base(factory)
+    public UpdateIssuePositionTest(IntegrationTestsWebFactory factory) : base(factory)
     {
         _logger = Scope.ServiceProvider.GetRequiredService<ILogger<UpdateIssuePositionHandler>>();
         _validator = Scope.ServiceProvider.GetRequiredService<IValidator<UpdateIssuePositionCommand>>();

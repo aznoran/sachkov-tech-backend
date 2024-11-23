@@ -2,12 +2,11 @@
 using FileService.Communication;
 using FileService.Contracts;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using NSubstitute;
 
-namespace SachkovTech.Issues.IntegrationTests.Lessons.AddLessonTests;
+namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
-public class AddLessonTestWebAppFactory : IntegrationTestsWebAppFactory
+public class LessonTestWebFactory : IntegrationTestsWebFactory
 {
     private readonly IFileService _fileServiceMock = Substitute.For<IFileService>();
 

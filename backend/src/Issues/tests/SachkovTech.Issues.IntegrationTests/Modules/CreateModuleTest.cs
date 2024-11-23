@@ -13,7 +13,7 @@ public class CreateModuleTest : ModulesTestsBase
     private readonly ILogger<CreateModuleHandler> _logger;
     private readonly IValidator<CreateModuleCommand> _validator;
     
-    public CreateModuleTest(IntegrationTestsWebAppFactory factory) : base(factory)
+    public CreateModuleTest(IntegrationTestsWebFactory factory) : base(factory)
     {
         _logger = Scope.ServiceProvider.GetRequiredService<ILogger<CreateModuleHandler>>();
         _validator = Scope.ServiceProvider.GetRequiredService<IValidator<CreateModuleCommand>>();
