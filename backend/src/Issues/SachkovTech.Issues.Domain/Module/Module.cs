@@ -55,6 +55,18 @@ public class Module : SoftDeletableEntity<ModuleId>
 
         UpdateIssuesPosition(newIssuesPosition);
     }
+    
+    public void AddLesson(LessonId lessonId, Position position)
+    {
+        var newLessonPosition = new LessonPosition(lessonId, position);
+
+        var newLessonsPosition = new List<LessonPosition>(LessonsPosition)
+        {
+            newLessonPosition
+        };
+
+        UpdateLessonsPosition(newLessonsPosition);
+    }
 
     public UnitResult<Error> MoveIssue(IssuePosition issuePosition, Position newPosition)
     {

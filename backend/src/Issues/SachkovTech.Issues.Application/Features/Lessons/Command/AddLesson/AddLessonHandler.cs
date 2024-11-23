@@ -10,6 +10,7 @@ using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.Issues.Domain.Lesson;
+using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
@@ -20,6 +21,7 @@ public class AddLessonHandler(
     IReadDbContext readDbContext,
     IValidator<AddLessonCommand> validator,
     ILessonsRepository lessonsRepository,
+    IModulesRepository modulesRepository,
     IFileService fileService,
     [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
     ILogger<AddLessonHandler> logger) : ICommandHandler<Guid, AddLessonCommand>
@@ -30,12 +32,12 @@ public class AddLessonHandler(
         var validationResult = await validator.ValidateAsync(command, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToList();
-
-        var isModuleExists
-            = await readDbContext.Modules.FirstOrDefaultAsync(v => v.Id == command.ModuleId, cancellationToken);
-        if (isModuleExists is null)
-            return Errors.General.NotFound(command.ModuleId, "module").ToErrorList();
-
+        
+        var moduleResult = await modulesRepository.GetById(command.ModuleId, cancellationToken);
+        if(moduleResult.IsFailure)
+            return moduleResult.Error.ToErrorList();
+        var module = moduleResult.Value;
+        
         var title = Title.Create(command.Title).Value;
         var isLessonExists = await lessonsRepository.GetByTitle(title, cancellationToken);
         if (isLessonExists.IsSuccess)
@@ -53,8 +55,10 @@ public class AddLessonHandler(
             return videoResult.Error.ToErrorList();
 
         var lesson = CreateLesson(command, videoResult.Value);
-
+        
         await lessonsRepository.Add(lesson, cancellationToken);
+        module.AddLesson(lesson.Id, Position.Create(module.LessonsPosition.Count + 1).Value);
+        
         await unitOfWork.SaveChanges(cancellationToken);
 
         logger.Log(LogLevel.Information, "Added new lesson with {LessonId}", lesson.Id);
