@@ -53,5 +53,6 @@ public static class Permissions
     public static class Accounts
     {
         public const string EnrollAccount = "accounts.enroll";
+        public const string ReadAccount = "accounts.read";
     }
 }

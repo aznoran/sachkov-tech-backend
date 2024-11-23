@@ -14,10 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Queries\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="FileService.Communication" Version="1.0.7" />
       <PackageReference Include="FileService.Contracts" Version="1.0.7" />
     </ItemGroup>

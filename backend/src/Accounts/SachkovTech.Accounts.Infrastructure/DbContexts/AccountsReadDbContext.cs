@@ -6,7 +6,7 @@ using SachkovTech.Accounts.Contracts.Dtos;
 
 namespace SachkovTech.Accounts.Infrastructure.DbContexts;
 
-public class AccountsAccountsReadDbContext(IConfiguration configuration) : DbContext, IAccountsReadDbContext
+public class AccountsReadDbContext(IConfiguration configuration) : DbContext, IAccountsReadDbContext
 {
     public IQueryable<UserDto> Users => Set<UserDto>();
     public IQueryable<RoleDto> Roles => Set<RoleDto>();
@@ -28,7 +28,7 @@ public class AccountsAccountsReadDbContext(IConfiguration configuration) : DbCon
         modelBuilder.HasDefaultSchema("accounts");
         
         modelBuilder.ApplyConfigurationsFromAssembly(
-            typeof(AccountsAccountsReadDbContext).Assembly,
+            typeof(AccountsReadDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
     }
 
