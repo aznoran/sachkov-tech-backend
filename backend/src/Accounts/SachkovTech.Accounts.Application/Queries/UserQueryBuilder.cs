@@ -1,0 +1,206 @@
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using SachkovTech.Accounts.Contracts.Dtos;
+using SachkovTech.Core.Extensions;
+
+namespace SachkovTech.Accounts.Application.Queries;
+
+internal class UserQueryBuilder
+{
+    private IQueryable<UserDto> _userQuery;
+    
+    public UserQueryBuilder(IQueryable<UserDto> userQuery)
+    {
+        Init(userQuery);
+    }
+
+    /// <summary>
+    /// Get users with the specified role
+    /// </summary>
+    /// <param name="roleName"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithRole(string? roleName)
+    {
+        _userQuery = _userQuery.WhereIf(roleName is not null,
+            ud => ud.Roles.Any(r => r.Name.ToLower() == roleName.ToLower()));
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users with more than one role
+    /// </summary>
+    /// <returns></returns>
+    public UserQueryBuilder WithMoreThanOneRole()
+    {
+        _userQuery = _userQuery.Where(ud => ud.Roles.Count > 1);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users excluding specific role
+    /// </summary>
+    /// <param name="roleName"></param>
+    /// <returns></returns>
+    public UserQueryBuilder ExcludeRole(string? roleName)
+    {
+        _userQuery = _userQuery.WhereIf(roleName is not null, 
+            ud => ud.Roles.All(r => r.Name.ToLower() != roleName.ToLower()));
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users with the specified first name
+    /// </summary>
+    /// <param name="firstName"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithFirstName(string? firstName)
+    {
+        _userQuery = _userQuery.WhereIf(firstName is not null, ud => ud.FirstName == firstName);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users with the first name which starts with the specified sequence
+    /// </summary>
+    /// <param name="sequence"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithFirstNameStartingWith(string? sequence)
+    {
+        _userQuery = _userQuery.WhereIf(sequence is not null, ud => ud.FirstName.StartsWith(sequence!));
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users with the specified second name
+    /// </summary>
+    /// <param name="secondName"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithSecondName(string? secondName)
+    {
+        _userQuery = _userQuery.WhereIf(secondName is not null, ud => ud.SecondName == secondName);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users with the specified third name
+    /// </summary>
+    /// <param name="thirdName"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithThirdName(string? thirdName)
+    {
+        _userQuery = _userQuery.WhereIf(thirdName is not null, ud => ud.ThirdName == thirdName);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users with the specified email
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    public UserQueryBuilder WithEmail(string? email)
+    {
+        _userQuery = _userQuery.WhereIf(email is not null, ud => ud.Email == email);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users that were registered after the specified date
+    /// </summary>
+    /// <param name="registrationDate">Date to compare with</param>
+    /// <returns></returns>
+    public UserQueryBuilder WithRegistrationAfter(DateTime? registrationDate)
+    {
+        _userQuery = _userQuery.WhereIf(registrationDate is not null,
+            ud => ud.RegistrationDate.Date < registrationDate!.Value.Date);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Get users that have been on the platform longer than the specified number of days
+    /// </summary>
+    /// <param name="daysNumber">Number of days</param>
+    /// <returns></returns>
+    public UserQueryBuilder OnPlatformLongerThan(int daysNumber)
+    {
+        _userQuery = _userQuery.Where(ud => DateTime.UtcNow.Day - ud.RegistrationDate.Day > daysNumber);
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Sort users by the specified field
+    /// </summary>
+    /// <param name="sortBy"></param>
+    /// <returns></returns>
+    public UserQueryBuilder SortAscendingBy(string? sortBy)
+    {
+        _userQuery = _userQuery.OrderBy(KeySelector(sortBy));
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Sort users by the specified field in descending order
+    /// </summary>
+    /// <param name="sortBy"></param>
+    /// <returns></returns>
+    public UserQueryBuilder SortDescendingBy(string? sortBy)
+    {
+        _userQuery = _userQuery.OrderByDescending(KeySelector(sortBy));
+        
+        return this;
+    }
+    
+    /// <summary>
+    /// Sort users by the specified field and direction
+    /// </summary>
+    /// <param name="sortBy">Filter field</param>
+    /// <param name="sortDirection">Filter direction</param>
+    /// <returns></returns>
+    public UserQueryBuilder SortByWithDirection(string? sortBy, string? sortDirection)
+    {
+        _userQuery = sortDirection?.ToLower() == "desc"
+            ? _userQuery.OrderByDescending(KeySelector(sortBy))
+            : _userQuery.OrderBy(KeySelector(sortBy));
+        
+        return this;
+    }
+
+    /// <summary>
+    /// Builds the query
+    /// </summary>
+    /// <returns></returns>
+    public IQueryable<UserDto> Build()
+    {
+        return _userQuery;
+    }
+    private void Init(IQueryable<UserDto> userQuery)
+    {
+        _userQuery = userQuery
+            .Include(u => u.StudentAccount)
+            .Include(u => u.SupportAccount)
+            .Include(u => u.Roles)
+            .Include(u => u.AdminAccount);
+    }
+
+    private Expression<Func<UserDto, object>> KeySelector(string? sortBy)
+    {
+        return sortBy?.ToLower() switch
+        {
+            "email" => (user) => user.Email,
+            "first_name" => (user) => user.FirstName,
+            "second_name" => (user) => user.SecondName,
+            "third_name" => (user) => user.ThirdName,
+            _ => (user) => user.Id
+        };
+    }
+}
