@@ -74,8 +74,8 @@ public class SearchRepository
                         .Must(
                             m => m.MultiMatch(mm => mm
                                 .Fields(f => f
-                                    .Field(p => p.Title)
-                                    .Field(p => p.Description)
+                                    .Field(p => p.Title, boost: 1.0)
+                                    .Field(p => p.Description, boost: 2.0)
                                 )
                                 .Query(query.SearchText ?? "")
                                 .Fuzziness(Fuzziness.Auto)
@@ -95,9 +95,6 @@ public class SearchRepository
                                 : null 
                         )
                     )
-                )
-                .Sort(sd => sd
-                    .Descending(p => p.CreatedAt)
                 )
                 .Size(100),
             cancellationToken

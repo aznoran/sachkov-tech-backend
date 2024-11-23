@@ -38,7 +38,7 @@ public class PostsRepository
             return Error.NotFound("postId");
         return post;
     }
-    
+
     public async Task<UnitResult<Error>> Delete(Guid postId, CancellationToken cancellationToken)
     {
         var post = await _dbContext.Posts
@@ -49,13 +49,11 @@ public class PostsRepository
         _dbContext.Posts.Remove(post);
         return Result.Success<Error>();
     }
-    public async Task <Result<List<Post>, Error>> GetPostsByIds(List<Guid> postIds, CancellationToken cancellationToken)
+
+    public IQueryable<Post> QueryPostsByIds(List<Guid> postIds, CancellationToken cancellationToken)
     {
-        var posts = await _dbContext.Posts
+        return _dbContext.Posts
             .Include(p => p.Answers)
-            .Where(p => postIds.Contains(p.Id))
-            .ToListAsync(cancellationToken);
-        
-        return posts;
+            .Where(p => postIds.Contains(p.Id));
     }
 }

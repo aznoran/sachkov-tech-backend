@@ -1,38 +1,32 @@
 using FaqService.Dtos;
 using FaqService.Extensions;
 using FaqService.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 
-namespace FaqService.Features.Queries;
-
-public class GetAnswersWithCursorHandler
+namespace FaqService.Features.Queries
 {
-    private readonly ApplicationDbContext _dbContext;
-
-    public GetAnswersWithCursorHandler(ApplicationDbContext dbContext)
+    public class GetAnswersWithCursorHandler
     {
-        _dbContext = dbContext;
-    }
+        private readonly ApplicationDbContext _dbContext;
 
-    public async Task<CursorList<AnswerDto>> Handle(
-        Guid postId,
-        GetAnswerQuery query,
-        CancellationToken cancellationToken = default)
-    {
-        var answers = _dbContext.Posts
-            .Where(p => p.Id == postId)
-            .SelectMany(p => p.Answers)
-            .OrderByDescending(a => a.CreatedAt)
-            .AsQueryable();
-
-        if (query.Cursor.HasValue)
+        public GetAnswersWithCursorHandler(ApplicationDbContext dbContext)
         {
-            answers = answers.Where(a => a.Id < query.Cursor.Value);
+            _dbContext = dbContext;
         }
-        
-        var items = await answers
-            .Take(query.Limit + 1) 
-            .Select(a => new AnswerDto
+
+        public async Task<CursorList<AnswerDto>> Handle(
+            Guid postId,
+            GetAnswerQuery query,
+            CancellationToken cancellationToken = default)
+        {
+            var answersQuery = _dbContext.Posts
+                .Where(p => p.Id == postId)
+                .SelectMany(p => p.Answers)
+                .OrderByDescending(a => a.CreatedAt)
+                .AsQueryable();
+
+            var paginatedAnswers = await answersQuery.ToCursorList(query.Cursor, query.Limit, cancellationToken);
+
+            var answerDtos = paginatedAnswers.Items.Select(a => new AnswerDto
             {
                 Id = a.Id,
                 IsSolution = a.IsSolution,
@@ -41,20 +35,15 @@ public class GetAnswersWithCursorHandler
                 UserId = a.UserId,
                 Rating = a.Rating,
                 CreatedAt = a.CreatedAt,
-            })
-            .ToListAsync(cancellationToken);
-        
-        Guid? nextCursor = null;
-        if (items.Count > query.Limit)
-        {
-            nextCursor = items.Last().Id;
-            items = items.Take(query.Limit).ToList();
-        }
+            }).ToList();
 
-        return new CursorList<AnswerDto>(
-            items: items,
-            cursor: query.Cursor,
-            nextCursor: nextCursor,
-            limit: query.Limit);
+            return new CursorList<AnswerDto>(
+                items: answerDtos,
+                cursor: paginatedAnswers.Cursor,
+                nextCursor: paginatedAnswers.NextCursor,
+                limit: paginatedAnswers.Limit,
+                totalCount: paginatedAnswers.TotalCount
+            );
+        }
     }
 }

@@ -28,25 +28,15 @@ public class GetPostsWithCursorPaginationHandler
     {
         var postIds = await _searchRepository.SearchPosts(query, cancellationToken);
         
-        var cursorIndex = query.Cursor.HasValue ? postIds.IndexOf(query.Cursor.Value) : -1;
+        var postsQuery =  _repository.QueryPostsByIds(postIds, cancellationToken);
         
-        if (query.Cursor.HasValue && cursorIndex == -1)
-        {
-            return new CursorList<PostDto>(
-                items: new List<PostDto>(),
-                cursor: query.Cursor,
-                nextCursor: null,
-                limit: query.Limit
-            );
-        }
+        var paginatedPosts = await postsQuery.ToCursorListWithOrderedIds(
+            cursor: query.Cursor,
+            orderedIds: postIds,
+            limit: query.Limit,
+            cancellationToken: cancellationToken);
         
-        var paginatedPostIds = cursorIndex >= 0
-            ? postIds.Skip(cursorIndex + 1).Take(query.Limit).ToList()
-            : postIds.Take(query.Limit).ToList();
-        
-        var posts = await _repository.GetPostsByIds(paginatedPostIds, cancellationToken);
-
-        var postDtos = posts.Value.Select(post => new PostDto
+        var postDtos = paginatedPosts.Items.Select(post => new PostDto
         {
             Id = post.Id,
             Title = post.Title,
@@ -60,20 +50,13 @@ public class GetPostsWithCursorPaginationHandler
             AnswerId = post.AnswerId,
             CountOfAnswers = post.Answers.Count,
         }).ToList();
-
-        Guid? nextCursor = null;
-        if (postIds.Count > cursorIndex + 1 + query.Limit)
-        {
-            var nextCursorIndex = cursorIndex + query.Limit + 1;
-            nextCursor = postIds[nextCursorIndex];
-        }
-
+        
         return new CursorList<PostDto>(
             items: postDtos,
-            cursor: query.Cursor,
-            nextCursor: nextCursor,
-            limit: query.Limit,
-            totalCount: postIds.Count
+            cursor: paginatedPosts.Cursor,
+            nextCursor: paginatedPosts.NextCursor,
+            limit: paginatedPosts.Limit,
+            totalCount: paginatedPosts.TotalCount
         );
     }
 }
