@@ -19,3 +19,10 @@ public class IssuePositionDto
 
     public int Position { get; init; } = default!;
 }
+
+public class LessonPositionDto
+{
+    public Guid LessonId { get; init; }
+
+    public int Position { get; init; } = default!;
+}

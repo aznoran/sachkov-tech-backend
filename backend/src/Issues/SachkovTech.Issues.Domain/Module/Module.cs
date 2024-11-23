@@ -9,6 +9,7 @@ namespace SachkovTech.Issues.Domain.Module;
 public class Module : SoftDeletableEntity<ModuleId>
 {
     // ef core
+    // ReSharper disable once UnusedMember.Local
     private Module(ModuleId id) : base(id)
     {
     }
@@ -25,10 +26,16 @@ public class Module : SoftDeletableEntity<ModuleId>
     public Description Description { get; private set; } = default!;
 
     public IReadOnlyList<IssuePosition> IssuesPosition = [];
+    public IReadOnlyList<LessonPosition> LessonsPosition = [];
 
     public void UpdateIssuesPosition(IEnumerable<IssuePosition> issuesPosition)
     {
         IssuesPosition = issuesPosition.ToList();
+    }
+    
+    public void UpdateLessonsPosition(IEnumerable<LessonPosition> lessonsPosition)
+    {
+        LessonsPosition = lessonsPosition.ToList();
     }
 
     public void UpdateMainInfo(Title title, Description description)
