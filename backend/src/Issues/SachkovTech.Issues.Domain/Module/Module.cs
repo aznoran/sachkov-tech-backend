@@ -201,42 +201,65 @@ public class Module : SoftDeletableEntity<ModuleId>
         return lastPosition.Value;
     }
 
-    private Result<List<IPositionable>,Error> AdjustPosition(
-        List<IPositionable> items, int originalPosition, int positionToMove)
+    public UnitResult<Error> MoveLesson(LessonPosition lessonPosition, int newPosition)
     {
-        if (originalPosition == positionToMove 
-            || originalPosition < 1 
-            || positionToMove < 1 
-            || originalPosition > items.Count 
-            || positionToMove > items.Count)
+        var rearrangedLessonsPositionResult = AdjustPosition(
+            LessonsPosition,
+            lessonPosition.Position.Value,
+            newPosition);
+        if (rearrangedLessonsPositionResult.IsFailure)
+            return rearrangedLessonsPositionResult.Error;
+        
+        List<LessonPosition> rearrangedLessonsPosition = rearrangedLessonsPositionResult.Value.OfType<LessonPosition>().ToList();
+        
+        if (rearrangedLessonsPosition.Count != LessonsPosition.Count)
+        {
+            return Errors.General.Failure();
+        }
+        
+        UpdateLessonsPosition(rearrangedLessonsPosition);
+        return Result.Success<Error>();
+    }
+
+    private Result<List<IPositionable>,Error> AdjustPosition(
+        IReadOnlyList<IPositionable> items, int positionFrom, int positionTo)
+    {
+        if (positionFrom == positionTo 
+            || positionFrom < 1 
+            || positionTo < 1 
+            || positionFrom > items.Count 
+            || positionTo > items.Count)
         {
             return Errors.General.ValueIsInvalid(nameof(Position)); // No adjustment needed or invalid positions
         }
         
-        bool movingDown = positionToMove > originalPosition;
+        var increment = positionFrom > positionTo ? 1 : -1;
+        var start = int.Min(positionFrom, positionTo);
+        var end = int.Max(positionFrom, positionTo);
         
         List<IPositionable> rearrangedItems = [];
         
-        foreach (var obj in items)
+        foreach (var currentItem in items)
         {
-            var currentPosition = obj.Position.Value;
-
-            if (currentPosition == originalPosition)
+            var currentPosition = currentItem.Position.Value;
+            
+            if (currentPosition >= start && currentPosition <= end)
             {
-                var item = obj.Move(Position.Create(positionToMove).Value);
-                rearrangedItems.Add(item);
+                if (currentPosition == positionTo)
+                {
+                    var newItem = currentItem.Move(Position.Create(positionTo).Value);
+                    rearrangedItems.Add(newItem);
+                }
+                else
+                {
+                    var newItem = currentItem.Move(
+                        Position.Create(currentItem.Position.Value + increment).Value);
+                    rearrangedItems.Add(newItem);
+                }
             }
-            else if (movingDown && currentPosition > originalPosition && currentPosition <= positionToMove)
+            else
             {
-                var newPosition = Position.Create(currentPosition - 1).Value;
-                var item = obj.Move(Position.Create(newPosition).Value);
-                rearrangedItems.Add(item);
-            }
-            else if (!movingDown && currentPosition < originalPosition && currentPosition >= positionToMove)
-            {
-                var newPosition = Position.Create(currentPosition + 1).Value;
-                var item = obj.Move(Position.Create(newPosition).Value);
-                rearrangedItems.Add(item);
+                rearrangedItems.Add(currentItem);
             }
         }
 
