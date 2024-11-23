@@ -5,7 +5,11 @@ using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Module;
-
+// TODO: write tests for lessons
+// TODO: re-write methods for issue
+// TODO: simplify adjusting positions after deletion
+// TODO: rename method adjustPosition
+// TODO: write tests for Issues
 public class Module : SoftDeletableEntity<ModuleId>
 {
     // ef core
@@ -265,7 +269,13 @@ public class Module : SoftDeletableEntity<ModuleId>
 
         return rearrangedItems;
     }
+
+    public void DeleteLessonPosition(LessonPosition lessonPosition)
+    {
+        throw new NotImplementedException();
+    }
 }
+
 
 public interface IPositionable
 {
