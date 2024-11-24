@@ -6,7 +6,7 @@ using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
-using SachkovTech.Issues.Presentation.Modules.Requests;
+using SachkovTech.Issues.Contracts.Requests.Module;
 
 namespace SachkovTech.Issues.Presentation.Modules;
 
@@ -30,7 +30,11 @@ public class ModulesController : ApplicationController
         [FromBody] CreateModuleRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request.ToCommand(), cancellationToken);
+        var command = new CreateModuleCommand(
+            request.Title,
+            request.Description);
+
+        var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -39,14 +43,18 @@ public class ModulesController : ApplicationController
     }
 
     [Permission(Permissions.Modules.UpdateModule)]
-    [HttpPut("{id:guid}/main-info")]
+    [HttpPut("{moduleId:guid}/main-info")]
     public async Task<ActionResult> UpdateMainInfo(
-        [FromRoute] Guid id,
+        [FromRoute] Guid moduleId,
         [FromBody] UpdateMainInfoRequest request,
         [FromServices] UpdateMainInfoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(id);
+        var command = new UpdateMainInfoCommand(
+            moduleId,
+            request.Title,
+            request.Description);
+
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)

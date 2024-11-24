@@ -40,66 +40,6 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQu
                 Errors.General.NotFound(query.UserId).ToErrorList());
         }
 
-        var userDto = new UserDto
-        {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            SecondName = user.SecondName,
-
-            StudentAccount = user.StudentAccount is null
-                ? null
-                : new StudentAccountDto
-                {
-                    Id = user.StudentAccount.Id,
-                    UserId = user.StudentAccount.UserId,
-                    DateStartedStudying = user.StudentAccount.DateStartedStudying
-                },
-
-            SupportAccount = user.SupportAccount is null
-                ? null
-                : new SupportAccountDto
-                {
-                    Id = user.SupportAccount.Id,
-                    UserId = user.SupportAccount.UserId,
-                    AboutSelf = user.SupportAccount.AboutSelf
-                },
-
-            AdminAccount = user.AdminAccount is null
-                ? null
-                : new AdminAccountDto
-                {
-                    Id = user.AdminAccount.Id,
-                    UserId = user.AdminAccount.UserId
-                },
-
-            SocialNetworks = user.SocialNetworks is null
-                ? null
-                : user.SocialNetworks
-                    .Select(s => new SocialNetworkDto()
-                    {
-                        Name = s.Name,
-                        Link = s.Link,
-                    })
-                    .ToList(),
-
-            Roles = user.Roles is null
-                ? null
-                : user.Roles
-                    .Select(r => new RoleDto
-                    {
-                        Id = r.Id,
-                        Name = r.Name,
-                        Permissions = r.Permissions is null
-                            ? null
-                            : r.Permissions.Select(p => new PermissionDto
-                            {
-                                Id = p.Id,
-                                Code = p.Code
-                            }).ToList()
-                    })
-                    .ToList()
-        };
-
-        return Result.Success<UserDto, ErrorList>(userDto);
+        return user;
     }
 }

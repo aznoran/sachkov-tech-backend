@@ -1,13 +1,14 @@
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Core.Dtos;
+using SachkovTech.Issues.Application.DataModels;
+using SachkovTech.Issues.Contracts.Dtos;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class ModuleDtoConfiguration : IEntityTypeConfiguration<ModuleDto>
+public class ModuleDtoConfiguration : IEntityTypeConfiguration<ModuleDataModel>
 {
-    public void Configure(EntityTypeBuilder<ModuleDto> builder)
+    public void Configure(EntityTypeBuilder<ModuleDataModel> builder)
     {
         builder.ToTable("modules");
 

@@ -88,10 +88,10 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         var response = new IssueResponse
         {
             Id = issueDto.Id,
-            ModuleId = issueDto.ModuleId.Value,
+            ModuleId = issueDto.ModuleId,
             Title = issueDto.Title,
             Description = issueDto.Description,
-            LessonId = issueDto.LessonId.Value,
+            LessonId = issueDto.LessonId,
         };
 
         return response;

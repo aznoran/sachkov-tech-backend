@@ -12,9 +12,4 @@
       <ProjectReference Include="..\SachkovTech.Issues.Contracts\SachkovTech.Issues.Contracts.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Issues\Responses\" />
-      <Folder Include="Modules\Responses\" />
-    </ItemGroup>
-
 </Project>
