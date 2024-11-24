@@ -12,25 +12,28 @@ namespace SachkovTech.Issues.IntegrationTests.Lessons.GetLessonByIdTests;
 
 public class GetLessonByIdTest : LessonsTestsBase
 {
-    public GetLessonByIdTest(LessonTestWebFactory factory) : base(factory) { }
+    public GetLessonByIdTest(LessonTestWebFactory factory) : base(factory)
+    {
+        _sut = Scope.ServiceProvider.GetRequiredService<IQueryHandlerWithResult<LessonResponse, GetLessonByIdQuery>>();
+    }
+
+    private readonly IQueryHandlerWithResult<LessonResponse, GetLessonByIdQuery> _sut;
 
     [Fact]
     public async Task Get_existing_lesson_by_id()
     {
         // arrange
-        
+
         var cancellationToken = new CancellationTokenSource().Token;
-        
+
         var lesson = await SeedLessonToDatabase(WriteDbContext, cancellationToken);
 
         var query = Fixture.CreateGetLessonByIdQuery(lesson.Id);
-        
+
         Factory.SetupSuccessFileServiceMock([lesson.PreviewId, lesson.Video.FileId]);
-
-        var sut = Scope.ServiceProvider.GetRequiredService<IQueryHandlerWithResult<LessonResponse, GetLessonByIdQuery>>();
-
+        
         // act
-        var result = await sut.Handle(query, cancellationToken);
+        var result = await _sut.Handle(query, cancellationToken);
 
         // assert
         result.IsSuccess.Should().BeTrue();
@@ -46,23 +49,21 @@ public class GetLessonByIdTest : LessonsTestsBase
     {
         // arrange
         Factory.SetupFailureFileServiceMock();
-        
+
         var cancellationToken = new CancellationTokenSource().Token;
-        
+
         var lesson = await SeedLessonToDatabase(WriteDbContext, cancellationToken);
-        
+
         var query = Fixture.CreateGetLessonByIdQuery(lesson.Id);
         
-        var sut = Scope.ServiceProvider.GetRequiredService<IQueryHandlerWithResult<LessonResponse, GetLessonByIdQuery>>();
-
         // act
-        var result = await sut.Handle(query, cancellationToken);
-        
+        var result = await _sut.Handle(query, cancellationToken);
+
         // assert
         result.IsFailure.Should().BeTrue();
-        result.Error.Should().ContainSingle(e=>e.Message == "record not found");
+        result.Error.Should().ContainSingle(e => e.Message == "record not found");
     }
-    
+
     private async Task<Lesson> SeedLessonToDatabase(
         IssuesWriteDbContext dbContext,
         CancellationToken cancellationToken = default)

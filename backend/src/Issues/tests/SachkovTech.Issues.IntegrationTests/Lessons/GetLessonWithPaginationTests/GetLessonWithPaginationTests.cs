@@ -19,29 +19,30 @@ public class GetLessonWithPaginationTests : LessonsTestsBase
 {
     public GetLessonWithPaginationTests(LessonTestWebFactory factory) : base(factory)
     {
+        _sut = Scope.ServiceProvider
+            .GetRequiredService<IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationQuery>>();
     }
 
+    private IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationQuery> _sut;
+
     [Fact]
-    public async Task Get_lessons_with_pagination_should_return_paginated_list()
+    public async Task Get_lessons_with_pagination()
     {
         // arrange
         var cancellationToken = new CancellationTokenSource().Token;
 
-        const int countLessons = 5;
+        var countLessons = 5;
         var lessons = await SeedLessonsToDatabase(WriteDbContext, countLessons, cancellationToken);
 
         var lessonIds = lessons.SelectMany(l => new[] { l.Video.FileId, l.PreviewId });
         Factory.SetupSuccessFileServiceMock(lessonIds);
 
-        const int page = 1;
-        const int pageSize = countLessons;
+        var page = 1;
+        var pageSize = countLessons;
         var query = Fixture.CreateGetLessonsWithPaginationQuery(page, pageSize);
 
-        var sut = Scope.ServiceProvider
-            .GetRequiredService<IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationQuery>>();
-
         // act
-        var result = await sut.Handle(query, cancellationToken);
+        var result = await _sut.Handle(query, cancellationToken);
 
         // assert
         result.IsSuccess.Should().BeTrue();
@@ -53,23 +54,19 @@ public class GetLessonWithPaginationTests : LessonsTestsBase
     }
 
     [Fact]
-    public async Task Get_lessons_with_invalid_query_should_return_error()
+    public async Task Cant_get_lessons_with_invalid_query()
     {
         // arrange
         var cancellationToken = new CancellationTokenSource().Token;
-
-
+        
         var invalidPage = -1;
         var invalidPageSize = -1;
         var invalidQuery = new GetLessonsWithPaginationQuery(invalidPage, invalidPageSize);
 
         SetupFailureValidationResult(invalidQuery, cancellationToken);
 
-        var sut = Scope.ServiceProvider
-            .GetRequiredService<IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationQuery>>();
-
         // act
-        var result = await sut.Handle(invalidQuery, cancellationToken);
+        var result = await _sut.Handle(invalidQuery, cancellationToken);
 
         // assert
         result.IsFailure.Should().BeTrue();
