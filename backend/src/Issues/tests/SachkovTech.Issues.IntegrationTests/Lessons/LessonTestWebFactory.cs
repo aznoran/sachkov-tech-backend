@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using FileService.Communication;
+
 using FileService.Contracts;
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
@@ -27,6 +28,22 @@ public class LessonTestWebFactory : IntegrationTestsWebFactory
         _fileServiceMock
             .CompleteMultipartUpload(Arg.Any<CompleteMultipartRequest>(), Arg.Any<CancellationToken>())
             .Returns(Result.Success<FileResponse, string>(response));
+        
+        _fileServiceMock
+            .GetFilesPresignedUrls(Arg.Any<GetFilesPresignedUrlsRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Success<IReadOnlyList<FileResponse>, string>([response]));
+        
+    }
+    public void SetupSuccessFileServiceMock(IEnumerable<Guid> fileIds)
+    {
+        var responses = fileIds.Select(id => new FileResponse(id, "testUrl")).ToList();
+        _fileServiceMock
+            .CompleteMultipartUpload(Arg.Any<CompleteMultipartRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Success<FileResponse, string>(responses.First()));
+        
+        _fileServiceMock
+            .GetFilesPresignedUrls(Arg.Any<GetFilesPresignedUrlsRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Success<IReadOnlyList<FileResponse>, string>(responses));
     }
 
     public void SetupFailureFileServiceMock()
@@ -34,5 +51,9 @@ public class LessonTestWebFactory : IntegrationTestsWebFactory
         _fileServiceMock
             .CompleteMultipartUpload(Arg.Any<CompleteMultipartRequest>(), Arg.Any<CancellationToken>())
             .Returns(Result.Failure<FileResponse, string>("Failed to upload file"));
+        
+        _fileServiceMock
+            .GetFilesPresignedUrls(Arg.Any<GetFilesPresignedUrlsRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result.Failure<IReadOnlyList<FileResponse>, string>("Failed to upload file"));
     }
 }
