@@ -4,11 +4,13 @@ public class UserDto
 {
     public Guid Id { get; init; }
 
-    public string FirstName { get; init; } = default!;
+    public string? FirstName { get; init; }
 
-    public string SecondName { get; init; } = default!;
+    public string? SecondName { get; init; } 
+    public string? ThirdName { get; init; } 
 
-    public string Email { get; init; } = default!;
+    public DateTime RegistrationDate { get; init; }
+    public string Email { get; init; } 
 
     public StudentAccountDto? StudentAccount { get; init; }
 
