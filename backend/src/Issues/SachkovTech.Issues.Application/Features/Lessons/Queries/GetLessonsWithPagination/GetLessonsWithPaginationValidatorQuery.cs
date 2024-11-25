@@ -2,4 +2,4 @@
 
 namespace SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
 
-public record GetLessonsWithPaginationValidatorQuery(int Page, int PageSize) : IQuery;
+public record GetLessonsWithPaginationQuery(int Page, int PageSize) : IQuery;

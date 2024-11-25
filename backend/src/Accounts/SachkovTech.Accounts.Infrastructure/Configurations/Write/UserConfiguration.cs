@@ -23,6 +23,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         {
             fb.Property(a => a.FirstName).IsRequired(false).HasColumnName("first_name");
             fb.Property(a => a.SecondName).IsRequired(false).HasColumnName("second_name");
+            fb.Property(a => a.ThirdName).IsRequired(false).HasColumnName("third_name");
         });
 
         builder.Property(a => a.Photo)

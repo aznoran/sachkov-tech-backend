@@ -1,63 +1,65 @@
 ﻿using CSharpFunctionalExtensions;
+using FileService.Contracts;
 using FluentValidation;
 using SachkovTech.Core.Abstractions;
+using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.SharedKernel;
+using FileService.Communication;
 
-namespace SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
+namespace SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonWithPagination;
 
 public class GetLessonsWithPaginationHandler(
-    IValidator<GetLessonsWithPaginationValidatorQuery> validator,
-    //FileHttpClient fileHttpClient,
+    IValidator<GetLessonsWithPaginationQuery> validator,
+    IFileService fileHttpClient,
     IReadDbContext context)
-    : IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationValidatorQuery>
+    : IQueryHandlerWithResult<PagedList<LessonResponse>, GetLessonsWithPaginationQuery>
 {
     public async Task<Result<PagedList<LessonResponse>, ErrorList>> Handle(
-        GetLessonsWithPaginationValidatorQuery query, CancellationToken cancellationToken = default)
+        GetLessonsWithPaginationQuery query, CancellationToken cancellationToken = default)
     {
         var validationResult = await validator.ValidateAsync(query, cancellationToken);
         if (validationResult.IsValid == false)
             return validationResult.ToList();
-
         var lessonsQuery = context.Lessons;
-
         var lessonsPagedList = await lessonsQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
 
-        // мы должны получить videoUrl из FileService
-        // var videoIds = lessonsPagedList.Items.Select(l => l.VideoId);
-        List<Guid> videoIds = [Guid.Parse("2572d9ad-a013-4645-be3e-b79dbfcd4c09")];
+        var videoIds = lessonsPagedList.Items
+            .SelectMany(l => new[] { l.VideoId, l.PreviewId })
+            .ToList();
+        var videoRequest = new GetFilesPresignedUrlsRequest(videoIds);
 
-        //var videoUrlsResult = await fileHttpClient.GetFilesPresignedUrls(new GetFilesPresignedUrlsRequest(videoIds), cancellationToken);
-        // if (videoUrlsResult.IsFailure)
-        //     return Errors.General.NotFound().ToErrorList();
+        var videoUrlsResult = await fileHttpClient.GetFilesPresignedUrls(videoRequest, cancellationToken);
+        if (videoUrlsResult.IsFailure)
+            return Errors.General.NotFound().ToErrorList();
 
-        var videoUrl = "videoUrl";
+        return ConvertToLessonResponses(videoUrlsResult.Value, lessonsPagedList);
+    }
 
-        //TODO: Реализовать получение Tag и Issue
+    private PagedList<LessonResponse> ConvertToLessonResponses(
+        IReadOnlyList<FileResponse> videoUrlsResult, PagedList<LessonDto> lessonsPagedList)
+    {
+        var urls = videoUrlsResult.ToDictionary(v => v.FileId, u => u.PresignedUrl);
+        var lessons = lessonsPagedList.Items
+            .Select(lessonDto => new LessonResponse(lessonDto.Id,
+                lessonDto.ModuleId,
+                lessonDto.Title,
+                lessonDto.Description,
+                lessonDto.Experience,
+                lessonDto.VideoId,
+                urls[lessonDto.VideoId],
+                lessonDto.PreviewId,
+                urls[lessonDto.PreviewId],
+                lessonDto.Tags, lessonDto.Issues))
+            .ToList();
         return new PagedList<LessonResponse>
         {
-            Page = lessonsPagedList.Page,
-            PageSize = lessonsPagedList.PageSize,
+            Items = lessons.AsReadOnly(),
             TotalCount = lessonsPagedList.TotalCount,
-            Items = lessonsPagedList.Items.Select(dm => new LessonResponse
-            {
-                Id = dm.Id,
-                ModuleId = dm.ModuleId,
-                Title = dm.Title,
-                Description = dm.Description,
-                Experience = dm.Experience,
-                VideoId = dm.VideoId,
-                //TODO: сделать получение url
-                // VideoUrl = url
-                PreviewId = dm.PreviewId,
-                //TODO: сделать получение url
-                // PreviewUrl = url
-                Tags = [],
-                Issues = []
-            }).ToList()
+            PageSize = lessonsPagedList.PageSize,
+            Page = lessonsPagedList.Page
         };
     }
 }

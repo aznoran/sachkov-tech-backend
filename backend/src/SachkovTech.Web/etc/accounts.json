@@ -22,7 +22,8 @@
       "modules.read",
       "modules.create",
       "modules.update",
-      "modules.delete"
+      "modules.delete",
+      "accounts.read"
     ],
     "Student": [
       "lessons.read",
@@ -84,7 +85,8 @@
       "files.upload"
     ],
     "Accounts": [
-      "accounts.enroll"
+      "accounts.enroll",
+      "accounts.read"
     ]
   }
 }

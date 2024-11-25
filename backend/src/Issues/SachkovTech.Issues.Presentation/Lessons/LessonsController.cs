@@ -175,7 +175,7 @@ public class LessonsController : ApplicationController
         [FromServices] GetLessonsWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(new GetLessonsWithPaginationValidatorQuery(page, pageSize),
+        var result = await handler.Handle(new GetLessonsWithPaginationQuery(page, pageSize),
             cancellationToken);
 
         if (result.IsFailure)
