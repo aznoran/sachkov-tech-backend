@@ -3,8 +3,9 @@ using FileService.Communication;
 using FileService.Contracts;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
+using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
@@ -25,24 +26,28 @@ public class GetLessonByIdHandler(
         var urlsResult = await fileService.GetFilesPresignedUrls(fileServiceRequest, cancellationToken);
         if (urlsResult.IsFailure)
             return Errors.General.NotFound().ToErrorList();
-        
+
         var urls = urlsResult.Value.ToDictionary(v => v.FileId, u => u.PresignedUrl);
-        
+
         var lessonResponse = ToLessonResponse(lesson, urls);
-       
+
         return lessonResponse;
     }
 
-    private LessonResponse ToLessonResponse(LessonDto lesson, Dictionary<Guid, string> urls) =>
-        new(lesson.Id,
-            lesson.ModuleId,
-            lesson.Title,
-            lesson.Description,
-            lesson.Experience,
-            lesson.VideoId,
-            urls[lesson.VideoId],
-            lesson.PreviewId,
-            urls[lesson.PreviewId],
-            lesson.Tags,
-            lesson.Issues);
+    private LessonResponse ToLessonResponse(LessonDataModel lesson, Dictionary<Guid, string> urls) =>
+        new LessonResponse
+        {
+            Id = lesson.Id,
+            ModuleId = lesson.ModuleId,
+            Title = lesson.Title,
+            Description = lesson.Description,
+            Experience = lesson.Experience,
+            VideoId = lesson.VideoId,
+            VideoUrl = urls[lesson.VideoId],
+            PreviewId = lesson.PreviewId,
+            PreviewUrl = urls[lesson.PreviewId],
+            //TODO: Сделать получение Tags и Issues
+            Tags = [],
+            Issues = []
+        };
 }

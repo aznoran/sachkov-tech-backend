@@ -1,12 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Core.Dtos;
+using SachkovTech.Issues.Application.DataModels;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class CommentDtoConfiguration : IEntityTypeConfiguration<CommentDto>
+public class CommentDtoConfiguration : IEntityTypeConfiguration<CommentDataModel>
 {
-    public void Configure(EntityTypeBuilder<CommentDto> builder)
+    public void Configure(EntityTypeBuilder<CommentDataModel> builder)
     {
         builder.ToTable("comments");
 

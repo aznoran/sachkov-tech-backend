@@ -24,6 +24,7 @@ public class GetIssuesByModuleWithPaginationHandler
         CancellationToken cancellationToken = default)
     {
         using var connection = _sqlConnectionFactory.Create();
+        
         var parameters = new DynamicParameters();
 
         var sqlBuilder = new StringBuilder(

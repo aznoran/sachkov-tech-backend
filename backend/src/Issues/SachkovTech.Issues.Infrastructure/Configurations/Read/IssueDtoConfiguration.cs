@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
+using SachkovTech.Issues.Application.DataModels;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class IssueDtoConfiguration : IEntityTypeConfiguration<IssueDto>
+public class IssueDtoConfiguration : IEntityTypeConfiguration<IssueDataModel>
 {
-    public void Configure(EntityTypeBuilder<IssueDto> builder)
+    public void Configure(EntityTypeBuilder<IssueDataModel> builder)
     {
         builder.ToTable("issues");
 

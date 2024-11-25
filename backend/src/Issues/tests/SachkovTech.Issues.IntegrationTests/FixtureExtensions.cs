@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
-using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonWithPagination;
+using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
 
 namespace SachkovTech.Issues.IntegrationTests;
 

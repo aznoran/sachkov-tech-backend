@@ -8,28 +8,38 @@ using SocialNetworkDto = SachkovTech.Accounts.Contracts.Dtos.SocialNetworkDto;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUserById;
 
-public class GetUserByIdHandler : IQueryHandler<UserDto?, GetUserByIdQuery>
+public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQuery>
 {
+    private readonly ILogger<GetUserByIdHandler> _logger;
     private readonly IAccountsReadDbContext _accountsReadDbContext;
 
     public GetUserByIdHandler(
+        ILogger<GetUserByIdHandler> logger,
         IAccountsReadDbContext accountsReadDbContext)
     {
+        _logger = logger;
         _accountsReadDbContext = accountsReadDbContext;
     }
 
-    public async Task<UserDto?> Handle(
+    public async Task<Result<UserDto, ErrorList>> Handle(
         GetUserByIdQuery query,
         CancellationToken cancellationToken = default)
     {
-        var userQueryBuilder = new UserQueryBuilder(_accountsReadDbContext.Users);
-        
-        return await userQueryBuilder
-            .IncludeStudentAccount()
-            .IncludeAdminAccount()
-            .IncludeSupportAccount()
-            .IncludeRoles()
-            .Build()
+        var user = await _accountsReadDbContext.Users
+            .Include(u => u.StudentAccount)
+            .Include(u => u.SupportAccount)
+            .Include(u => u.Roles)
+            .Include(u => u.AdminAccount)
             .FirstOrDefaultAsync(u => u.Id == query.UserId, cancellationToken);
+
+        if (user is null)
+        {
+            _logger.LogWarning("User with ID {UserId} not found", query.UserId);
+
+            return Result.Failure<UserDto, ErrorList>(
+                Errors.General.NotFound(query.UserId).ToErrorList());
+        }
+
+        return user;
     }
 }

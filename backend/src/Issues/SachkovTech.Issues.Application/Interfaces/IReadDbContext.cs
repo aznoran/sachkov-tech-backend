@@ -1,13 +1,18 @@
-using SachkovTech.Core.Dtos;
+using SachkovTech.Issues.Application.DataModels;
 
 namespace SachkovTech.Issues.Application.Interfaces;
 
 public interface IReadDbContext
 {
-    IQueryable<IssueDto> Issues { get; }
-    IQueryable<ModuleDto> Modules { get; }
-    IQueryable<IssueReviewDto> IssueReviewDtos { get; }
-    IQueryable<CommentDto> Comments { get; }
-    IQueryable<UserIssueDto> UserIssues { get; }
-    IQueryable<LessonDto> Lessons { get; }
+    IQueryable<IssueDataModel> Issues { get; }
+    
+    IQueryable<ModuleDataModel> Modules { get; }
+    
+    IQueryable<IssueReviewDataModel> IssueReviewDtos { get; }
+    
+    IQueryable<CommentDataModel> Comments { get; }
+    
+    IQueryable<UserIssueDataModel> UserIssues { get; }
+    
+    IQueryable<LessonDataModel> Lessons { get; }
 }

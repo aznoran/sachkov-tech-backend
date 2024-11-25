@@ -4,7 +4,7 @@ using SachkovTech.Issues.Contracts.Dtos;
 namespace SachkovTech.Issues.Application.Features.GrpcNotificationServiceTester.Commands.PushNotification;
 
 public record PushNotificationCommand(
-    MessageDTO Message,
+    MessageDto Message,
     Guid[] UserIds,
     Guid[] RoleIds,
     string Type,
