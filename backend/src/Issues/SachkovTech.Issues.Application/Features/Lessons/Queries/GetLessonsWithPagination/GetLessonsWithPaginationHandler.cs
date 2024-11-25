@@ -36,6 +36,7 @@ public class GetLessonsWithPaginationHandler(
 
         var videoUrl = "videoUrl";
 
+        //TODO: Реализовать получение Tag и Issue
         return new PagedList<LessonResponse>
         {
             Page = lessonsPagedList.Page,
@@ -54,8 +55,8 @@ public class GetLessonsWithPaginationHandler(
                 PreviewId = dm.PreviewId,
                 //TODO: сделать получение url
                 // PreviewUrl = url
-                Tags = dm.Tags,
-                Issues = dm.Issues
+                Tags = [],
+                Issues = []
             }).ToList()
         };
     }

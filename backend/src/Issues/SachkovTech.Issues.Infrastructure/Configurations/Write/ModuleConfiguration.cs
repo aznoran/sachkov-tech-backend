@@ -41,12 +41,10 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
 
         builder.Property(i => i.IssuesPosition)
             .ValueObjectsCollectionJsonConversion(
-                valueObject => new IssuePositionDto
-                {
-                    IssueId = valueObject.IssueId,
-                    Position = valueObject.Position
-                },
-                issuePosition => new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
+                valueObject 
+                    => new IssuePositionDto(valueObject.IssueId, valueObject.Position),
+                issuePosition =>
+                    new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
             .HasColumnName("issues_position");
 
         builder.Property<bool>("_isDeleted")
