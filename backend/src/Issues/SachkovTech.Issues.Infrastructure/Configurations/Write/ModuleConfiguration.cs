@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Contracts.Dtos;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Domain.Module.ValueObjects;

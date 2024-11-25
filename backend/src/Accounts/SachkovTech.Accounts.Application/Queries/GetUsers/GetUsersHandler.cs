@@ -1,10 +1,7 @@
-﻿using CSharpFunctionalExtensions;
-using Microsoft.Extensions.Logging;
-using SachkovTech.Accounts.Contracts.Dtos;
+﻿using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
-using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUsers;
 

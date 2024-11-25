@@ -13,6 +13,7 @@ using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Models;
 using SachkovTech.Accounts.Application;
+using SachkovTech.Issues.Application;
 
 namespace SachkovTech.Web;
 
@@ -31,6 +32,7 @@ public static class DependencyInjection
     public static IServiceCollection AddIssuesModule(
         this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddIssuesApplication();
         services.AddIssuesInfrastructure(configuration);
         services.AddIssuesPresentation();
 

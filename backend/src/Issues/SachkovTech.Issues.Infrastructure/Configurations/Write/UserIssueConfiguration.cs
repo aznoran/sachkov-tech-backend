@@ -18,20 +18,17 @@ public class UserIssueConfiguration : IEntityTypeConfiguration<UserIssue>
                 push => push.Value,
                 pull => UserIssueId.Create(pull));
 
-        builder.ComplexProperty(u => u.UserId, pb =>
-        {
-            pb.Property(a => a.Value)
-                .IsRequired()
-                .HasColumnName("user_id");
-        });
-
+        builder.Property(u => u.UserId)
+            .IsRequired()
+            .HasColumnName("user_id");
+        
         builder.ComplexProperty(u => u.IssueId, pb =>
         {
             pb.Property(a => a.Value)
                 .IsRequired()
                 .HasColumnName("issue_id");
         });
-        
+
         builder.ComplexProperty(u => u.ModuleId, pb =>
         {
             pb.Property(a => a.Value)

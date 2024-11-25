@@ -51,7 +51,7 @@ public class StartReviewHandler : ICommandHandler<Guid, StartReviewCommand>
         _logger.LogInformation(
             "IssueReview {issueReviewId} started by user {userId}",
             issueReviewResult.Value.Id.Value,
-            issueReviewResult.Value.UserId.Value);
+            issueReviewResult.Value.UserId);
 
         return issueReviewResult.Value.Id.Value;
     }

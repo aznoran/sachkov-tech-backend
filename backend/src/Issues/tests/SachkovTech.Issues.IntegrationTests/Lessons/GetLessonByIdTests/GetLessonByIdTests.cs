@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Issues.Application.Features.Lessons;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
 using SachkovTech.Issues.Contracts.Responses;
 using SachkovTech.Issues.Domain.Issue.ValueObjects;

@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
-using SocialNetworkDto = SachkovTech.Accounts.Contracts.Dtos.SocialNetworkDto;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUserById;
 

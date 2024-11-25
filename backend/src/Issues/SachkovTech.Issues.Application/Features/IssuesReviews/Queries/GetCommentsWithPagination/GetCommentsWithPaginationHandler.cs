@@ -1,7 +1,6 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Application.Interfaces;

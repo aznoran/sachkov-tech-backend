@@ -6,7 +6,6 @@ using SachkovTech.Issues.Application.Features.IssueSolving.Commands.SendOnReview
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.StopWorking;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.TakeOnWork;
 using SachkovTech.Issues.Application.Features.IssueSolving.Queries.GetUserIssuesByModuleWithPagination;
-using SachkovTech.Issues.Contracts.Requests;
 using SachkovTech.Issues.Contracts.Requests.IssueReview;
 using SachkovTech.Issues.Contracts.Requests.IssueSolving;
 
