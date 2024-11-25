@@ -52,10 +52,10 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         var previousUserIssue = await _readDbContext.UserIssues
             .FirstOrDefaultAsync(u => u.UserId == command.UserId, cancellationToken);
 
-        if (previousUserIssue is null)
-            return Errors.General.NotFound(null, "Previous solved issue").ToErrorList();
-
-        var previousUserIssueStatus = Enum.Parse<IssueStatus>(previousUserIssue.Status);
+        var previousUserIssueStatus =
+            previousUserIssue is null
+            ? IssueStatus.Completed
+            : Enum.Parse<IssueStatus>(previousUserIssue.Status);
 
         if (previousUserIssueStatus != IssueStatus.Completed)
             return Error.Failure("prev.issue.not.solved", "previous issue not solved").ToErrorList();
