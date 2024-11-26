@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using FaqService.Extensions;
 using FaqService.Infrastructure;
 using FaqService.Infrastructure.Repositories;
 using SharedKernel;
@@ -11,16 +12,19 @@ public class SelectSolutionForPostHandler
     private readonly ILogger<SelectSolutionForPostHandler> _logger;
     private readonly SearchRepository _searchRepository;
     private readonly UnitOfWork _unitOfWork;
+    private readonly ElasticIndexRecoveryService _indexRecoveryService;
 
     public SelectSolutionForPostHandler(PostsRepository repository,
         ILogger<SelectSolutionForPostHandler> logger,
         SearchRepository searchRepository,
-        UnitOfWork unitOfWork)
+        UnitOfWork unitOfWork,
+        ElasticIndexRecoveryService indexRecoveryService)
     {
         _repository = repository;
         _logger = logger;
         _searchRepository = searchRepository;
         _unitOfWork = unitOfWork;
+        _indexRecoveryService = indexRecoveryService;
     }
 
     public async Task<Result<Guid, Error>> Handle(PostSelectSolutionCommand command,
@@ -59,9 +63,12 @@ public class SelectSolutionForPostHandler
             if (indexResult)
                 await _searchRepository.DeletePost(command.PostId, cancellationToken);
             
+            await _indexRecoveryService.RestoreElasticIndex(command.PostId, indexResult, cancellationToken);
+            
             return 
                 Error.Failure("Cannot update post in transaction", "post.update.failure");
         }
 
     }
+    
 }

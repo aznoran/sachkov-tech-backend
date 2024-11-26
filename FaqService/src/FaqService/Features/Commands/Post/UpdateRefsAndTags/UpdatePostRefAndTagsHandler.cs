@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using FaqService.Extensions;
 using FaqService.Infrastructure;
 using FaqService.Infrastructure.Repositories;
 using SharedKernel;
@@ -11,15 +12,18 @@ public class UpdatePostRefAndTagsHandler
     private readonly ILogger<UpdatePostRefAndTagsHandler> _logger;
     private readonly SearchRepository _searchRepository;
     private readonly UnitOfWork _unitOfWork;
+    private readonly ElasticIndexRecoveryService _indexRecoveryService;
 
     public UpdatePostRefAndTagsHandler(PostsRepository repository,
         ILogger<UpdatePostRefAndTagsHandler> logger,
         SearchRepository searchRepository,
-        UnitOfWork unitOfWork)
+        UnitOfWork unitOfWork,
+        ElasticIndexRecoveryService indexRecoveryService)
     {
         _logger = logger;
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _indexRecoveryService = indexRecoveryService;
         _searchRepository = searchRepository;
     }
 
@@ -55,6 +59,8 @@ public class UpdatePostRefAndTagsHandler
             
             if (indexResult)
                 await _searchRepository.DeletePost(command.Id, cancellationToken);
+            
+            await _indexRecoveryService.RestoreElasticIndex(command.Id, indexResult, cancellationToken);
             
             return 
                 Error.Failure("Cannot update post in transaction", "post.update.failure");
