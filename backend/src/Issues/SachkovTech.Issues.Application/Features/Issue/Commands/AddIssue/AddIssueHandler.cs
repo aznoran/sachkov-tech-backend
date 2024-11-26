@@ -67,7 +67,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
         var issue = InitIssue(module.Id, lessonId, command);
         await _issuesRepository.Add(issue, cancellationToken);
 
-        module.AddIssue(issue.Id, Position.Create(module.IssuesPosition.Count + 1).Value);
+        module.AddIssue(issue.Id);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

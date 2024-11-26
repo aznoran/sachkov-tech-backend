@@ -57,7 +57,7 @@ public class AddLessonHandler(
         var lesson = CreateLesson(command, videoResult.Value);
         
         await lessonsRepository.Add(lesson, cancellationToken);
-        module.AddLesson(lesson.Id, Position.Create(module.LessonsPosition.Count + 1).Value);
+        module.AddLesson(lesson.Id);
         
         await unitOfWork.SaveChanges(cancellationToken);
 

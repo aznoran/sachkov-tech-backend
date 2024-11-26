@@ -47,8 +47,8 @@ internal static class Seeding
 
         await dbContext.Issues.AddRangeAsync(issue1, issue2);
         
-        module.AddIssue(issue1.Id, Position.Create(module.IssuesPosition.Count + 1).Value);
-        module.AddIssue(issue2.Id, Position.Create(module.IssuesPosition.Count + 1).Value);
+        module.AddIssue(issue1.Id);
+        module.AddIssue(issue2.Id);
         
         await dbContext.SaveChangesAsync(cancellationToken);
 

@@ -5,6 +5,7 @@ using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Module;
+
 public class Module : SoftDeletableEntity<ModuleId>
 {
     // ef core
@@ -43,9 +44,11 @@ public class Module : SoftDeletableEntity<ModuleId>
         Description = description;
     }
 
-    public void AddIssue(IssueId issueId, Position position)
+    public void AddIssue(IssueId issueId)
     {
-        var newIssuePosition = new IssuePosition(issueId, position);
+        var newIssuePosition = new IssuePosition(
+            issueId,
+            Position.Create(IssuesPosition.Count + 1).Value);
 
         var newIssuesPosition = new List<IssuePosition>(IssuesPosition)
         {
@@ -55,9 +58,11 @@ public class Module : SoftDeletableEntity<ModuleId>
         UpdateIssuesPosition(newIssuesPosition);
     }
 
-    public void AddLesson(LessonId lessonId, Position position)
+    public void AddLesson(LessonId lessonId)
     {
-        var newLessonPosition = new LessonPosition(lessonId, position);
+        var newLessonPosition = new LessonPosition(
+            lessonId,
+            Position.Create(LessonsPosition.Count + 1).Value);
 
         var newLessonsPosition = new List<LessonPosition>(LessonsPosition)
         {
@@ -69,34 +74,30 @@ public class Module : SoftDeletableEntity<ModuleId>
 
     public UnitResult<Error> MoveIssue(IssuePosition issuePosition, int newPosition)
     {
-        if(issuePosition.Position.Value == newPosition)
+        if (issuePosition.Position.Value == newPosition)
             return Result.Success<Error>();
-        
+
         var rearrangedIssuesPositionResult = ChangePosition(
             IssuesPosition,
             issuePosition.Position.Value,
             newPosition);
         if (rearrangedIssuesPositionResult.IsFailure)
             return rearrangedIssuesPositionResult.Error;
-        
-        List<IssuePosition> rearrangedIssuesPosition = rearrangedIssuesPositionResult.Value
-            .OfType<IssuePosition>()
-            .ToList();
-        
-        if (rearrangedIssuesPosition.Count != IssuesPosition.Count)
+
+        if (rearrangedIssuesPositionResult.Value.Count != IssuesPosition.Count)
         {
             return Errors.General.Failure();
         }
-        
-        UpdateIssuesPosition(rearrangedIssuesPosition);
+
+        UpdateIssuesPosition(rearrangedIssuesPositionResult.Value);
         return Result.Success<Error>();
     }
-    
+
     public UnitResult<Error> MoveLesson(LessonPosition lessonPosition, Position newPosition)
     {
-        if(lessonPosition.Position.Value == newPosition)
+        if (lessonPosition.Position.Value == newPosition)
             return Result.Success<Error>();
-        
+
         var rearrangedLessonsPositionResult = ChangePosition(
             LessonsPosition,
             lessonPosition.Position.Value,
@@ -104,15 +105,13 @@ public class Module : SoftDeletableEntity<ModuleId>
         if (rearrangedLessonsPositionResult.IsFailure)
             return rearrangedLessonsPositionResult.Error;
         
-        List<LessonPosition> rearrangedLessonsPosition = rearrangedLessonsPositionResult.Value
-            .OfType<LessonPosition>()
-            .ToList();
+        if (rearrangedLessonsPositionResult.Value.Count != LessonsPosition.Count)
+            return Errors.General.Failure();
         
-        if (rearrangedLessonsPosition.Count != LessonsPosition.Count)
-            return Errors.General.Failure();        
-        UpdateLessonsPosition(rearrangedLessonsPosition);
+        UpdateLessonsPosition(rearrangedLessonsPositionResult.Value);
         return Result.Success<Error>();
     }
+
     /// <summary>
     /// Generic method to change position for IPositionable in collection 
     /// </summary>
@@ -120,38 +119,38 @@ public class Module : SoftDeletableEntity<ModuleId>
     /// <param name="positionFrom"></param>
     /// <param name="positionTo"></param>
     /// <returns></returns>
-    private Result<List<IPositionable>,Error> ChangePosition(
-        IReadOnlyList<IPositionable> items, int positionFrom, int positionTo)
+    private Result<List<T>, Error> ChangePosition<T>(
+        IReadOnlyList<T> items, int positionFrom, int positionTo) where T : IPositionable
     {
-        if (positionFrom == positionTo 
-            || positionFrom < 1 
-            || positionTo < 1 
-            || positionFrom > items.Count 
+        if (positionFrom == positionTo
+            || positionFrom < 1
+            || positionTo < 1
+            || positionFrom > items.Count
             || positionTo > items.Count)
         {
             return Errors.General.ValueIsInvalid(nameof(Position)); // No adjustment needed or invalid positions
         }
-        
+
         var increment = positionFrom > positionTo ? 1 : -1;
         var start = int.Min(positionFrom, positionTo);
         var end = int.Max(positionFrom, positionTo);
-        
-        List<IPositionable> rearrangedItems = [];
-        
+
+        List<T> rearrangedItems = [];
+
         foreach (var currentItem in items)
         {
             var currentPosition = currentItem.Position.Value;
-            
+
             if (currentPosition >= start && currentPosition <= end)
             {
                 if (currentPosition == positionFrom)
                 {
-                    var newItem = currentItem.Move(Position.Create(positionTo).Value);
+                    var newItem = (T)currentItem.Move(Position.Create(positionTo).Value);
                     rearrangedItems.Add(newItem);
                 }
                 else
                 {
-                    var newItem = currentItem.Move(
+                    var newItem = (T)currentItem.Move(
                         Position.Create(currentItem.Position.Value + increment).Value);
                     rearrangedItems.Add(newItem);
                 }
@@ -161,6 +160,7 @@ public class Module : SoftDeletableEntity<ModuleId>
                 rearrangedItems.Add(currentItem);
             }
         }
+
         rearrangedItems = rearrangedItems.OrderBy(i => i.Position.Value).ToList();
         return rearrangedItems;
     }
@@ -171,58 +171,54 @@ public class Module : SoftDeletableEntity<ModuleId>
         var updateListResult = DeleteItemFromIPositionableCollection(copiedList, lessonPosition);
         if (updateListResult.IsFailure)
             return updateListResult.Error;
-        
+
         List<LessonPosition> rearrangedList = updateListResult.Value
             .OfType<LessonPosition>()
             .ToList();
         if (rearrangedList.Count != (LessonsPosition.Count - 1))
-            return Errors.General.Failure();  
-        
+            return Errors.General.Failure();
+
         UpdateLessonsPosition(rearrangedList);
         return Result.Success<Error>();
     }
-    
+
     public UnitResult<Error> DeleteIssuePosition(Guid issueId)
     {
         var issuePosition = IssuesPosition.FirstOrDefault(x => x.IssueId == issueId);
         if (issuePosition == null)
             return Errors.General.NotFound();
-        
+
         var copiedList = IssuesPosition.Cast<IPositionable>().ToList();
         var updateListResult = DeleteItemFromIPositionableCollection(copiedList, issuePosition);
         if (updateListResult.IsFailure)
             return updateListResult.Error;
-        
+
         List<IssuePosition> rearrangedList = updateListResult.Value
             .OfType<IssuePosition>()
             .ToList();
         if (rearrangedList.Count != (IssuesPosition.Count - 1))
-            return Errors.General.Failure();  
-        
+            return Errors.General.Failure();
+
         UpdateIssuesPosition(rearrangedList);
         return Result.Success<Error>();
     }
-    private Result<List<IPositionable>,Error> DeleteItemFromIPositionableCollection(List<IPositionable> items, IPositionable itemToDelete)
+
+    private Result<List<IPositionable>, Error> DeleteItemFromIPositionableCollection(List<IPositionable> items,
+        IPositionable itemToDelete)
     {
         var result = items.Remove(itemToDelete);
-        if(result == false)
+        if (result == false)
             return Errors.General.Failure();
-        
+
         items = items.OrderBy(i => i.Position.Value).ToList();
-        
+
         for (int i = 0; i < items.Count; i++)
         {
-            if(items[i].Position.Value < itemToDelete.Position.Value)
+            if (items[i].Position.Value < itemToDelete.Position.Value)
                 continue;
-            items[i]=items[i].Move(Position.Create(i+1).Value);
+            items[i] = items[i].Move(Position.Create(i + 1).Value);
         }
+
         return items;
     }
-}
-
-public interface IPositionable
-{
-    Position Position { get; }
-    IPositionable Move(Position position);
-    
 }
