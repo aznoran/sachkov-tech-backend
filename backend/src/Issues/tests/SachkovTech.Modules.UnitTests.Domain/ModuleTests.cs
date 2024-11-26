@@ -82,7 +82,7 @@ public class ModuleTests
         var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 3);
         var issueToCheck = module.IssuesPosition.First(x => x.Position.Value == 6);
         // Act
-        var result = module.MoveIssueNew(issueToMove, Position.Create(6).Value);
+        var result = module.MoveIssue(issueToMove, Position.Create(6).Value);
         // Assert
         result.IsSuccess.Should().BeTrue();
         module.IssuesPosition.Should().HaveCount(10);
@@ -99,7 +99,7 @@ public class ModuleTests
         var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 7);
         var issueToCheck = module.IssuesPosition.First(x => x.Position.Value == 4);
         // Act
-        var result = module.MoveIssueNew(issueToMove, Position.Create(4).Value);
+        var result = module.MoveIssue(issueToMove, Position.Create(4).Value);
         // Assert
         result.IsSuccess.Should().BeTrue();
         module.IssuesPosition.Should().HaveCount(10);
@@ -116,7 +116,7 @@ public class ModuleTests
         var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 7);
         var issueToCheck = module.IssuesPosition.First(x => x.Position.Value == 6);
         // Act
-        var result = module.MoveIssueNew(issueToMove, Position.Create(7).Value);
+        var result = module.MoveIssue(issueToMove, Position.Create(7).Value);
         // Assert
         result.IsSuccess.Should().BeTrue();
         module.IssuesPosition.Should().HaveCount(10);
@@ -132,68 +132,12 @@ public class ModuleTests
         
         var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 4);
         // Act
-        var result = module.MoveIssueNew(issueToMove, Position.Create(11).Value);
+        var result = module.MoveIssue(issueToMove, Position.Create(11).Value);
         // Assert
         result.IsSuccess.Should().BeFalse();
         module.IssuesPosition.Should().HaveCount(10);
     }
     
-    [Fact]
-    public void MoveIssue_to_the_same_position()
-    {
-        // Arrange
-        var module = CreateAndFillModule(5);
-
-        var issueToMove = module.IssuesPosition[0];
-
-        // Act
-        var result = module.MoveIssue(issueToMove, Position.Create(1).Value);
-
-        // Assert
-        result.IsSuccess.Should().BeTrue();
-        module.IssuesPosition.Should().HaveCount(5);
-    }
-
-    [Fact]
-    public void MoveIssue_to_back()
-    {
-        // Arrange
-        var module = new Module(
-            ModuleId.NewModuleId(),
-            Title.Create("test title").Value,
-            Description.Create("test description").Value);
-
-        var issueGuid1 = IssueId.Create(Guid.NewGuid());
-        var issueGuid2 = IssueId.Create(Guid.NewGuid());
-        var issueGuid3 = IssueId.Create(Guid.NewGuid());
-
-        var position1 = Position.Create(1).Value;
-        var position2 = Position.Create(2).Value;
-        var position3 = Position.Create(3).Value;
-
-        var issuesPosition = new List<IssuePosition>
-        {
-            new IssuePosition(issueGuid1, position1),
-            new IssuePosition(issueGuid2, position2),
-            new IssuePosition(issueGuid3, position3)
-        };
-
-        module.UpdateIssuesPosition(issuesPosition);
-
-        var issuesPositions = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
-
-        // Act
-        var result = module.MoveIssue(issuesPositions[1], Position.Create(1).Value);
-
-        // Assert
-        var finalIssues = module.IssuesPosition.OrderBy(i => i.Position.Value).ToList();
-
-        result.IsSuccess.Should().BeTrue();
-        finalIssues[0].IssueId.Value.Should().Be(issueGuid2.Value);
-        finalIssues[1].IssueId.Value.Should().Be(issueGuid1.Value);
-        finalIssues[2].IssueId.Value.Should().Be(issueGuid3.Value);
-    }
-
     [Fact]
     public void MoveIssue_to_forward()
     {
@@ -273,7 +217,53 @@ public class ModuleTests
         finalIssues[1].IssueId.Value.Should().Be(issueGuid3.Value);
         finalIssues[2].IssueId.Value.Should().Be(issueGuid1.Value);
     }
-
+    
+    [Fact]
+    public void DeleteIssue_ShouldBeNotFoundInList()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var issueToDelete = module.IssuesPosition.First(x => x.Position.Value == 4);
+        // Act
+        var result = module.DeleteIssuePosition(issueToDelete);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.IssuesPosition.Should().HaveCount(9);
+        module.IssuesPosition.FirstOrDefault(x => x.IssueId == issueToDelete.IssueId)
+            .Should().Be(null);
+        
+        var isSortedAndIncrementing = module.IssuesPosition
+            .Select((item, index) => item.Position.Value - index)
+            .Distinct()
+            .Count() == 1;
+        isSortedAndIncrementing.Should().BeTrue();
+    }
+    
+    [Fact]
+    public void DeleteLesson_ShouldBeNotFoundInList()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var lessonToDelete = module.LessonsPosition.First(x => x.Position.Value == 4);
+        // Act
+        var result = module.DeleteLessonPosition(lessonToDelete);
+        
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.LessonsPosition.Should().HaveCount(9);
+        module.LessonsPosition.FirstOrDefault(x => x.LessonId == lessonToDelete.LessonId)
+            .Should().Be(null);
+        
+        var isSortedAndIncrementing = module.LessonsPosition
+            .Select((item, index) => item.Position.Value - index)
+            .Distinct()
+            .Count() == 1;
+        isSortedAndIncrementing.Should().BeTrue();
+    }
+    
     [Fact]
     public void Soft_delete_module()
     {
