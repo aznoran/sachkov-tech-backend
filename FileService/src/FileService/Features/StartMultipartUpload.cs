@@ -26,7 +26,7 @@ public static class StartMultipartUpload
     {
         try
         {
-            var key = $"{request.ContentType}/{Guid.NewGuid()}";
+            var key = Guid.NewGuid().ToString();
 
             var startMultipartRequest = new InitiateMultipartUploadRequest
             {
