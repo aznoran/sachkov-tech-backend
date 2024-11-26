@@ -25,6 +25,13 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection ConfigureMassTransit(this IServiceCollection services)
+    {
+
+        return services;
+    }
+
+    
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();
