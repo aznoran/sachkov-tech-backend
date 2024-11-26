@@ -4,7 +4,7 @@ using FileService.Endpoints;
 
 namespace FileService.Features;
 
-public static class GetPresignedUrl
+public static class GetPresignedUrlFileService
 {
     public sealed class Endpoint : IEndpoint
     {

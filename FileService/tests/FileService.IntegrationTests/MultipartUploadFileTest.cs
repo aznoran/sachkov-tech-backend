@@ -1,21 +1,17 @@
 using System.Net.Http.Json;
 using Amazon.S3.Model;
 using FileService.Contracts;
+using FileService.Contracts.Responses;
 using FluentAssertions;
 using MongoDB.Driver;
-using Xunit.Abstractions;
+using CompleteMultipartUploadResponse = FileService.Contracts.Responses.CompleteMultipartUploadResponse;
 
 namespace FileService.IntegrationTests;
 
-public class MultipartUploadFileTest : TestsBase
+public class MultipartUploadFileTest : FileServiceTestsBase
 {
-    private record StartMultipartUploadResult(string Key, string UploadId);
-
-    private record UploadPresignedPartUrlResult(string Key, string Url);
-
-    private record CompleteMultipartUploadResult(string Id, string Location);
-    
-    public MultipartUploadFileTest(IntegrationTestsWebFactory factory) : base(factory)
+    public MultipartUploadFileTest(
+        IntegrationTestsWebFactory factory) : base(factory)
     {
     }
 
@@ -26,8 +22,6 @@ public class MultipartUploadFileTest : TestsBase
         FileInfo fileInfo = new FileInfo("..\\..\\..\\test.mp4");
         
         var cancellationToken = new CancellationTokenSource().Token;
-        
-        await CreateBucket(cancellationToken);
         
         var startMultipartResult = await StartMultipartUpload(fileInfo, cancellationToken);
         
@@ -69,17 +63,7 @@ public class MultipartUploadFileTest : TestsBase
         file.Should().NotBeNull();
     }
 
-    private async Task CreateBucket(CancellationToken cancellationToken = default)
-    {
-        var request = new PutBucketRequest
-        {
-            BucketName = "bucket"
-        };
-
-        await S3Client.PutBucketAsync(request, cancellationToken);
-    }
-
-    private async Task<StartMultipartUploadResult> StartMultipartUpload(
+    private async Task<StartMultipartUploadResponse> StartMultipartUpload(
         FileInfo fileInfo, 
         CancellationToken cancellationToken = default)
     {
@@ -88,24 +72,24 @@ public class MultipartUploadFileTest : TestsBase
             "video/mp4",
             fileInfo.Length);
         
-        var response = await HttpClient
+        var response = await AppHttpClient
             .PostAsJsonAsync("files/multipart", request, cancellationToken);
 
         response.EnsureSuccessStatusCode();
         
         return (await response.Content
-            .ReadFromJsonAsync<StartMultipartUploadResult>(cancellationToken))!;
+            .ReadFromJsonAsync<StartMultipartUploadResponse>(cancellationToken))!;
     }
     
-    private async Task<UploadPresignedPartUrlResult> UploadPresignedPartUrl(
-        StartMultipartUploadResult startMultipartResult,
+    private async Task<UploadPresignedPartUrlResponse> UploadPresignedPartUrl(
+        StartMultipartUploadResponse startMultipartResult,
         int partNumber,
         CancellationToken cancellationToken = default)
     {
         var request = new UploadPresignedPartUrlRequest
             (startMultipartResult!.UploadId, partNumber);
 
-        var response = await HttpClient
+        var response = await AppHttpClient
             .PostAsJsonAsync(
                 $"files/{startMultipartResult.Key}/presigned-part",
                 request,
@@ -114,34 +98,34 @@ public class MultipartUploadFileTest : TestsBase
         response.EnsureSuccessStatusCode();
 
         return (await response.Content
-            .ReadFromJsonAsync<UploadPresignedPartUrlResult>(cancellationToken))!;
+            .ReadFromJsonAsync<UploadPresignedPartUrlResponse>(cancellationToken))!;
     }
 
     private async Task<string> UploadFilePartToMinio(
-        UploadPresignedPartUrlResult uploadPresignedPartUrlResult,
+        UploadPresignedPartUrlResponse uploadPresignedPartUrlResult,
         byte[] chunk,
         CancellationToken cancellationToken = default)
     {
-        var httpClient = new HttpClient();   
-        
         using var content = new ByteArrayContent(chunk);
                 
-        var response = await httpClient
+        var response = await HttpClient
             .PutAsync(uploadPresignedPartUrlResult!.Url, content, cancellationToken);
+
+        var message = HttpClient.BaseAddress;
 
         response.EnsureSuccessStatusCode();
                 
         return response.Headers.GetValues("etag").FirstOrDefault()!;
     }
 
-    private async Task<CompleteMultipartUploadResult> CompleteMultipartUpload(
-        StartMultipartUploadResult startMultipartResult,
+    private async Task<CompleteMultipartUploadResponse> CompleteMultipartUpload(
+        StartMultipartUploadResponse startMultipartResult,
         List<PartETagInfo> parts,
         CancellationToken cancellationToken = default)
     {
         var completeMultipartRequest = new CompleteMultipartRequest(startMultipartResult!.UploadId, parts);
 
-        var response =  await HttpClient.PostAsJsonAsync(
+        var response =  await AppHttpClient.PostAsJsonAsync(
             $"files/{startMultipartResult.Key}/complete-multipart",
             completeMultipartRequest,
             cancellationToken);
@@ -149,6 +133,6 @@ public class MultipartUploadFileTest : TestsBase
         response.EnsureSuccessStatusCode();
 
         return (await response.Content
-            .ReadFromJsonAsync<CompleteMultipartUploadResult>(cancellationToken))!;
+            .ReadFromJsonAsync<CompleteMultipartUploadResponse>(cancellationToken))!;
     }
 }
