@@ -8,9 +8,12 @@ using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Commands.StartUploadFile;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
+using SachkovTech.Accounts.Application.Queries.GetUsers;
 using SachkovTech.Accounts.Application.Requests;
 using SachkovTech.Accounts.Contracts.Requests;
+using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Accounts.Presentation.Providers;
+using SachkovTech.Core.Models;
 using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Framework.Models;
@@ -25,6 +28,17 @@ public class AccountsController : ApplicationController
     public AccountsController(HttpContextProvider httpContextProvider)
     {
         _httpContextProvider = httpContextProvider;
+    }
+    
+    [HttpPost("admin-token-for-test")]
+    public async Task<IActionResult> Testing([FromServices] LoginHandler handler, CancellationToken cancellationToken)
+    {
+        return new ObjectResult("Bearer " + 
+                                ((((((await Login(new LoginUserRequest("admin@admin.com", "!Admin123"),
+                                                        handler, cancellationToken)
+                                                    as OkObjectResult)!).Value
+                                                as Envelope)!).Result
+                                        as LoginResponse)!).AccessToken);
     }
 
     [HttpPost("test")]
@@ -167,19 +181,25 @@ public class AccountsController : ApplicationController
     }
 
     [HttpGet("{userId}")]
+    [Permission(Permissions.Accounts.ReadAccount)]
     public async Task<IActionResult> GetUser(
         [FromRoute] Guid userId,
         [FromServices] GetUserByIdHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var command = new GetUserByIdQuery(userId);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
+        var query = new GetUserByIdQuery(userId);
+        
+        return Ok(await handler.Handle(query, cancellationToken));
+    }
+    
+    [HttpGet]
+    [Permission(Permissions.Accounts.ReadAccount)]
+    public async Task<IActionResult> GetUsers(
+        [FromQuery] GetUsersQuery query,
+        [FromServices] GetUsersHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        return Ok(await handler.Handle(query, cancellationToken));
     }
 
     [HttpPost("/start-upload-photo")]

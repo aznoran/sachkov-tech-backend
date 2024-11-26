@@ -11,7 +11,7 @@ public class DeleteModuleTest : ModulesTestsBase
     private readonly ILogger<DeleteModuleHandler> _logger;
     private readonly IValidator<DeleteModuleCommand> _validator;
     
-    public DeleteModuleTest(IntegrationTestsWebAppFactory factory) : base(factory)
+    public DeleteModuleTest(IntegrationTestsWebFactory factory) : base(factory)
     {
         _logger = Scope.ServiceProvider.GetRequiredService<ILogger<DeleteModuleHandler>>();
         _validator = Scope.ServiceProvider.GetRequiredService<IValidator<DeleteModuleCommand>>();

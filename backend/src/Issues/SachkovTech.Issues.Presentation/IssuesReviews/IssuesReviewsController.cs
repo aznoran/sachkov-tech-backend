@@ -9,7 +9,7 @@ using SachkovTech.Issues.Application.Features.IssuesReviews.Commands.Approve;
 using SachkovTech.Issues.Application.Features.IssuesReviews.Commands.DeleteComment;
 using SachkovTech.Issues.Application.Features.IssuesReviews.Commands.StartReview;
 using SachkovTech.Issues.Application.Features.IssuesReviews.Queries.GetCommentsWithPagination;
-using SachkovTech.Issues.Contracts.Requests;
+using SachkovTech.Issues.Contracts.Requests.IssueReview;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Presentation.IssuesReviews;

@@ -1,8 +1,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.Issues.Infrastructure.Outbox;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
 
@@ -33,6 +35,23 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddQuartzService(this IServiceCollection services)
+    {
+        services.AddQuartz(configure =>
+        {
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+            configure
+                .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
+        });
+
+        services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
+
+        return services;
+    }
+
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ILessonsRepository, LessonsRepository>();
@@ -41,6 +60,7 @@ public static class DependencyInjection
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
         services.AddScoped<IIssuesRepository, IssuesesRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
 
         return services;
     }
@@ -51,7 +71,7 @@ public static class DependencyInjection
     {
         services.AddScoped<IssuesWriteDbContext>(provider =>
             new IssuesWriteDbContext(configuration.GetConnectionString("Database")!));
-        
+
         services.AddScoped<IReadDbContext, IssuesReadDbContext>(provider =>
             new IssuesReadDbContext(configuration.GetConnectionString("Database")!));
 

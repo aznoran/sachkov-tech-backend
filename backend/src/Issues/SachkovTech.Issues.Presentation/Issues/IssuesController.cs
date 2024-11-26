@@ -10,7 +10,7 @@ using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesByModuleWithPagination;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
-using SachkovTech.Issues.Presentation.Issues.Requests;
+using SachkovTech.Issues.Contracts.Requests.Issue;
 
 namespace SachkovTech.Issues.Presentation.Issues;
 
@@ -23,13 +23,20 @@ public class IssuesController : ApplicationController
         [FromServices] GetIssuesWithPaginationHandlerDapper handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery();
-        
+        var query = new GetFilteredIssuesWithPaginationQuery(
+            request.Title,
+            request.PositionFrom,
+            request.PositionTo,
+            request.SortBy,
+            request.SortDirection,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         return Ok(response);
     }
-    
+
     [Permission(Permissions.Issues.ReadIssue)]
     [HttpGet]
     public async Task<ActionResult> Get(
@@ -37,13 +44,20 @@ public class IssuesController : ApplicationController
         [FromServices] GetIssuesWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery();
-        
+        var query = new GetFilteredIssuesWithPaginationQuery(
+            request.Title,
+            request.PositionFrom,
+            request.PositionTo,
+            request.SortBy,
+            request.SortDirection,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         return Ok(response);
     }
-    
+
     [Permission(Permissions.Issues.ReadIssue)]
     [HttpGet("module/{moduleId:guid}")]
     public async Task<ActionResult> GetByModule(
@@ -52,13 +66,19 @@ public class IssuesController : ApplicationController
         [FromServices] GetIssuesByModuleWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery(moduleId);
-        
+        var query = new GetFilteredIssuesByModuleWithPaginationQuery(
+            moduleId,
+            request.Title,
+            request.SortBy,
+            request.SortDirection,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         if (response.IsFailure)
             return response.Error.ToResponse();
-        
+
         return Ok(response.Value);
     }
 
@@ -78,7 +98,7 @@ public class IssuesController : ApplicationController
 
         return Ok(response.Value);
     }
-    
+
     [Permission(Permissions.Issues.CreateIssue)]
     [HttpPost]
     public async Task<ActionResult> AddIssue(
@@ -86,7 +106,12 @@ public class IssuesController : ApplicationController
         [FromServices] AddIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand();
+        var command = new AddIssueCommand(
+            request.LessonId,
+            request.ModuleId,
+            request.Title,
+            request.Description,
+            request.Experience);
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -95,7 +120,7 @@ public class IssuesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [Permission(Permissions.Issues.UpdateIssue)]
     [HttpPut("{issueId:guid}/main-info")]
     public async Task<ActionResult> UpdateIssueMainInfo(
@@ -104,7 +129,14 @@ public class IssuesController : ApplicationController
         [FromServices] UpdateIssueMainInfoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(issueId);
+        var command = new UpdateIssueMainInfoCommand(
+            issueId,
+            request.LessonId,
+            request.ModuleId,
+            request.Title,
+            request.Description,
+            request.Experience);
+        
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
@@ -129,7 +161,7 @@ public class IssuesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
+
     [Permission(Permissions.Issues.DeleteIssue)]
     [HttpDelete("{issueId:guid}/soft")]
     public async Task<ActionResult> SoftDeleteIssue(

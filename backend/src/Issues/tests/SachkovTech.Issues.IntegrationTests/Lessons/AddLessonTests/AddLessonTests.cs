@@ -8,7 +8,7 @@ namespace SachkovTech.Issues.IntegrationTests.Lessons.AddLessonTests;
 
 public class AddLessonTests : LessonsTestsBase
 {
-    public AddLessonTests(AddLessonTestWebAppFactory factory) : base(factory)
+    public AddLessonTests(LessonTestWebFactory factory) : base(factory)
     {
     }
 

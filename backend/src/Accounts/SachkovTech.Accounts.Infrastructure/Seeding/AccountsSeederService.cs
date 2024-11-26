@@ -96,7 +96,7 @@ public class AccountsSeederService(
 
         try
         {
-            var fullName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName).Value;
+            var fullName = FullName.Create(_adminOptions.UserName, _adminOptions.UserName, _adminOptions.UserName).Value;
 
             var adminUser = User.CreateAdmin(
                 _adminOptions.UserName, 

@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Core.Dtos;
+using SachkovTech.Issues.Application.DataModels;
 
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDto>
+public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDataModel>
 {
-    public void Configure(EntityTypeBuilder<LessonDto> builder)
+    public void Configure(EntityTypeBuilder<LessonDataModel> builder)
     {
         builder.ToTable("lessons");
 

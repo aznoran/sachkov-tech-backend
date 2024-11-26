@@ -5,7 +5,7 @@ using SachkovTech.Issues.Infrastructure.DbContexts;
 
 namespace SachkovTech.Issues.IntegrationTests.Modules;
 
-public abstract class ModulesTestsBase : IClassFixture<IntegrationTestsWebAppFactory>, IAsyncDisposable
+public abstract class ModulesTestsBase : IClassFixture<IntegrationTestsWebFactory>, IAsyncDisposable
 {
     protected readonly IServiceScope Scope;
     protected readonly IModulesRepository Repository;
@@ -13,7 +13,7 @@ public abstract class ModulesTestsBase : IClassFixture<IntegrationTestsWebAppFac
     protected readonly IssuesWriteDbContext WriteDbContext;
     protected readonly IReadDbContext ReadDbContext;
     
-    protected ModulesTestsBase(IntegrationTestsWebAppFactory factory)
+    protected ModulesTestsBase(IntegrationTestsWebFactory factory)
     {
         Scope = factory.Services.CreateScope();
 

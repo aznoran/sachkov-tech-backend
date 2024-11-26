@@ -55,11 +55,6 @@ public class SendForRevisionHandler : ICommandHandler<Guid, SendForRevisionComma
 
         var userIssueId = issueReviewResult.Value.UserIssueId;
 
-        if (userIssueId is null)
-        {
-            return Errors.General.ValueIsInvalid("user_issue_id").ToErrorList();
-        }
-
         var sendIssueForRevisionContractRes = 
             await SendIssueForRevision(userIssueId, cancellationToken);
 

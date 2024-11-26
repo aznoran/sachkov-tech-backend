@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using SachkovTech.Core.Dtos;
+using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Application.Interfaces;
 
 namespace SachkovTech.Issues.Infrastructure.DbContexts;
@@ -14,16 +14,16 @@ public class IssuesReadDbContext : DbContext, IReadDbContext
         _connectionString = connectionString;
     }
     
-    public IQueryable<IssueDto> Issues => Set<IssueDto>();
+    public IQueryable<IssueDataModel> Issues => Set<IssueDataModel>();
     
-    public IQueryable<ModuleDto> Modules => Set<ModuleDto>();
+    public IQueryable<ModuleDataModel> Modules => Set<ModuleDataModel>();
     
-    public IQueryable<IssueReviewDto> IssueReviewDtos => Set<IssueReviewDto>();
+    public IQueryable<IssueReviewDataModel> IssueReviewDtos => Set<IssueReviewDataModel>();
     
-    public IQueryable<CommentDto> Comments => Set<CommentDto>();
+    public IQueryable<CommentDataModel> Comments => Set<CommentDataModel>();
     
-    public IQueryable<UserIssueDto> UserIssues => Set<UserIssueDto>();
-    public IQueryable<LessonDto> Lessons => Set<LessonDto>();
+    public IQueryable<UserIssueDataModel> UserIssues => Set<UserIssueDataModel>();
+    public IQueryable<LessonDataModel> Lessons => Set<LessonDataModel>();
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -43,7 +43,7 @@ public class IssuesReadDbContext : DbContext, IReadDbContext
             typeof(IssuesWriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
 
-        modelBuilder.Entity<IssueDto>().HasQueryFilter(i => !i.IsDeleted);
+        modelBuilder.Entity<IssueDataModel>().HasQueryFilter(i => !i.IsDeleted);
     }
 
     private ILoggerFactory CreateLoggerFactory() =>

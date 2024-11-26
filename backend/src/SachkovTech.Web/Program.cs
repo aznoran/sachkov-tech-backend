@@ -83,4 +83,7 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program;
+namespace SachkovTech.Web
+{
+    public partial class Program;
+}

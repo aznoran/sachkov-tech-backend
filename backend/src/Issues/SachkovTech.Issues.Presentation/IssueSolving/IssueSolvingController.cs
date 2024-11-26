@@ -6,8 +6,8 @@ using SachkovTech.Issues.Application.Features.IssueSolving.Commands.SendOnReview
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.StopWorking;
 using SachkovTech.Issues.Application.Features.IssueSolving.Commands.TakeOnWork;
 using SachkovTech.Issues.Application.Features.IssueSolving.Queries.GetUserIssuesByModuleWithPagination;
-using SachkovTech.Issues.Contracts.Requests;
-using SachkovTech.Issues.Presentation.IssueSolving.Requests;
+using SachkovTech.Issues.Contracts.Requests.IssueReview;
+using SachkovTech.Issues.Contracts.Requests.IssueSolving;
 
 namespace SachkovTech.Issues.Presentation.IssueSolving;
 
@@ -22,7 +22,6 @@ public class IssueSolvingController : ApplicationController
         [FromServices] UserScopedData userScopedData,
         CancellationToken cancellationToken = default)
     {
-
         var command = new TakeOnWorkCommand(userScopedData.UserId, issueId, moduleId);
 
         var result = await handler.Handle(command, cancellationToken);
@@ -69,16 +68,22 @@ public class IssueSolvingController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpGet]
     public async Task<ActionResult> GetUserIssuesByModuleId(
         [FromQuery] GetUserIssuesByModuleWithPaginationRequest request,
         [FromServices] GetUserIssuesByModuleWithPaginationHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var query = request.ToQuery();
+        var query = new GetUserIssuesByModuleWithPaginationQuery(
+            request.UserId,
+            request.ModuleId,
+            request.Status,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         return Ok(response);
     }
 }

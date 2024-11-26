@@ -10,8 +10,8 @@ using SachkovTech.Issues.Application.Features.Lessons.Command.SoftDeleteLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Command.StartUploadVideo;
 using SachkovTech.Issues.Application.Features.Lessons.Command.UpdateLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
-using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonWithPagination;
-using SachkovTech.Issues.Presentation.Lessons.Requests;
+using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
+using SachkovTech.Issues.Contracts.Requests.Lesson;
 using SachkovTech.SharedKernel.ValueObjects;
 
 namespace SachkovTech.Issues.Presentation.Lessons;
@@ -25,7 +25,22 @@ public class LessonsController : ApplicationController
         [FromServices] AddLessonHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request.ToCommand(), cancellationToken);
+        var command = new AddLessonCommand(
+            request.ModuleId,
+            request.Title,
+            request.Description,
+            request.Experience,
+            request.VideoId,
+            request.PreviewId,
+            request.Tags,
+            request.Issues,
+            request.FileName,
+            request.ContentType,
+            request.FileSize,
+            request.UploadId,
+            request.Parts);
+
+        var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -40,7 +55,17 @@ public class LessonsController : ApplicationController
         [FromServices] UpdateLessonHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request.ToCommand(), cancellationToken);
+        var command = new UpdateLessonCommand(
+            request.LessonId,
+            request.Title,
+            request.Description,
+            request.Experience,
+            request.VideoId,
+            request.PreviewId,
+            request.Tags,
+            request.Issues);
+
+        var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -95,7 +120,7 @@ public class LessonsController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpDelete("{lessonId}/tag")]
     [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> RemoveTagFromLesson(
@@ -111,7 +136,7 @@ public class LessonsController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpPatch("{lessonId}/restore")]
     [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> RestoreLesson(
@@ -126,7 +151,7 @@ public class LessonsController : ApplicationController
 
         return Ok();
     }
-    
+
     [HttpDelete("{lessonId:guid}")]
     [Permission(Permissions.Lessons.DeleteLesson)]
     public async Task<IActionResult> SoftDeleteLesson(
@@ -150,7 +175,7 @@ public class LessonsController : ApplicationController
         [FromServices] GetLessonsWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(new GetLessonsWithPaginationValidatorQuery(page, pageSize),
+        var result = await handler.Handle(new GetLessonsWithPaginationQuery(page, pageSize),
             cancellationToken);
 
         if (result.IsFailure)
@@ -177,11 +202,11 @@ public class LessonsController : ApplicationController
     [HttpPost("{lessonId:guid}/start-upload-video")]
     [Permission(Permissions.Lessons.UpdateLesson)]
     public async Task<IActionResult> StartUploadVideo(
-        [FromServices] StartUploadVideoHandler handler,        
+        [FromServices] StartUploadVideoHandler handler,
         [FromBody] FileMetadataRequest request,
         CancellationToken cancellationToken = default)
     {
-        var command = new StartUploadVideoCommand(            
+        var command = new StartUploadVideoCommand(
             request.FileName,
             request.ContentType,
             request.FileSize);

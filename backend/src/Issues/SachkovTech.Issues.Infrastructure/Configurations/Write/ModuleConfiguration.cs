@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
+using SachkovTech.Issues.Contracts.Dtos;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
@@ -40,12 +40,10 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
 
         builder.Property(i => i.IssuesPosition)
             .ValueObjectsCollectionJsonConversion(
-                valueObject => new IssuePositionDto
-                {
-                    IssueId = valueObject.IssueId,
-                    Position = valueObject.Position
-                },
-                issuePosition => new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
+                valueObject 
+                    => new IssuePositionDto(valueObject.IssueId, valueObject.Position),
+                issuePosition =>
+                    new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
             .HasColumnName("issues_position");
         
         builder.Property(i => i.LessonsPosition)

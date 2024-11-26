@@ -14,28 +14,24 @@ public sealed class IssueReview : Entity<IssueReviewId>
     {
     }
 
-    private IssueReview(
+    public IssueReview(
         IssueReviewId issueReviewId,
         UserIssueId userIssueId,
-        UserId userId,
-        IssueReviewStatus issueReviewStatus,
-        DateTime reviewStartedTime,
-        DateTime? issueApprovedTime,
+        Guid userId,
         PullRequestUrl pullRequestUrl)
         : base(issueReviewId)
     {
         UserIssueId = userIssueId;
         UserId = userId;
-        IssueReviewStatus = issueReviewStatus;
-        ReviewStartedTime = reviewStartedTime;
-        IssueApprovedTime = issueApprovedTime;
+        IssueReviewStatus = IssueReviewStatus.WaitingForReviewer;
+        ReviewStartedTime = DateTime.UtcNow;
         PullRequestUrl = pullRequestUrl;
     }
 
     public UserIssueId UserIssueId { get; private set; }
-    public UserId UserId { get; private set; }
+    public Guid UserId { get; private set; }
 
-    public UserId? ReviewerId { get; private set; } = null;
+    public Guid? ReviewerId { get; private set; } = null;
 
     public IssueReviewStatus IssueReviewStatus { get; private set; }
 
@@ -49,28 +45,12 @@ public sealed class IssueReview : Entity<IssueReviewId>
 
     public PullRequestUrl PullRequestUrl { get; private set; }
 
-    public static Result<IssueReview, Error> Create(UserIssueId userIssueId,
-        UserId userId,
-        PullRequestUrl pullRequestUrl)
-    {
-        return Result.Success<IssueReview, Error>(new(
-            IssueReviewId.NewIssueReviewId(),
-            userIssueId,
-            userId,
-            IssueReviewStatus.WaitingForReviewer,
-            DateTime.UtcNow,
-            null,
-            pullRequestUrl));
-    }
     public void StartReview(UserId reviewerId)
     {
         ReviewerId = reviewerId;
         IssueReviewStatus = IssueReviewStatus.OnReview;
 
-        if (IssueTakenTime == null)
-        {
-            IssueTakenTime = DateTime.UtcNow;
-        }
+        IssueTakenTime ??= DateTime.UtcNow;
     }
 
     public UnitResult<Error> SendIssueForRevision(UserId reviewerId)
@@ -118,6 +98,7 @@ public sealed class IssueReview : Entity<IssueReviewId>
 
         return UnitResult.Success<Error>();
     }
+
     public UnitResult<Error> DeleteComment(CommentId commentId, UserId userId)
     {
         var comment = _comments.FirstOrDefault(c => c.Id == commentId);

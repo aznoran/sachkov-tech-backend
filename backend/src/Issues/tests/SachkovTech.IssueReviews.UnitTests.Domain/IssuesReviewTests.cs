@@ -11,8 +11,6 @@ namespace SachkovTech.IssueReviews.UnitTests.Domain;
 
 public class IssuesReviewTests
 {
-    #region StartReview
-
     [Fact]
     public void Start_review_by_reviewer()
     {
@@ -28,10 +26,6 @@ public class IssuesReviewTests
         issueReview.IssueReviewStatus.Should().Be(IssueReviewStatus.OnReview);
         issueReview.ReviewerId.Should().NotBeNull();
     }
-
-    #endregion
-
-    #region SendIssueForRevision
 
     [Fact]
     public void Send_issue_for_revision_by_reviewer()
@@ -65,10 +59,6 @@ public class IssuesReviewTests
         result.IsSuccess.Should().BeFalse();
         result.Error.Should().Be(Errors.User.InvalidCredentials());
     }
-
-    #endregion
-
-    #region Approve
 
     [Fact]
     public void Approve_with_valid_reviewer_id()
@@ -106,10 +96,6 @@ public class IssuesReviewTests
         result.Error.Should().Be(Errors.User.InvalidCredentials());
     }
 
-    #endregion
-
-    #region AddComment
-
     [Fact]
     public void Add_comment_from_author_or_reviewer()
     {
@@ -117,10 +103,11 @@ public class IssuesReviewTests
         var authorId = UserId.NewUserId();
         var reviewerId = UserId.NewUserId();
 
-        var issueReview = IssueReview.Create(
+        var issueReview = new IssueReview(
+            IssueReviewId.NewIssueReviewId(),
             UserIssueId.NewIssueId(),
             authorId,
-            PullRequestUrl.Empty).Value;
+            PullRequestUrl.Empty);
 
         issueReview.StartReview(reviewerId);
 
@@ -158,10 +145,6 @@ public class IssuesReviewTests
         result.Error.Should().Be(Errors.General.ValueIsInvalid("userId"));
         issueReview.Comments.Should().NotContain(invalidComment.Value);
     }
-
-    #endregion
-
-    #region DeleteComment
 
     [Fact]
     public void Delete_comment_by_author()
@@ -201,13 +184,12 @@ public class IssuesReviewTests
         result.Error.Should().Be(Errors.General.ValueIsInvalid("userId"));
     }
 
-    #endregion
-
     private IssueReview CreateAndFillIssueReview()
     {
-        return IssueReview.Create(
+        return new IssueReview(
+            IssueReviewId.NewIssueReviewId(),
             UserIssueId.NewIssueId(),
             UserId.NewUserId(),
-            PullRequestUrl.Empty).Value;
+            PullRequestUrl.Empty);
     }
 }

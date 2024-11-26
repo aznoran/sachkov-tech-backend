@@ -13,7 +13,7 @@ public class UpdateMainInfoTest : ModulesTestsBase
     private readonly ILogger<UpdateMainInfoHandler> _logger;
     private readonly IValidator<UpdateMainInfoCommand> _validator;
     
-    public UpdateMainInfoTest(IntegrationTestsWebAppFactory factory) : base(factory)
+    public UpdateMainInfoTest(IntegrationTestsWebFactory factory) : base(factory)
     {
         _logger = Scope.ServiceProvider.GetRequiredService<ILogger<UpdateMainInfoHandler>>();
         _validator = Scope.ServiceProvider.GetRequiredService<IValidator<UpdateMainInfoCommand>>();

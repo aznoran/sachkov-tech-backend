@@ -1,19 +1,20 @@
 using System.Data;
 using System.Linq.Expressions;
 using System.Text;
-using System.Text.Json;
 using Dapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
+using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Contracts.Responses;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
 
 public class GetIssuesWithPaginationHandler
-    : IQueryHandler<PagedList<IssueDto>, GetFilteredIssuesWithPaginationQuery>
+    : IQueryHandler<PagedList<IssueResponse>, GetFilteredIssuesWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
 
@@ -22,13 +23,15 @@ public class GetIssuesWithPaginationHandler
         _readDbContext = readDbContext;
     }
 
-    public async Task<PagedList<IssueDto>> Handle(
+    public async Task<PagedList<IssueResponse>> Handle(
         GetFilteredIssuesWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
         var issuesQuery = _readDbContext.Issues;
 
-        Expression<Func<IssueDto, object>> keySelector = query.SortBy?.ToLower() switch
+        var totalCount = await issuesQuery.CountAsync(cancellationToken);
+
+        Expression<Func<IssueDataModel, object>> keySelector = query.SortBy?.ToLower() switch
         {
             "title" => (issue) => issue.Title,
             _ => (issue) => issue.Id
@@ -42,13 +45,29 @@ public class GetIssuesWithPaginationHandler
             !string.IsNullOrWhiteSpace(query.Title),
             i => i.Title.Contains(query.Title!));
 
-        return await issuesQuery
-            .ToPagedList(query.Page, query.PageSize, cancellationToken);
+        var issues = issuesQuery.ToList()
+            .Select(i => new IssueResponse
+                {
+                    Id = i.Id,
+                    ModuleId = i.ModuleId.Value,
+                    LessonId = i.LessonId.Value,
+                    Title = i.Title,
+                    Description = i.Description
+                }
+            );
+
+        return new PagedList<IssueResponse>
+        {
+            Items = issues.ToList(),
+            TotalCount = totalCount,
+            PageSize = query.PageSize,
+            Page = query.Page
+        };
     }
 }
 
 public class GetIssuesWithPaginationHandlerDapper
-    : IQueryHandler<PagedList<IssueDto>, GetFilteredIssuesWithPaginationQuery>
+    : IQueryHandler<PagedList<IssueResponse>, GetFilteredIssuesWithPaginationQuery>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
     private readonly ILogger<GetIssuesWithPaginationHandlerDapper> _logger;
@@ -60,7 +79,7 @@ public class GetIssuesWithPaginationHandlerDapper
         _logger = logger;
     }
 
-    public async Task<PagedList<IssueDto>> Handle(
+    public async Task<PagedList<IssueResponse>> Handle(
         GetFilteredIssuesWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
@@ -84,20 +103,11 @@ public class GetIssuesWithPaginationHandlerDapper
         sql.ApplySorting(query.SortBy, query.SortDirection);
         sql.ApplyPagination(parameters, query.Page, query.PageSize);
 
-        var issues = await connection.QueryAsync<IssueDto, string, IssueDto>(
+        var issues = await connection.QueryAsync<IssueResponse>(
             sql.ToString(),
-            (issue, jsonFiles) =>
-            {
-                var files = JsonSerializer.Deserialize<Guid[]>(jsonFiles) ?? [];
-
-                issue.Files = files;
-
-                return issue;
-            },
-            splitOn: "files",
             param: parameters);
 
-        return new PagedList<IssueDto>
+        return new PagedList<IssueResponse>
         {
             Items = issues.ToList(),
             TotalCount = totalCount,

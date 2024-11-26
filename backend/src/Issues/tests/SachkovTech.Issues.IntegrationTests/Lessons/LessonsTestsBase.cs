@@ -3,15 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.Issues.IntegrationTests.Lessons.AddLessonTests;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.IntegrationTests.Lessons;
 
-public class LessonsTestsBase : IClassFixture<AddLessonTestWebAppFactory>, IAsyncLifetime
+public class LessonsTestsBase : IClassFixture<LessonTestWebFactory>, IAsyncLifetime
 {
-    protected readonly AddLessonTestWebAppFactory Factory;
+    protected readonly LessonTestWebFactory Factory;
     protected readonly IssuesWriteDbContext WriteDbContext;
     protected readonly IReadDbContext ReadDbContext;
     protected readonly IServiceScope Scope;
@@ -19,7 +18,7 @@ public class LessonsTestsBase : IClassFixture<AddLessonTestWebAppFactory>, IAsyn
 
     private readonly Func<Task> _resetDatabase;
 
-    protected LessonsTestsBase(AddLessonTestWebAppFactory factory)
+    protected LessonsTestsBase(LessonTestWebFactory factory)
     {
         _resetDatabase = factory.ResetDatabaseAsync;
 

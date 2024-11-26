@@ -2,6 +2,7 @@ using System.Data.Common;
 using Microsoft.EntityFrameworkCore.Storage;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Infrastructure;
 
