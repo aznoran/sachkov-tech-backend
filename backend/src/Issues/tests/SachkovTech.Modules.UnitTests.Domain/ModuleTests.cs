@@ -226,7 +226,7 @@ public class ModuleTests
         
         var issueToDelete = module.IssuesPosition.First(x => x.Position.Value == 4);
         // Act
-        var result = module.DeleteIssuePosition(issueToDelete);
+        var result = module.DeleteIssuePosition(issueToDelete.IssueId);
         
         // Assert
         result.IsSuccess.Should().BeTrue();

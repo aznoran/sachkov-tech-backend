@@ -5,10 +5,6 @@ using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Module;
-// TODO: re-write methods for issue
-// TODO: simplify adjusting positions after deletion
-// TODO: write tests for Delete Issue
-// TODO: write tests for Delete Lesson
 public class Module : SoftDeletableEntity<ModuleId>
 {
     // ef core
@@ -71,54 +67,6 @@ public class Module : SoftDeletableEntity<ModuleId>
         UpdateLessonsPosition(newLessonsPosition);
     }
 
-    public UnitResult<Error> DeleteIssuePositionOld(IssueId issueId)
-    {
-        var issue = IssuesPosition.FirstOrDefault(i => i.IssueId == issueId);
-        if (issue is null)
-            return Result.Success<Error>();
-
-        var currentPosition = issue.Position;
-
-        var newIssuesPosition = RecalculatePositionOfOtherIssues(currentPosition);
-        if (newIssuesPosition.IsFailure)
-            return newIssuesPosition.Error;
-
-        var removeIssueIndex = newIssuesPosition.Value
-            .FindIndex(i => i.Position == currentPosition);
-
-        newIssuesPosition.Value.RemoveAt(removeIssueIndex);
-
-        UpdateIssuesPosition(newIssuesPosition.Value);
-
-        return Result.Success<Error>();
-    }
-
-    private Result<List<IssuePosition>, Error> RecalculatePositionOfOtherIssues(Position currentPosition)
-    {
-        var updatedPositions = IssuesPosition.ToList();
-
-        if (currentPosition == IssuesPosition.Count)
-            return updatedPositions;
-
-        for (int i = 0; i < updatedPositions.Count; i++)
-        {
-            var issue = updatedPositions[i];
-
-            if (issue.Position <= currentPosition)
-                continue;
-
-            var moveResult = issue.MoveBack();
-            if (moveResult.IsFailure)
-                return moveResult.Error;
-
-            updatedPositions[i] = moveResult.Value;
-        }
-
-        updatedPositions = updatedPositions.OrderBy(i => i.Position.Value).ToList();
-
-        return updatedPositions;
-    }
-    
     public UnitResult<Error> MoveIssue(IssuePosition issuePosition, int newPosition)
     {
         if(issuePosition.Position.Value == newPosition)
@@ -234,8 +182,12 @@ public class Module : SoftDeletableEntity<ModuleId>
         return Result.Success<Error>();
     }
     
-    public UnitResult<Error> DeleteIssuePosition(IssuePosition issuePosition)
+    public UnitResult<Error> DeleteIssuePosition(Guid issueId)
     {
+        var issuePosition = IssuesPosition.FirstOrDefault(x => x.IssueId == issueId);
+        if (issuePosition == null)
+            return Errors.General.NotFound();
+        
         var copiedList = IssuesPosition.Cast<IPositionable>().ToList();
         var updateListResult = DeleteItemFromIPositionableCollection(copiedList, issuePosition);
         if (updateListResult.IsFailure)
@@ -257,6 +209,7 @@ public class Module : SoftDeletableEntity<ModuleId>
             return Errors.General.Failure();
         
         items = items.OrderBy(i => i.Position.Value).ToList();
+        
         for (int i = 0; i < items.Count; i++)
         {
             if(items[i].Position.Value < itemToDelete.Position.Value)
