@@ -204,17 +204,47 @@ public class Module : SoftDeletableEntity<ModuleId>
 
         return lastPosition.Value;
     }
-
-    public UnitResult<Error> MoveLesson(LessonPosition lessonPosition, int newPosition)
+    
+    public UnitResult<Error> MoveIssueNew(IssuePosition issuePosition, int newPosition)
     {
-        var rearrangedLessonsPositionResult = AdjustPosition(
+        if(issuePosition.Position.Value == newPosition)
+            return Result.Success<Error>();
+        
+        var rearrangedIssuesPositionResult = ChangePosition(
+            IssuesPosition,
+            issuePosition.Position.Value,
+            newPosition);
+        if (rearrangedIssuesPositionResult.IsFailure)
+            return rearrangedIssuesPositionResult.Error;
+        
+        List<IssuePosition> rearrangedIssuesPosition = rearrangedIssuesPositionResult.Value
+            .OfType<IssuePosition>()
+            .ToList();
+        
+        if (rearrangedIssuesPosition.Count != IssuesPosition.Count)
+        {
+            return Errors.General.Failure();
+        }
+        
+        UpdateIssuesPosition(rearrangedIssuesPosition);
+        return Result.Success<Error>();
+    }
+    
+    public UnitResult<Error> MoveLesson(LessonPosition lessonPosition, Position newPosition)
+    {
+        if(lessonPosition.Position.Value == newPosition)
+            return Result.Success<Error>();
+        
+        var rearrangedLessonsPositionResult = ChangePosition(
             LessonsPosition,
             lessonPosition.Position.Value,
-            newPosition);
+            newPosition.Value);
         if (rearrangedLessonsPositionResult.IsFailure)
             return rearrangedLessonsPositionResult.Error;
         
-        List<LessonPosition> rearrangedLessonsPosition = rearrangedLessonsPositionResult.Value.OfType<LessonPosition>().ToList();
+        List<LessonPosition> rearrangedLessonsPosition = rearrangedLessonsPositionResult.Value
+            .OfType<LessonPosition>()
+            .ToList();
         
         if (rearrangedLessonsPosition.Count != LessonsPosition.Count)
         {
@@ -224,8 +254,14 @@ public class Module : SoftDeletableEntity<ModuleId>
         UpdateLessonsPosition(rearrangedLessonsPosition);
         return Result.Success<Error>();
     }
-
-    private Result<List<IPositionable>,Error> AdjustPosition(
+    /// <summary>
+    /// Generic method to change position for IPositionable in collection 
+    /// </summary>
+    /// <param name="items"></param>
+    /// <param name="positionFrom"></param>
+    /// <param name="positionTo"></param>
+    /// <returns></returns>
+    private Result<List<IPositionable>,Error> ChangePosition(
         IReadOnlyList<IPositionable> items, int positionFrom, int positionTo)
     {
         if (positionFrom == positionTo 
@@ -249,7 +285,7 @@ public class Module : SoftDeletableEntity<ModuleId>
             
             if (currentPosition >= start && currentPosition <= end)
             {
-                if (currentPosition == positionTo)
+                if (currentPosition == positionFrom)
                 {
                     var newItem = currentItem.Move(Position.Create(positionTo).Value);
                     rearrangedItems.Add(newItem);

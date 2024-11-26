@@ -9,6 +9,136 @@ namespace SachkovTech.Issues.UnitTests.Domain;
 public class ModuleTests
 {
     [Fact]
+    public void MoveLesson_forward()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var lessonToMove = module.LessonsPosition.First(x => x.Position.Value == 3);
+        var lessonToCheck = module.LessonsPosition.First(x => x.Position.Value == 6);
+        // Act
+        var result = module.MoveLesson(lessonToMove, Position.Create(6).Value);
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.LessonsPosition.Should().HaveCount(10);
+        module.LessonsPosition.First(x => x.Position.Value == 6).LessonId.Should().Be(lessonToMove.LessonId);
+        module.LessonsPosition.First(x => x.Position.Value == 5).LessonId.Should().Be(lessonToCheck.LessonId);
+    }
+    
+    [Fact]
+    public void MoveLesson_backward()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var lessonToMove = module.LessonsPosition.First(x => x.Position.Value == 7);
+        var lessonToCheck = module.LessonsPosition.First(x => x.Position.Value == 4);
+        // Act
+        var result = module.MoveLesson(lessonToMove, Position.Create(4).Value);
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.LessonsPosition.Should().HaveCount(10);
+        module.LessonsPosition.First(x => x.Position.Value == 4).LessonId.Should().Be(lessonToMove.LessonId);
+        module.LessonsPosition.First(x => x.Position.Value == 5).LessonId.Should().Be(lessonToCheck.LessonId);
+    }
+    
+    [Fact]
+    public void MoveLesson_ToTheSamePosition_ShouldBeWithoutChanges()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var lessonToMove = module.LessonsPosition.First(x => x.Position.Value == 7);
+        var lessonToCheck = module.LessonsPosition.First(x => x.Position.Value == 6);
+        // Act
+        var result = module.MoveLesson(lessonToMove, Position.Create(7).Value);
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.LessonsPosition.Should().HaveCount(10);
+        module.LessonsPosition.First(x => x.Position.Value == 7).LessonId.Should().Be(lessonToMove.LessonId);
+        module.LessonsPosition.First(x => x.Position.Value == 6).LessonId.Should().Be(lessonToCheck.LessonId);
+    }
+    
+    [Fact]
+    public void MoveLesson_ToOutOfRangePosition_ShouldBeFailure()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var lessonToMove = module.LessonsPosition.First(x => x.Position.Value == 4);
+        // Act
+        var result = module.MoveLesson(lessonToMove, Position.Create(11).Value);
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        module.LessonsPosition.Should().HaveCount(10);
+    }
+    
+    [Fact]
+    public void MoveIssue_forward()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 3);
+        var issueToCheck = module.IssuesPosition.First(x => x.Position.Value == 6);
+        // Act
+        var result = module.MoveIssueNew(issueToMove, Position.Create(6).Value);
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.IssuesPosition.Should().HaveCount(10);
+        module.IssuesPosition.First(x => x.Position.Value == 6).IssueId.Should().Be(issueToMove.IssueId);
+        module.IssuesPosition.First(x => x.Position.Value == 5).IssueId.Should().Be(issueToCheck.IssueId);
+    }
+    
+    [Fact]
+    public void MoveIssue_backward()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 7);
+        var issueToCheck = module.IssuesPosition.First(x => x.Position.Value == 4);
+        // Act
+        var result = module.MoveIssueNew(issueToMove, Position.Create(4).Value);
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.IssuesPosition.Should().HaveCount(10);
+        module.IssuesPosition.First(x => x.Position.Value == 4).IssueId.Should().Be(issueToMove.IssueId);
+        module.IssuesPosition.First(x => x.Position.Value == 5).IssueId.Should().Be(issueToCheck.IssueId);
+    }
+    
+    [Fact]
+    public void MoveIssue_ToTheSamePosition_ShouldBeWithoutChanges()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 7);
+        var issueToCheck = module.IssuesPosition.First(x => x.Position.Value == 6);
+        // Act
+        var result = module.MoveIssueNew(issueToMove, Position.Create(7).Value);
+        // Assert
+        result.IsSuccess.Should().BeTrue();
+        module.IssuesPosition.Should().HaveCount(10);
+        module.IssuesPosition.First(x => x.Position.Value == 7).IssueId.Should().Be(issueToMove.IssueId);
+        module.IssuesPosition.First(x => x.Position.Value == 6).IssueId.Should().Be(issueToCheck.IssueId);
+    }
+    
+    [Fact]
+    public void MoveIssue_ToOutOfRangePosition_ShouldBeFailure()
+    {
+        // Arrange
+        var module = CreateAndFillModule(10);
+        
+        var issueToMove = module.IssuesPosition.First(x => x.Position.Value == 4);
+        // Act
+        var result = module.MoveIssueNew(issueToMove, Position.Create(11).Value);
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        module.IssuesPosition.Should().HaveCount(10);
+    }
+    
+    [Fact]
     public void MoveIssue_to_the_same_position()
     {
         // Arrange
@@ -171,7 +301,7 @@ public class ModuleTests
         module.IsDeleted.Should().BeFalse();
     }
 
-    private Module CreateAndFillModule(int issuesCount)
+    private Module CreateAndFillModule(int collectionsItemsCount)
     {
         var module = new Module(
             ModuleId.NewModuleId(),
@@ -179,13 +309,16 @@ public class ModuleTests
             Description.Create("test description").Value);
 
         var issuesPosition = new List<IssuePosition>();
+        var lessonsPosition = new List<LessonPosition>();
 
-        for (int i = 1; i < issuesCount + 1; i++)
+        for (int i = 1; i < collectionsItemsCount + 1; i++)
         {
             issuesPosition.Add(new IssuePosition(Guid.NewGuid(), Position.Create(i).Value));
+            lessonsPosition.Add(new LessonPosition(Guid.NewGuid(), Position.Create(i).Value));
         }
 
         module.UpdateIssuesPosition(issuesPosition);
+        module.UpdateLessonsPosition(lessonsPosition);
 
         return module;
     }
