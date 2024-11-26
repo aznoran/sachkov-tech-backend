@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SachkovTech.IssueReviews.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SachkovTech.Issues.IntegrationTests", "src\Issues\tests\SachkovTech.Issues.IntegrationTests\SachkovTech.Issues.IntegrationTests.csproj", "{3858CC35-4A3D-48AD-93E7-6C6BDC73FAB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SachkovTech.Issues.IntegrationEvents", "src\Issues\SachkovTech.Issues.IntegrationEvents\SachkovTech.Issues.IntegrationEvents.csproj", "{DA88F164-75BA-4914-A351-DBFA63C5DE80}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SachkovTech.Issues.UnitTests.Domain", "src\Issues\tests\SachkovTech.Issues.UnitTests.Domain\SachkovTech.Issues.UnitTests.Domain.csproj", "{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}
 EndProject
 Global
@@ -138,6 +140,10 @@ Global
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA88F164-75BA-4914-A351-DBFA63C5DE80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA88F164-75BA-4914-A351-DBFA63C5DE80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA88F164-75BA-4914-A351-DBFA63C5DE80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA88F164-75BA-4914-A351-DBFA63C5DE80}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +172,7 @@ Global
 		{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
 		{3858CC35-4A3D-48AD-93E7-6C6BDC73FAB7} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
+		{DA88F164-75BA-4914-A351-DBFA63C5DE80} = {1955B47D-2627-4897-9AF0-863F215DA712}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {06591CB3-5D76-4012-AA6A-ACA4A8D2D8DF}

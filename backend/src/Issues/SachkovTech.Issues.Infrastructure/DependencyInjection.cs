@@ -39,10 +39,10 @@ public static class DependencyInjection
     {
         services.AddQuartz(configure =>
         {
-            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+            var jobKey = new JobKey(nameof(ProcessOutboxDomainEvents));
 
             configure
-                .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddJob<ProcessOutboxDomainEvents>(jobKey)
                 .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
                     schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
         });

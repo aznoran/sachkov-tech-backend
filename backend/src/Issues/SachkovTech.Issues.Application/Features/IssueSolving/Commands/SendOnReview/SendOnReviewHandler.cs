@@ -17,7 +17,6 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
 {
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly ILogger<SendOnReviewHandler> _logger;
-    private readonly IOutboxRepository _outboxRepository;
     private readonly IPublisher _publisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<SendOnReviewCommand> _validator;
@@ -33,7 +32,6 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
         _userIssueRepository = userIssueRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
-        _outboxRepository = outboxRepository;
         _publisher = publisher;
     }
 
@@ -65,9 +63,7 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
             return sendOnReviewRes.Error.ToErrorList();
         }
 
-        //await _outboxRepository.AddAsync(userIssue, cancellationToken);
-
-        await _publisher.Publish(new UserIssueSentOnReviewEvent(userIssue.Id, userIssue.UserId, pullRequestUrl), cancellationToken);
+        await _publisher.Publish(userIssue, cancellationToken);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

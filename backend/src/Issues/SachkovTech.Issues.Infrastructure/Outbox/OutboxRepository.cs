@@ -13,18 +13,16 @@ public class OutboxRepository : IOutboxRepository
         _dbContext = dbContext;
     }
 
-    public async Task AddAsync<TId>(DomainEntity<TId> entity, CancellationToken cancellationToken) where TId : IComparable<TId>
+    public async Task Add<T>(T message, CancellationToken cancellationToken)
     {
-        var outboxMessages = entity.DomainEvents.Select(domainEvent => new OutboxMessage()
+        var outboxMessages = new OutboxMessage()
         {
             Id = Guid.NewGuid(),
             OccurredOnUtc = DateTime.Now,
-            Type = domainEvent.GetType().Name,
-            Payload = JsonSerializer.Serialize(domainEvent)
-        });
+            Type = typeof(T).FullName!,
+            Payload = JsonSerializer.Serialize(message)
+        };
 
-        await _dbContext.AddRangeAsync(outboxMessages, cancellationToken);
-
-        entity.ClearDomainEvents();
+        await _dbContext.AddAsync(outboxMessages, cancellationToken);
     }
 }
