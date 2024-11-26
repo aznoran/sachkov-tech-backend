@@ -27,6 +27,8 @@ public class SelectSolutionForPostHandler
         CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+        bool indexResult = false;
+        
         try
         {
             var postResult = await _repository.GetById(command.PostId, cancellationToken);
@@ -39,7 +41,7 @@ public class SelectSolutionForPostHandler
                 return result.Error;
 
             await _repository.Save(cancellationToken);
-            await _searchRepository.IndexPost(postResult.Value);
+            indexResult = await _searchRepository.IndexPost(postResult.Value);
             
             transaction.Commit();
             
@@ -53,6 +55,10 @@ public class SelectSolutionForPostHandler
                 "Cannot update post in transaction");
 
             transaction.Rollback();
+            
+            if (indexResult)
+                await _searchRepository.DeletePost(command.PostId, cancellationToken);
+            
             return 
                 Error.Failure("Cannot update post in transaction", "post.update.failure");
         }

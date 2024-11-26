@@ -15,8 +15,4 @@ public class UnitOfWork
         var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
         return transaction.GetDbTransaction();
     }
-    public async Task SaveChanges(CancellationToken cancellationToken = default)
-    {
-        await _dbContext.SaveChangesAsync(cancellationToken);
-    }
 }

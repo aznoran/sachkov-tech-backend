@@ -27,6 +27,7 @@ public class UpdatePostRefAndTagsHandler
         CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+        var indexResult = false;
         try
         {
             var postResult = await _repository.GetById(command.Id, cancellationToken);
@@ -37,7 +38,7 @@ public class UpdatePostRefAndTagsHandler
             postResult.Value.UpdateRefsAndTags(command.ReplLink, command.IssueId, command.LessonId, command.Tags);
 
             await _repository.Save(cancellationToken);
-            await _searchRepository.IndexPost(postResult.Value);
+            indexResult = await _searchRepository.IndexPost(postResult.Value);
             
             transaction.Commit();
             
@@ -51,6 +52,10 @@ public class UpdatePostRefAndTagsHandler
                 "Cannot update post in transaction");
 
             transaction.Rollback();
+            
+            if (indexResult)
+                await _searchRepository.DeletePost(command.Id, cancellationToken);
+            
             return 
                 Error.Failure("Cannot update post in transaction", "post.update.failure");
         }

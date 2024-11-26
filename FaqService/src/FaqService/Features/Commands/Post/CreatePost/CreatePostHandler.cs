@@ -26,10 +26,12 @@ public class CreatePostHandler
     public async Task<Result<Guid, Error>> Handle(CreatePostCommand command, CancellationToken cancellationToken)
     {
         var transaction = await _unitOfWork.BeginTransaction(cancellationToken);
+        var postId = Guid.Empty;
         try
         {
+            postId = Guid.NewGuid();
             var postResult = Entities.Post.Create(
-                Guid.NewGuid(),
+                postId,
                 command.Title,
                 command.Description,
                 command.ReplLink,
@@ -44,6 +46,7 @@ public class CreatePostHandler
             await _repository.Add(postResult.Value, cancellationToken);
 
             await _repository.Save(cancellationToken);
+            
             await _searchRepository.IndexPost(postResult.Value);
             
             transaction.Commit();
@@ -56,8 +59,11 @@ public class CreatePostHandler
         {
             _logger.LogError(ex,
                 "Cannot create post in transaction");
-
+            
             transaction.Rollback();
+            
+            await _searchRepository.DeletePost(postId, cancellationToken);
+            
             return 
                 Error.Failure("Cannot create post in transaction", "post.create.failure");
         }

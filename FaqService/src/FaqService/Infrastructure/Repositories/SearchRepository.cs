@@ -27,7 +27,7 @@ public class SearchRepository
         return ids;
     }
 
-    public async Task IndexPost(Post post)
+    public async Task<bool> IndexPost(Post post)
     {
         var postElastic = new PostElastic
         {
@@ -46,10 +46,12 @@ public class SearchRepository
         if (response.IsValid)
         {
             Console.WriteLine("Document indexed successfully.");
+            return true;
         }
         else
         {
             Console.WriteLine($"Failed to index document: {response.ServerError?.Error?.Reason}");
+            return false;
         }
     }
     
