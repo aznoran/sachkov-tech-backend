@@ -167,18 +167,15 @@ public class Module : SoftDeletableEntity<ModuleId>
 
     public UnitResult<Error> DeleteLessonPosition(LessonPosition lessonPosition)
     {
-        var copiedList = LessonsPosition.Cast<IPositionable>().ToList();
+        var copiedList = LessonsPosition.ToList();
         var updateListResult = DeleteItemFromIPositionableCollection(copiedList, lessonPosition);
         if (updateListResult.IsFailure)
             return updateListResult.Error;
-
-        List<LessonPosition> rearrangedList = updateListResult.Value
-            .OfType<LessonPosition>()
-            .ToList();
-        if (rearrangedList.Count != (LessonsPosition.Count - 1))
+        
+        if (updateListResult.Value.Count != (LessonsPosition.Count - 1))
             return Errors.General.Failure();
 
-        UpdateLessonsPosition(rearrangedList);
+        UpdateLessonsPosition(updateListResult.Value);
         return Result.Success<Error>();
     }
 
@@ -188,23 +185,21 @@ public class Module : SoftDeletableEntity<ModuleId>
         if (issuePosition == null)
             return Errors.General.NotFound();
 
-        var copiedList = IssuesPosition.Cast<IPositionable>().ToList();
+        var copiedList = IssuesPosition.ToList();
         var updateListResult = DeleteItemFromIPositionableCollection(copiedList, issuePosition);
         if (updateListResult.IsFailure)
             return updateListResult.Error;
-
-        List<IssuePosition> rearrangedList = updateListResult.Value
-            .OfType<IssuePosition>()
-            .ToList();
-        if (rearrangedList.Count != (IssuesPosition.Count - 1))
+        
+        if (updateListResult.Value.Count != (IssuesPosition.Count - 1))
             return Errors.General.Failure();
 
-        UpdateIssuesPosition(rearrangedList);
+        UpdateIssuesPosition(updateListResult.Value);
         return Result.Success<Error>();
     }
 
-    private Result<List<IPositionable>, Error> DeleteItemFromIPositionableCollection(List<IPositionable> items,
-        IPositionable itemToDelete)
+    private Result<List<T>, Error> DeleteItemFromIPositionableCollection<T>(
+        List<T> items,
+        T itemToDelete) where T : IPositionable
     {
         var result = items.Remove(itemToDelete);
         if (result == false)
@@ -216,7 +211,7 @@ public class Module : SoftDeletableEntity<ModuleId>
         {
             if (items[i].Position.Value < itemToDelete.Position.Value)
                 continue;
-            items[i] = items[i].Move(Position.Create(i + 1).Value);
+            items[i] = (T)items[i].Move(Position.Create(i + 1).Value);
         }
 
         return items;
