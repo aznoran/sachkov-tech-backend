@@ -48,12 +48,9 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
         
         builder.Property(i => i.LessonsPosition)
             .ValueObjectsCollectionJsonConversion(
-                valueObject => new LessonPositionDto
-                {
-                    LessonId = valueObject.LessonId,
-                    Position = valueObject.Position
-                },
-                lessonPosition => new LessonPosition(lessonPosition.LessonId, Position.Create(lessonPosition.Position).Value))
+                valueObject => new LessonPositionDto(valueObject.LessonId, valueObject.Position),
+                lessonPosition =>
+                    new LessonPosition(lessonPosition.LessonId, Position.Create(lessonPosition.Position).Value))
             .HasColumnName("lessons_position");
         
         builder.Property<bool>("_isDeleted")

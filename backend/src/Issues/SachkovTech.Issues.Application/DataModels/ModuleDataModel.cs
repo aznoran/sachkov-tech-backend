@@ -1,6 +1,8 @@
 using SachkovTech.Issues.Contracts.Dtos;
 
-public class ModuleDto
+namespace SachkovTech.Issues.Application.DataModels;
+
+public class ModuleDataModel
 {
     public Guid Id { get; init; }
 
@@ -9,13 +11,7 @@ public class ModuleDto
     public string Description { get; init; } = string.Empty;
 
     public IssuePositionDto[] IssuesPosition { get; init; } = [];
+    public LessonPositionDto[] LessonsPosition { get; init; } = [];
 
     public bool IsDeleted { get; init; }
-}
-
-public class LessonPositionDto
-{
-    public Guid LessonId { get; init; }
-
-    public int Position { get; init; } = default!;
 }
