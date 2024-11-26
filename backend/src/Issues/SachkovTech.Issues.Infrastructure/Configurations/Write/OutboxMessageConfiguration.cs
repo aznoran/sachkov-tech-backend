@@ -19,6 +19,14 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
             .HasMaxLength(2000)
             .IsRequired();
 
+        builder.Property(o => o.OccurredOnUtc)
+            .HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
+            .IsRequired();
+        
+        builder.Property(o => o.ProcessedOnUtc)
+            .HasConversion(v => v!.Value.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
+            .IsRequired(false);
+
         builder.HasIndex(e => new
             {
                 e.OccurredOnUtc,

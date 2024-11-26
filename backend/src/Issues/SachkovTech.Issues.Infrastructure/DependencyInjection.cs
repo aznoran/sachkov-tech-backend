@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
@@ -7,6 +8,7 @@ using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Issues.Infrastructure.Outbox;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
+using SachkovTech.Issues.Infrastructure.TestConsumers;
 
 namespace SachkovTech.Issues.Infrastructure;
 
@@ -20,18 +22,36 @@ public static class DependencyInjection
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
-            .AddServices();
+            .AddServices()
+            .AddQuartzService()
+            .AddMessageBus(configuration);
 
         return services;
     }
 
-    private static IServiceCollection ConfigureMassTransit(this IServiceCollection services)
+    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddMassTransit(configure =>
+        {
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<UserIssueSentOnReviewEventConsumer>();
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(configuration["RabbitMQ:Host"]!), h =>
+                {
+                    h.Username(configuration["RabbitMQ:UserName"]!);
+                    h.Password(configuration["RabbitMQ:Password"]!);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }
 
-    
     private static IServiceCollection AddDatabase(this IServiceCollection services)
     {
         services.AddSingleton<ISqlConnectionFactory, SqlConnectionFactory>();

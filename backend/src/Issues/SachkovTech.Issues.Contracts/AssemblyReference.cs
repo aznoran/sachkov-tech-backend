@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace SachkovTech.Issues.IntegrationEvents;
+namespace SachkovTech.Issues.Contracts;
 
 public static class AssemblyReference
 {

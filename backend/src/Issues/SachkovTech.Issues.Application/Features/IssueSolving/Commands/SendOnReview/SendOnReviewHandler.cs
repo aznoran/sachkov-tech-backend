@@ -63,7 +63,7 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
             return sendOnReviewRes.Error.ToErrorList();
         }
 
-        await _publisher.Publish(userIssue, cancellationToken);
+        await _publisher.PublishDomainEvents(userIssue, cancellationToken);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

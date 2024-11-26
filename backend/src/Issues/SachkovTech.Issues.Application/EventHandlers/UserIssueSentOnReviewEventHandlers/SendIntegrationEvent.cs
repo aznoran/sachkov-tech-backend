@@ -15,7 +15,7 @@ public class SendIntegrationEvent : INotificationHandler<UserIssueSentOnReviewEv
     public async Task Handle(UserIssueSentOnReviewEvent domainEvent, CancellationToken cancellationToken)
     {
         await _outboxRepository.Add(
-            new IntegrationEvents.UserIssueSentOnReviewEvent(domainEvent.UserIssueId.Value),
+            new Contracts.Messaging.UserIssueSentOnReviewEvent(domainEvent.UserIssueId.Value),
             cancellationToken);
     }
 }

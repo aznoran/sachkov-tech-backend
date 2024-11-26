@@ -5,6 +5,8 @@ using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
 using Quartz;
+using SachkovTech.Issues.Contracts;
+using SachkovTech.Issues.Contracts.Messaging;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 
 namespace SachkovTech.Issues.Infrastructure.Outbox;
@@ -27,17 +29,19 @@ public class ProcessOutboxDomainEvents : IJob
     {
         var messages = await _dbContext
             .Set<OutboxMessage>()
-            .AsNoTracking()
             .Where(m => m.ProcessedOnUtc == null)
             .Take(20)
             .ToListAsync(context.CancellationToken);
+
+        if (messages.Count == 0)
+            return;
 
         var pipeline = new ResiliencePipelineBuilder()
             .AddRetry(new RetryStrategyOptions
             {
                 MaxRetryAttempts = 3,
-                BackoffType = DelayBackoffType.Constant,
-                Delay = TimeSpan.Zero,
+                BackoffType = DelayBackoffType.Exponential,
+                Delay = TimeSpan.FromSeconds(1),
                 ShouldHandle = new PredicateBuilder().Handle<Exception>(ex => ex is not NullReferenceException),
                 OnRetry = retryArguments =>
                 {
@@ -48,32 +52,43 @@ public class ProcessOutboxDomainEvents : IJob
             })
             .Build();
 
-        foreach (var message in messages)
+        var processingTasks = messages.Select(message => ProcessMessageAsync(message, pipeline, context.CancellationToken));
+        await Task.WhenAll(processingTasks);
+
+        try
         {
-            try
+            await _dbContext.SaveChangesAsync(context.CancellationToken);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Failed to save changes to the database.");
+        }
+    }
+
+    private async Task ProcessMessageAsync(OutboxMessage message, ResiliencePipeline pipeline, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        try
+        {
+            await pipeline.ExecuteAsync(async token =>
             {
-                await pipeline.ExecuteAsync(async token =>
-                {
-                    throw new Exception();
-                    var messageType = IntegrationEvents.AssemblyReference.Assembly.GetType(message.Type)
-                                      ?? throw new NullReferenceException("Message type not found");
+                var messageType = AssemblyReference.Assembly.GetType(message.Type)
+                                  ?? throw new NullReferenceException("Message type not found");
 
-                    var deserializedMessage = JsonSerializer.Deserialize(message.Payload, messageType)
-                                              ?? throw new NullReferenceException("Message payload not found");
+                var deserializedMessage = JsonSerializer.Deserialize(message.Payload, messageType)
+                                          ?? throw new NullReferenceException("Message payload not found");
 
-                    await _publisher.Publish(deserializedMessage, messageType, token);
+                await _publisher.Publish(deserializedMessage, messageType, token);
 
-                    message.ProcessedOnUtc = DateTime.UtcNow;
-                    await _dbContext.SaveChangesAsync(token);
-                });
-            }
-            catch (Exception ex)
-            {
-                message.Error = ex.ToString();
                 message.ProcessedOnUtc = DateTime.UtcNow;
-
-                await _dbContext.SaveChangesAsync(context.CancellationToken);
-            }
+            }, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            message.Error = ex.Message;
+            message.ProcessedOnUtc = DateTime.UtcNow;
+            _logger.LogError(ex, "Failed to process message ID: {MessageId}", message.Id);
         }
     }
 }

@@ -34,7 +34,6 @@ public class IssueReviewCreation : INotificationHandler<UserIssueSentOnReviewEve
             domainEvent.PullRequestUrl);
 
         await _issuesReviewRepository.Add(issueReviewResult, cancellationToken);
-        await _unitOfWork.SaveChanges(cancellationToken);
 
         _logger.LogInformation("IssueReview {IssueReviewId} was created", issueReviewResult.Id);
     }
