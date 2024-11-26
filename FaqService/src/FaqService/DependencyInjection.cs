@@ -55,6 +55,7 @@ public static class DependencyInjection
         services.AddScoped<GetPostsWithCursorPaginationHandler>();
         services.AddScoped<GetAnswersWithCursorHandler>();
         services.AddScoped<GetAnswerAtPostByIdHandler>();
+        services.AddScoped<ElasticIndexRecoveryService>();
         
         return services;
     }
