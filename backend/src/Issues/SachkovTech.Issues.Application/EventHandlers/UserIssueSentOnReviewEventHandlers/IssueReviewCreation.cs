@@ -7,17 +7,17 @@ using SachkovTech.Issues.Domain.IssueSolving.Events;
 using SachkovTech.Issues.Domain.IssuesReviews;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
-namespace SachkovTech.Issues.Application.EventHandlers;
+namespace SachkovTech.Issues.Application.EventHandlers.UserIssueSentOnReviewEventHandlers;
 
-public class UserIssueSentOnReviewEventHandlerIssueReviewCreation : INotificationHandler<UserIssueSentOnReviewEvent>
+public class IssueReviewCreation : INotificationHandler<UserIssueSentOnReviewEvent>
 {
     private readonly IIssuesReviewRepository _issuesReviewRepository;
-    private readonly ILogger<UserIssueSentOnReviewEventHandlerIssueReviewCreation> _logger;
+    private readonly ILogger<IssueReviewCreation> _logger;
     private readonly IUnitOfWork _unitOfWork;
 
-    public UserIssueSentOnReviewEventHandlerIssueReviewCreation(
+    public IssueReviewCreation(
         IIssuesReviewRepository issuesReviewRepository,
-        ILogger<UserIssueSentOnReviewEventHandlerIssueReviewCreation> logger,
+        ILogger<IssueReviewCreation> logger,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork)
     {
         _issuesReviewRepository = issuesReviewRepository;
@@ -34,7 +34,6 @@ public class UserIssueSentOnReviewEventHandlerIssueReviewCreation : INotificatio
             domainEvent.PullRequestUrl);
 
         await _issuesReviewRepository.Add(issueReviewResult, cancellationToken);
-        await _unitOfWork.SaveChanges(cancellationToken);
 
         _logger.LogInformation("IssueReview {IssueReviewId} was created", issueReviewResult.Id);
     }

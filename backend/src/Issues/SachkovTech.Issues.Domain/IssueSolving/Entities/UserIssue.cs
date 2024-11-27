@@ -67,15 +67,14 @@ public class UserIssue : DomainEntity<UserIssueId>
 
     public UnitResult<Error> SendForRevision()
     {
-        if (Status == IssueStatus.UnderReview)
-        {
-            Status = IssueStatus.AtWork;
-            Attempts = Attempts.Add();
+        if (Status != IssueStatus.UnderReview)
+            return Error.Failure("issue.status.invalid", "issue status should be not completed or under review");
 
-            return Result.Success<Error>();
-        }
+        Status = IssueStatus.AtWork;
+        Attempts = Attempts.Add();
 
-        return Error.Failure("issue.status.invalid", "issue status should be not completed or under review");
+        return Result.Success<Error>();
+
     }
 
     public UnitResult<Error> StopWorking()
