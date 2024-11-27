@@ -9,6 +9,7 @@ namespace SachkovTech.Issues.Domain.Module;
 public class Module : SoftDeletableEntity<ModuleId>
 {
     // ef core
+    // ReSharper disable once UnusedMember.Local
     private Module(ModuleId id) : base(id)
     {
     }
@@ -25,10 +26,16 @@ public class Module : SoftDeletableEntity<ModuleId>
     public Description Description { get; private set; } = default!;
 
     public IReadOnlyList<IssuePosition> IssuesPosition = [];
+    public IReadOnlyList<LessonPosition> LessonsPosition = [];
 
     public void UpdateIssuesPosition(IEnumerable<IssuePosition> issuesPosition)
     {
         IssuesPosition = issuesPosition.ToList();
+    }
+
+    public void UpdateLessonsPosition(IEnumerable<LessonPosition> lessonsPosition)
+    {
+        LessonsPosition = lessonsPosition.ToList();
     }
 
     public void UpdateMainInfo(Title title, Description description)
@@ -37,9 +44,11 @@ public class Module : SoftDeletableEntity<ModuleId>
         Description = description;
     }
 
-    public void AddIssue(IssueId issueId, Position position)
+    public void AddIssue(IssueId issueId)
     {
-        var newIssuePosition = new IssuePosition(issueId, position);
+        var newIssuePosition = new IssuePosition(
+            issueId,
+            Position.Create(IssuesPosition.Count + 1).Value);
 
         var newIssuesPosition = new List<IssuePosition>(IssuesPosition)
         {
@@ -49,136 +58,162 @@ public class Module : SoftDeletableEntity<ModuleId>
         UpdateIssuesPosition(newIssuesPosition);
     }
 
-    public UnitResult<Error> MoveIssue(IssuePosition issuePosition, Position newPosition)
+    public void AddLesson(LessonId lessonId)
     {
-        var currentPosition = issuePosition.Position;
+        var newLessonPosition = new LessonPosition(
+            lessonId,
+            Position.Create(LessonsPosition.Count + 1).Value);
 
-        if (currentPosition == newPosition || IssuesPosition.Count == 1)
-            return Result.Success<Error>();
-
-        var adjustedPosition = AdjustNewPositionIfOutOfRange(newPosition);
-        if (adjustedPosition.IsFailure)
-            return adjustedPosition.Error;
-
-        newPosition = adjustedPosition.Value;
-
-        var newIssuesPosition = MoveIssuesBetweenPositions(newPosition, currentPosition);
-        if (newIssuesPosition.IsFailure)
-            return newIssuesPosition.Error;
-
-        UpdateIssuesPosition(newIssuesPosition.Value);
-
-        return Result.Success<Error>();
-    }
-
-    public UnitResult<Error> DeleteIssuePosition(IssueId issueId)
-    {
-        var issue = IssuesPosition.FirstOrDefault(i => i.IssueId == issueId);
-        if (issue is null)
-            return Result.Success<Error>();
-
-        var currentPosition = issue.Position;
-
-        var newIssuesPosition = RecalculatePositionOfOtherIssues(currentPosition);
-        if (newIssuesPosition.IsFailure)
-            return newIssuesPosition.Error;
-
-        var removeIssueIndex = newIssuesPosition.Value
-            .FindIndex(i => i.Position == currentPosition);
-
-        newIssuesPosition.Value.RemoveAt(removeIssueIndex);
-
-        UpdateIssuesPosition(newIssuesPosition.Value);
-
-        return Result.Success<Error>();
-    }
-
-    private Result<List<IssuePosition>, Error> RecalculatePositionOfOtherIssues(Position currentPosition)
-    {
-        var updatedPositions = IssuesPosition.ToList();
-
-        if (currentPosition == IssuesPosition.Count)
-            return updatedPositions;
-
-        for (int i = 0; i < updatedPositions.Count; i++)
+        var newLessonsPosition = new List<LessonPosition>(LessonsPosition)
         {
-            var issue = updatedPositions[i];
+            newLessonPosition
+        };
 
-            if (issue.Position <= currentPosition)
-                continue;
+        UpdateLessonsPosition(newLessonsPosition);
+    }
 
-            var moveResult = issue.MoveBack();
-            if (moveResult.IsFailure)
-                return moveResult.Error;
+    public UnitResult<Error> MoveIssue(IssuePosition issuePosition, int newPosition)
+    {
+        if (issuePosition.Position.Value == newPosition)
+            return Result.Success<Error>();
 
-            updatedPositions[i] = moveResult.Value;
+        var rearrangedIssuesPositionResult = ChangePosition(
+            IssuesPosition,
+            issuePosition.Position.Value,
+            newPosition);
+        if (rearrangedIssuesPositionResult.IsFailure)
+            return rearrangedIssuesPositionResult.Error;
+
+        if (rearrangedIssuesPositionResult.Value.Count != IssuesPosition.Count)
+        {
+            return Errors.General.Failure();
         }
 
-        updatedPositions = updatedPositions.OrderBy(i => i.Position.Value).ToList();
-
-        return updatedPositions;
+        UpdateIssuesPosition(rearrangedIssuesPositionResult.Value);
+        return Result.Success<Error>();
     }
 
-    private Result<List<IssuePosition>, Error> MoveIssuesBetweenPositions(
-        Position newPosition,
-        Position currentPosition)
+    public UnitResult<Error> MoveLesson(LessonPosition lessonPosition, Position newPosition)
     {
-        var updatedPositions = IssuesPosition.ToList();
+        if (lessonPosition.Position.Value == newPosition)
+            return Result.Success<Error>();
 
-        var updatedIssue = updatedPositions
-            .First(i => i.Position == currentPosition)
-            .Move(newPosition);
+        var rearrangedLessonsPositionResult = ChangePosition(
+            LessonsPosition,
+            lessonPosition.Position.Value,
+            newPosition.Value);
+        if (rearrangedLessonsPositionResult.IsFailure)
+            return rearrangedLessonsPositionResult.Error;
+        
+        if (rearrangedLessonsPositionResult.Value.Count != LessonsPosition.Count)
+            return Errors.General.Failure();
+        
+        UpdateLessonsPosition(rearrangedLessonsPositionResult.Value);
+        return Result.Success<Error>();
+    }
 
-        var updatedIssueIndex = updatedPositions
-            .FindIndex(i => i.Position == currentPosition);
-
-        if (newPosition < currentPosition)
+    /// <summary>
+    /// Generic method to change position for IPositionable in collection 
+    /// </summary>
+    /// <param name="items"></param>
+    /// <param name="positionFrom"></param>
+    /// <param name="positionTo"></param>
+    /// <returns></returns>
+    private Result<List<T>, Error> ChangePosition<T>(
+        IReadOnlyList<T> items, int positionFrom, int positionTo) where T : IPositionable
+    {
+        if (positionFrom == positionTo
+            || positionFrom < 1
+            || positionTo < 1
+            || positionFrom > items.Count
+            || positionTo > items.Count)
         {
-            for (int i = 0; i < updatedPositions.Count; i++)
-            {
-                var issue = updatedPositions[i];
-                if (issue.Position >= newPosition && issue.Position < currentPosition)
-                {
-                    var moveResult = issue.MoveForward();
-                    if (moveResult.IsFailure)
-                        return moveResult.Error;
+            return Errors.General.ValueIsInvalid(nameof(Position)); // No adjustment needed or invalid positions
+        }
 
-                    updatedPositions[i] = moveResult.Value;
+        var increment = positionFrom > positionTo ? 1 : -1;
+        var start = int.Min(positionFrom, positionTo);
+        var end = int.Max(positionFrom, positionTo);
+
+        List<T> rearrangedItems = [];
+
+        foreach (var currentItem in items)
+        {
+            var currentPosition = currentItem.Position.Value;
+
+            if (currentPosition >= start && currentPosition <= end)
+            {
+                if (currentPosition == positionFrom)
+                {
+                    var newItem = (T)currentItem.Move(Position.Create(positionTo).Value);
+                    rearrangedItems.Add(newItem);
+                }
+                else
+                {
+                    var newItem = (T)currentItem.Move(
+                        Position.Create(currentItem.Position.Value + increment).Value);
+                    rearrangedItems.Add(newItem);
                 }
             }
-        }
-        else if (newPosition > currentPosition)
-        {
-            for (int i = 0; i < updatedPositions.Count; i++)
+            else
             {
-                var issue = updatedPositions[i];
-                if (issue.Position <= currentPosition || issue.Position > newPosition)
-                    continue;
-
-                var moveResult = issue.MoveBack();
-                if (moveResult.IsFailure)
-                    return moveResult.Error;
-
-                updatedPositions[i] = moveResult.Value;
+                rearrangedItems.Add(currentItem);
             }
         }
 
-        updatedPositions[updatedIssueIndex] = updatedIssue;
-
-        updatedPositions = updatedPositions.OrderBy(i => i.Position.Value).ToList();
-
-        return updatedPositions;
+        rearrangedItems = rearrangedItems.OrderBy(i => i.Position.Value).ToList();
+        return rearrangedItems;
     }
 
-    private Result<Position, Error> AdjustNewPositionIfOutOfRange(Position newPosition)
+    public UnitResult<Error> DeleteLessonPosition(LessonPosition lessonPosition)
     {
-        if (newPosition.Value <= IssuesPosition.Count)
-            return newPosition;
+        var copiedList = LessonsPosition.ToList();
+        var updateListResult = DeleteItemFromIPositionableCollection(copiedList, lessonPosition);
+        if (updateListResult.IsFailure)
+            return updateListResult.Error;
+        
+        if (updateListResult.Value.Count != (LessonsPosition.Count - 1))
+            return Errors.General.Failure();
 
-        var lastPosition = Position.Create(IssuesPosition.Count);
-        if (lastPosition.IsFailure)
-            return lastPosition.Error;
+        UpdateLessonsPosition(updateListResult.Value);
+        return Result.Success<Error>();
+    }
 
-        return lastPosition.Value;
+    public UnitResult<Error> DeleteIssuePosition(Guid issueId)
+    {
+        var issuePosition = IssuesPosition.FirstOrDefault(x => x.IssueId == issueId);
+        if (issuePosition == null)
+            return Errors.General.NotFound();
+
+        var copiedList = IssuesPosition.ToList();
+        var updateListResult = DeleteItemFromIPositionableCollection(copiedList, issuePosition);
+        if (updateListResult.IsFailure)
+            return updateListResult.Error;
+        
+        if (updateListResult.Value.Count != (IssuesPosition.Count - 1))
+            return Errors.General.Failure();
+
+        UpdateIssuesPosition(updateListResult.Value);
+        return Result.Success<Error>();
+    }
+
+    private Result<List<T>, Error> DeleteItemFromIPositionableCollection<T>(
+        List<T> items,
+        T itemToDelete) where T : IPositionable
+    {
+        var result = items.Remove(itemToDelete);
+        if (result == false)
+            return Errors.General.Failure();
+
+        items = items.OrderBy(i => i.Position.Value).ToList();
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].Position.Value < itemToDelete.Position.Value)
+                continue;
+            items[i] = (T)items[i].Move(Position.Create(i + 1).Value);
+        }
+
+        return items;
     }
 }

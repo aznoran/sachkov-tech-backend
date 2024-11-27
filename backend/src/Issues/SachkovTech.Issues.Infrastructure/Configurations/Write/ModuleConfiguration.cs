@@ -45,7 +45,14 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
                 issuePosition =>
                     new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
             .HasColumnName("issues_position");
-
+        
+        builder.Property(i => i.LessonsPosition)
+            .ValueObjectsCollectionJsonConversion(
+                valueObject => new LessonPositionDto(valueObject.LessonId, valueObject.Position),
+                lessonPosition =>
+                    new LessonPosition(lessonPosition.LessonId, Position.Create(lessonPosition.Position).Value))
+            .HasColumnName("lessons_position");
+        
         builder.Property<bool>("_isDeleted")
             .UsePropertyAccessMode(PropertyAccessMode.Field)
             .HasColumnName("is_deleted");

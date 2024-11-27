@@ -74,9 +74,6 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
         var description = Description.Create(command.Description).Value;
         var experience = Experience.Create(command.Experience).Value;
         var moduleId = moduleResult.Value.Id;
-        var position = Position.Create(moduleResult.Value.IssuesPosition.Count + 1);
-        if (position.IsFailure)
-            return position.Error.ToErrorList();
 
         var updateResult = issueResult.Value.UpdateMainInfo(
             title,
@@ -90,7 +87,7 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
 
         oldModule.Value.DeleteIssuePosition(issueResult.Value.Id);
 
-        moduleResult.Value.AddIssue(issueResult.Value.Id, position.Value);
+        moduleResult.Value.AddIssue(issueResult.Value.Id);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 

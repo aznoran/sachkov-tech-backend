@@ -4,22 +4,23 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.Module.ValueObjects;
 
-public class IssuePosition : ComparableValueObject, IPositionable
+public class LessonPosition: ComparableValueObject, IPositionable
 {
-    public IssuePosition(IssueId issueId, Position position)
+    public LessonPosition(LessonId lessonId, Position position)
     {
-        IssueId = issueId;
+        LessonId = lessonId;
         Position = position;
     }
 
-    public IssueId IssueId { get; }
+    public LessonId LessonId { get; }
 
     public Position Position { get; }
 
-    public IPositionable Move(Position newPosition) => new IssuePosition(IssueId, newPosition);
+    public IPositionable Move(Position newPosition) => new LessonPosition(LessonId, newPosition);
+
     protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
-        yield return IssueId;
+        yield return LessonId;
         yield return Position;
     }
 }
