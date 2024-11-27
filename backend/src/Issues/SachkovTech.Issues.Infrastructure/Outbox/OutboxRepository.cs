@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Infrastructure.Outbox;
 

@@ -6,7 +6,6 @@ using Polly;
 using Polly.Retry;
 using Quartz;
 using SachkovTech.Issues.Contracts;
-using SachkovTech.Issues.Contracts.Messaging;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 
 namespace SachkovTech.Issues.Infrastructure.Outbox;

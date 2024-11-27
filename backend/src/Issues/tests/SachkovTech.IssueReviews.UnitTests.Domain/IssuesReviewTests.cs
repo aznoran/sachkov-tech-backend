@@ -2,6 +2,7 @@ using FluentAssertions;
 using SachkovTech.Issues.Domain.IssuesReviews;
 using SachkovTech.Issues.Domain.IssuesReviews.Entities;
 using SachkovTech.Issues.Domain.IssuesReviews.Enums;
+using SachkovTech.Issues.Domain.IssuesReviews.Events;
 using SachkovTech.Issues.Domain.IssuesReviews.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
@@ -39,7 +40,11 @@ public class IssuesReviewTests
         var result = issueReview.SendIssueForRevision(reviewerId);
 
         //Assert
+        var domainEvent = issueReview.DomainEvents.SingleOrDefault() as IssueSentForRevisionEvent;
+
         result.IsSuccess.Should().BeTrue();
+        domainEvent.Should().NotBeNull();
+        domainEvent!.UserIssueId.Should().Be(issueReview.UserIssueId);
         issueReview.IssueReviewStatus.Should().Be(IssueReviewStatus.AskedForRevision);
     }
 

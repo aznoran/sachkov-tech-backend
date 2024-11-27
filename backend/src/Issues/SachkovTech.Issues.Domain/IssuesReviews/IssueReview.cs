@@ -1,13 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using SachkovTech.Issues.Domain.IssuesReviews.Entities;
 using SachkovTech.Issues.Domain.IssuesReviews.Enums;
+using SachkovTech.Issues.Domain.IssuesReviews.Events;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.IssuesReviews;
 
-public sealed class IssueReview : Entity<IssueReviewId>
+public sealed class IssueReview : DomainEntity<IssueReviewId>
 {
     // ef core
     private IssueReview(IssueReviewId id) : base(id)
@@ -66,6 +67,8 @@ public sealed class IssueReview : Entity<IssueReviewId>
         }
 
         IssueReviewStatus = IssueReviewStatus.AskedForRevision;
+
+        AddDomainEvent(new IssueSentForRevisionEvent(UserIssueId));
 
         return UnitResult.Success<Error>();
     }
