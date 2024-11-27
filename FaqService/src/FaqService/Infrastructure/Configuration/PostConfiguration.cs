@@ -69,9 +69,5 @@ public class PostConfiguration : IEntityTypeConfiguration<Post>
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.HasIndex(p => new {p.Title, p.Description})
-            .HasMethod("GIN")
-            .IsTsVectorExpressionIndex("russian")
-            .HasOperators("gin_trgm_ops");
     }
 }
