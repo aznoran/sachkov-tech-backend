@@ -6,6 +6,7 @@ using SachkovTech.Issues.Infrastructure;
 using Serilog.Events;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using SachkovTech.Core.Options;
 using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
@@ -18,26 +19,41 @@ namespace SachkovTech.Web;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddAccountsModule(
+    public static void AddProgramDependencies(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddControllers();
+
+        services.AddEndpointsApiExplorer()
+            .AddSwaggerConfiguration()
+            .AddAuthServices(configuration)
+            .AddLogging(configuration)
+            .AddApplicationLayers()
+            .AddFramework()
+            .AddAccountsModule(configuration)
+            .AddIssuesModule(configuration);
+    }
+
+    private static IServiceCollection AddAccountsModule(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAccountsInfrastructure(configuration);
-        services.AddAccountsApplication(configuration);
-        services.AddAccountsPresentation();
-
+        services.AddAccountsInfrastructure(configuration)
+            .AddAccountsApplication(configuration)
+            .AddAccountsPresentation();
+        
         return services;
     }
 
-    public static IServiceCollection AddIssuesModule(
+    private static IServiceCollection AddIssuesModule(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddIssuesApplication();
-        services.AddIssuesInfrastructure(configuration);
-
+        services.AddIssuesApplication()
+            .AddIssuesInfrastructure(configuration)
+            .AddIssuesPresentation();
+        
         return services;
     }
 
-    public static IServiceCollection AddAuthServices(
+    private static IServiceCollection AddAuthServices(
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
@@ -59,11 +75,10 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-
         return services;
     }
 
-    public static IServiceCollection AddLogging(
+    private static IServiceCollection AddLogging(
         this IServiceCollection services, IConfiguration configuration)
     {
         Log.Logger = new LoggerConfiguration()
@@ -77,22 +92,24 @@ public static class DependencyInjection
             .CreateLogger();
 
         services.AddSerilog();
-
+        
         return services;
     }
 
-    public static IServiceCollection AddFramework(this IServiceCollection services)
+    private static IServiceCollection AddFramework(this IServiceCollection services)
     {
-        services.AddHttpContextAccessor();
-        services.AddScoped<UserScopedData>();
+        services.AddHttpContextAccessor()
+            .AddScoped<UserScopedData>();
+        
         return services;
     }
 
-    public static IServiceCollection AddApplicationLayers(this IServiceCollection services)
+    private static IServiceCollection AddApplicationLayers(this IServiceCollection services)
     {
         var assemblies = new[]
         {
-            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly, typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
+            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly,
+            typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
         };
 
         services.Scan(scan => scan.FromAssemblies(assemblies)
@@ -108,6 +125,33 @@ public static class DependencyInjection
             .WithScopedLifetime());
 
         services.AddValidatorsFromAssemblies(assemblies);
+        return services;
+    }
+
+    private static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            c.AddSecurityDefinition("Bearer",
+                new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                    },
+                    []
+                }
+            });
+        });
         return services;
     }
 }
