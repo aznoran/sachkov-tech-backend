@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using SachkovTech.Accounts.Infrastructure;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Infrastructure;
-using SachkovTech.Issues.Presentation;
 using Serilog.Events;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

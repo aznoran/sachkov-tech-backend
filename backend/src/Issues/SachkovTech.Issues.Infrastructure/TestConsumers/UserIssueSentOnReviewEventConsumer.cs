@@ -4,7 +4,7 @@ using SachkovTech.Issues.Contracts.Messaging;
 
 namespace SachkovTech.Issues.Infrastructure.TestConsumers;
 
-public class UserIssueSentOnReviewEventConsumer : IConsumer<UserIssueSentOnReviewEvent>
+public class UserIssueSentOnReviewEventConsumer : IConsumer<UserSentIssueOnReviewEvent>
 {
     private readonly ILogger<UserIssueSentOnReviewEventConsumer> _logger;
     public UserIssueSentOnReviewEventConsumer(ILogger<UserIssueSentOnReviewEventConsumer> logger)
@@ -12,7 +12,7 @@ public class UserIssueSentOnReviewEventConsumer : IConsumer<UserIssueSentOnRevie
         _logger = logger;
     }
 
-    public Task Consume(ConsumeContext<UserIssueSentOnReviewEvent> context)
+    public Task Consume(ConsumeContext<UserSentIssueOnReviewEvent> context)
     {
         _logger.LogInformation(context.Message.UserIssueId.ToString());
 

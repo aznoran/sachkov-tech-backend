@@ -2,7 +2,7 @@
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.IssueSolving.Events;
 
-namespace SachkovTech.Issues.Application.EventHandlers.UserIssueSentOnReviewEventHandlers;
+namespace SachkovTech.Issues.Application.EventHandlers.UserSentIssueOnReviewEventHandlers;
 
 public class SendIntegrationEvent : INotificationHandler<UserIssueSentOnReviewEvent>
 {
@@ -15,7 +15,7 @@ public class SendIntegrationEvent : INotificationHandler<UserIssueSentOnReviewEv
     public async Task Handle(UserIssueSentOnReviewEvent domainEvent, CancellationToken cancellationToken)
     {
         await _outboxRepository.Add(
-            new Contracts.Messaging.UserIssueSentOnReviewEvent(domainEvent.UserIssueId.Value),
+            new Contracts.Messaging.UserSentIssueOnReviewEvent(domainEvent.UserIssueId.Value),
             cancellationToken);
     }
 }
