@@ -11,13 +11,13 @@ using SachkovTech.Issues.Infrastructure.DbContexts;
 namespace SachkovTech.Issues.Infrastructure.Outbox;
 
 [DisallowConcurrentExecution]
-public class ProcessOutboxDomainEvents : IJob
+public class ProcessOutboxMessagesJob : IJob
 {
     private readonly IssuesWriteDbContext _dbContext;
     private readonly IPublishEndpoint _publisher;
-    private readonly ILogger<ProcessOutboxDomainEvents> _logger;
+    private readonly ILogger<ProcessOutboxMessagesJob> _logger;
 
-    public ProcessOutboxDomainEvents(IssuesWriteDbContext dbContext, IPublishEndpoint publisher, ILogger<ProcessOutboxDomainEvents> logger)
+    public ProcessOutboxMessagesJob(IssuesWriteDbContext dbContext, IPublishEndpoint publisher, ILogger<ProcessOutboxMessagesJob> logger)
     {
         _dbContext = dbContext;
         _publisher = publisher;

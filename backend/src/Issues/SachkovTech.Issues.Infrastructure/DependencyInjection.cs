@@ -29,7 +29,7 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit(configure =>
         {
@@ -66,10 +66,10 @@ public static class DependencyInjection
     {
         services.AddQuartz(configure =>
         {
-            var jobKey = new JobKey(nameof(ProcessOutboxDomainEvents));
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
 
             configure
-                .AddJob<ProcessOutboxDomainEvents>(jobKey)
+                .AddJob<ProcessOutboxMessagesJob>(jobKey)
                 .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
                     schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
         });

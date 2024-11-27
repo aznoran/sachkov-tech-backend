@@ -1,4 +1,6 @@
-﻿namespace SachkovTech.Issues.Application.Interfaces;
+﻿using SachkovTech.SharedKernel;
+
+namespace SachkovTech.Issues.Application.Interfaces;
 
 public interface IOutboxRepository
 {
