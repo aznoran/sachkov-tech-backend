@@ -15,7 +15,7 @@ public class HandlebarsTemplateService
 
     public string Process(EmailConfirmationDetails details, string templateKey)
     {
-        if (!_cache.TryGetValue(templateKey, out HandlebarsTemplate<object, object> compiledTemplate))
+        if (!_cache.TryGetValue(templateKey, out HandlebarsTemplate<object, object>? compiledTemplate))
         {
             compiledTemplate = HandlebarsDotNet.Handlebars.Compile(
                 File.ReadAllText(Path.Combine(

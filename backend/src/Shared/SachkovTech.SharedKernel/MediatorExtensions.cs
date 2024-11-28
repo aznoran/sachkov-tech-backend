@@ -12,7 +12,8 @@ public static class MediatorExtensions
         foreach (var domainEvent in entity.DomainEvents)
         {
             await publisher.Publish(domainEvent, cancellationToken);
-            entity.RemoveDomainEvent(domainEvent);
         }
+        
+        entity.ClearDomainEvents();
     }
 }

@@ -31,9 +31,8 @@ public static class AppExtensions
         services.AddScoped<PushNotificationHandler>();
     }
     
-    public static void AddBackgroundService(this IServiceCollection services)
+    public static void AddNotificationService(this IServiceCollection services)
     {
-        services.AddHostedService<SendNotificationsBackgroundService>();
         services.AddScoped<SendNotificationsService>();
 
         services.AddScoped<INotificationSender, TelegramNotificationChannel>();
