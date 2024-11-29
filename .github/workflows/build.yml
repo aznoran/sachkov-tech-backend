@@ -4,7 +4,8 @@
 name: SachkovTech.Backend
 
 env:
-  ACTIONS_STEP_DEBUG: true
+  NUGET_USERNAME: ${{ secrets.NUGET_USERNAME }}
+  NUGET_PASSWORD: ${{ secrets.NUGET_PASSWORD }}
 
 on:
   push:
