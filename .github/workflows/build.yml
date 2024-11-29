@@ -3,6 +3,9 @@
 
 name: SachkovTech.Backend
 
+env:
+  ACTIONS_STEP_DEBUG: true
+
 on:
   push:
     branches: ["dev"]
