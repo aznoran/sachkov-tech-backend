@@ -6,7 +6,7 @@ using SachkovTech.Issues.Contracts.Dtos;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class ModuleDtoConfiguration : IEntityTypeConfiguration<ModuleDataModel>
+public class ModuleDataModelConfiguration : IEntityTypeConfiguration<ModuleDataModel>
 {
     public void Configure(EntityTypeBuilder<ModuleDataModel> builder)
     {
@@ -19,6 +19,13 @@ public class ModuleDtoConfiguration : IEntityTypeConfiguration<ModuleDataModel>
                 issues => string.Empty,
                 json => JsonSerializer.Deserialize<IssuePositionDto[]>(json, JsonSerializerOptions.Default) ??
                         Array.Empty<IssuePositionDto>())
+            .HasColumnType("jsonb");
+
+        builder.Property(i => i.LessonsPosition)
+            .HasConversion(
+                issues => string.Empty,
+                json => JsonSerializer.Deserialize<LessonPositionDto[]>(json, JsonSerializerOptions.Default) ??
+                        Array.Empty<LessonPositionDto>())
             .HasColumnType("jsonb");
     }
 }

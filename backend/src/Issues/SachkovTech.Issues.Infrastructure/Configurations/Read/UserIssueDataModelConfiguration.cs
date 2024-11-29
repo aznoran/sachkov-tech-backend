@@ -4,7 +4,7 @@ using SachkovTech.Issues.Application.DataModels;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class UserIssueDtoConfiguration : IEntityTypeConfiguration<UserIssueDataModel>
+public class UserIssueDataModelConfiguration : IEntityTypeConfiguration<UserIssueDataModel>
 {
     public void Configure(EntityTypeBuilder<UserIssueDataModel> builder)
     {

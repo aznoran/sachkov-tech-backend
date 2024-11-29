@@ -5,7 +5,7 @@ using SachkovTech.Issues.Application.DataModels;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDataModel>
+public class LessonDataModelConfiguration : IEntityTypeConfiguration<LessonDataModel>
 {
     public void Configure(EntityTypeBuilder<LessonDataModel> builder)
     {
@@ -17,7 +17,7 @@ public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDataModel>
         builder.Property(l => l.ModuleId)
             .IsRequired()
             .HasColumnName("module_id");
-        
+
         builder.Property(t => t.Title)
             .IsRequired()
             .HasColumnName("title");
@@ -25,10 +25,10 @@ public class LessonDtoConfiguration : IEntityTypeConfiguration<LessonDataModel>
         builder.Property(d => d.Description)
             .IsRequired()
             .HasColumnName("description");
-        
+
         builder.Property(b => b.Experience)
             .HasColumnName("experience");
-        
+
         builder.Property(l => l.VideoId)
             .IsRequired()
             .HasColumnName("video_id");

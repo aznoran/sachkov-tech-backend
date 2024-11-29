@@ -4,7 +4,7 @@ using SachkovTech.Issues.Application.DataModels;
 
 namespace SachkovTech.Issues.Infrastructure.Configurations.Read;
 
-public class CommentDtoConfiguration : IEntityTypeConfiguration<CommentDataModel>
+public class CommentDataModelConfiguration : IEntityTypeConfiguration<CommentDataModel>
 {
     public void Configure(EntityTypeBuilder<CommentDataModel> builder)
     {
