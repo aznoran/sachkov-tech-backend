@@ -94,11 +94,9 @@ public class IssueTests
             Description.Create("Module Description").Value);
 
         var issue = CreateAndFillIssue();
-        
-        var possition = Position.Create(1).Value;
 
         // Act
-        module.AddIssue(issue.Id, possition);
+        module.AddIssue(issue.Id);
 
         // Assert
         module.IssuesPosition.Should().ContainSingle(i => i.IssueId == issue.Id);
