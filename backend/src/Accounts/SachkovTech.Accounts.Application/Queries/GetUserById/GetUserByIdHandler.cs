@@ -32,14 +32,9 @@ public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQu
             .Include(u => u.AdminAccount)
             .FirstOrDefaultAsync(u => u.Id == query.UserId, cancellationToken);
 
-        if (user is null)
-        {
-            _logger.LogWarning("User with ID {UserId} not found", query.UserId);
+        if (user is not null)
+            return user;
 
-            return Result.Failure<UserDto, ErrorList>(
-                Errors.General.NotFound(query.UserId).ToErrorList());
-        }
-
-        return user;
+        return Errors.General.NotFound(query.UserId).ToErrorList();
     }
 }

@@ -30,24 +30,16 @@ public class AccountsController : ApplicationController
     {
         _httpContextProvider = httpContextProvider;
     }
-    
+
     [HttpPost("admin-token-for-test")]
     public async Task<IActionResult> Testing([FromServices] LoginHandler handler, CancellationToken cancellationToken)
     {
-        return new ObjectResult("Bearer " + 
-                                ((((((await Login(new LoginUserRequest("admin@admin.com", "!Admin123"),
-                                                        handler, cancellationToken)
-                                                    as OkObjectResult)!).Value
-                                                as Envelope)!).Result
-                                        as LoginResponse)!).AccessToken);
-    }
-
-    [HttpPost("test")]
-    [Permission(Permissions.Issues.ReadIssue)]
-    public async Task<IActionResult> Test([FromServices] UserScopedData user, CancellationToken cancellationToken)
-    {
-
-        return Ok("test");
+        return new ObjectResult("Bearer " +
+                                (((await Login(new LoginUserRequest("admin@admin.com", "!Admin123"),
+                                                handler, cancellationToken)
+                                            as OkObjectResult)!.Value
+                                        as Envelope)!.Result
+                                    as LoginResponse)!.AccessToken);
     }
 
     [HttpPost("registration")]
@@ -90,22 +82,6 @@ public class AccountsController : ApplicationController
         }
 
         return Ok(result.Value);
-    }
-
-    [HttpGet("me")]
-    [Permission(Permissions.Issues.ReadIssue)]
-    public async Task<IActionResult> GetMe([FromServices] IRefreshSessionManager refreshSessionManager, CancellationToken cancellationToken)
-    {
-        var getRefreshSessionCookieRes = _httpContextProvider.GetRefreshSessionCookie();
-
-        if (getRefreshSessionCookieRes.IsFailure)
-        {
-            return Unauthorized();
-        }
-
-        var refreshSession = await refreshSessionManager.GetByRefreshToken(getRefreshSessionCookieRes.Value, cancellationToken);
-
-        return Ok(refreshSession.Value.UserId);
     }
 
     [HttpPost("refresh")]
@@ -181,18 +157,18 @@ public class AccountsController : ApplicationController
         return Ok();
     }
 
-    [HttpGet("{userId}")]
+    [HttpGet("{userId:guid}")]
     [Permission(Permissions.Accounts.ReadAccount)]
-    public async Task<IActionResult> GetUser(
+    public async Task<IActionResult> GetUserById(
         [FromRoute] Guid userId,
         [FromServices] GetUserByIdHandler handler,
         CancellationToken cancellationToken = default)
     {
         var query = new GetUserByIdQuery(userId);
-        
+
         return Ok(await handler.Handle(query, cancellationToken));
     }
-    
+
     [HttpGet]
     [Permission(Permissions.Accounts.ReadAccount)]
     public async Task<IActionResult> GetUsers(
