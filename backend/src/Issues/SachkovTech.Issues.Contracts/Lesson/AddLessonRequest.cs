@@ -1,6 +1,6 @@
 ﻿using FileService.Contracts;
 
-namespace SachkovTech.Issues.Contracts.Requests.Lesson;
+namespace SachkovTech.Issues.Contracts.Lesson;
 
 public record AddLessonRequest(
     Guid ModuleId,

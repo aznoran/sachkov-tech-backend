@@ -10,7 +10,7 @@ using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesByModuleWithPagination;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
-using SachkovTech.Issues.Contracts.Requests.Issue;
+using SachkovTech.Issues.Contracts.Issue;
 
 namespace SachkovTech.Issues.Presentation.Issues;
 

@@ -1,4 +1,7 @@
-namespace SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Dtos;
+using SachkovTech.Issues.Contracts.Issue;
+
+namespace SachkovTech.Issues.Contracts.Lesson;
 
 public class LessonResponse
 {

@@ -2,6 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SachkovTech.Accounts.Application.Providers;
 using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Abstractions;

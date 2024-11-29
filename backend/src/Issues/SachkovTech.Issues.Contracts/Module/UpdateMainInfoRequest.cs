@@ -1,4 +1,4 @@
-namespace SachkovTech.Issues.Contracts.Requests.Module;
+namespace SachkovTech.Issues.Contracts.Module;
 
 public record UpdateMainInfoRequest(
     string Title,

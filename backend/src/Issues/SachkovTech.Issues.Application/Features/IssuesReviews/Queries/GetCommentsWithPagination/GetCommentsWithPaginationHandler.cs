@@ -4,7 +4,7 @@ using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.IssueReview;
 
 namespace SachkovTech.Issues.Application.Features.IssuesReviews.Queries.GetCommentsWithPagination;
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SachkovTech.Accounts.Application.Managers;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;

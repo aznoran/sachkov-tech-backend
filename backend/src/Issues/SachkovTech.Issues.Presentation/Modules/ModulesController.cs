@@ -6,7 +6,7 @@ using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
-using SachkovTech.Issues.Contracts.Requests.Module;
+using SachkovTech.Issues.Contracts.Module;
 
 namespace SachkovTech.Issues.Presentation.Modules;
 

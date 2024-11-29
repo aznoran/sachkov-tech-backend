@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Accounts.Application;
+using SachkovTech.Accounts.Application.Database;
 using SachkovTech.Accounts.Contracts.Dtos;
 
 namespace SachkovTech.Accounts.Infrastructure.DbContexts;

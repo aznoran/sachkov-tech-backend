@@ -1,6 +1,6 @@
 using SachkovTech.Accounts.Contracts.Dtos;
 
-namespace SachkovTech.Accounts.Application;
+namespace SachkovTech.Accounts.Application.Database;
 
 public interface IAccountsReadDbContext
 {

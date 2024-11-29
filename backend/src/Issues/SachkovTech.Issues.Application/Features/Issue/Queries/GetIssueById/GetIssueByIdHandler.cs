@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Issue;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;

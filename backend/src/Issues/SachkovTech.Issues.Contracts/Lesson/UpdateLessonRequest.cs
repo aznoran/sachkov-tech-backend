@@ -1,4 +1,4 @@
-﻿namespace SachkovTech.Issues.Contracts.Requests.Lesson;
+﻿namespace SachkovTech.Issues.Contracts.Lesson;
 
 public record UpdateLessonRequest(
     Guid LessonId,

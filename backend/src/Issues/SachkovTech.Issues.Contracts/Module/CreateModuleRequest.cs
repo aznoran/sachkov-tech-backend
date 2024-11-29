@@ -1,3 +1,3 @@
-namespace SachkovTech.Issues.Contracts.Requests.Module;
+namespace SachkovTech.Issues.Contracts.Module;
 
 public record CreateModuleRequest(string Title, string Description);

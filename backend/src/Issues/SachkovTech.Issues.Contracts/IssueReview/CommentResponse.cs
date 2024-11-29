@@ -1,4 +1,4 @@
-﻿namespace SachkovTech.Issues.Contracts.Responses;
+﻿namespace SachkovTech.Issues.Contracts.IssueReview;
 
 public class CommentResponse
 {

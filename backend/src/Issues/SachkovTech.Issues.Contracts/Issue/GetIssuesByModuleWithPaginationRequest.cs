@@ -1,4 +1,4 @@
-﻿namespace SachkovTech.Issues.Contracts.Requests.Issue;
+﻿namespace SachkovTech.Issues.Contracts.Issue;
 
 public record GetIssuesByModuleWithPaginationRequest(
     string? Title,

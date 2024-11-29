@@ -9,7 +9,7 @@ using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.DataModels;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Issue;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
 

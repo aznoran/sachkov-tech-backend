@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Accounts.Application;
+namespace SachkovTech.Accounts.Application.Managers;
 
 public interface IRefreshSessionManager
 {

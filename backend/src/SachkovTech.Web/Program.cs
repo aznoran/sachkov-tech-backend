@@ -1,6 +1,7 @@
 using MassTransit;
 using MassTransit.DependencyInjection;
 using SachkovTech.Issues.Application;
+using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Contracts.Messaging;
 using SachkovTech.Issues.Infrastructure;
 using SachkovTech.Web;

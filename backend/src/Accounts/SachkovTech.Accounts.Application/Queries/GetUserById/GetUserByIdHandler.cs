@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using SachkovTech.Accounts.Application.Database;
 using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;

@@ -1,6 +1,6 @@
 ﻿using SachkovTech.Issues.Contracts.Dtos;
 
-namespace SachkovTech.Issues.Contracts.Responses;
+namespace SachkovTech.Issues.Contracts.Module;
 
 public class ModuleResponse
 {

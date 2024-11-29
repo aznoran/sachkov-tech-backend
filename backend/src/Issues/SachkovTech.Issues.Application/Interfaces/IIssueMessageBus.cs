@@ -1,5 +1,5 @@
 ﻿using MassTransit;
 
-namespace SachkovTech.Issues.Application;
+namespace SachkovTech.Issues.Application.Interfaces;
 
 public interface IIssueMessageBus : IBus;

@@ -2,7 +2,7 @@ using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.IssueSolving;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
 
 namespace SachkovTech.Issues.Application.Features.IssueSolving.Queries.GetUserIssuesByModuleWithPagination;

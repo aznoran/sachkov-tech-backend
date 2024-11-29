@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SachkovTech.Accounts.Application;
 using SachkovTech.Accounts.Application.Models;
+using SachkovTech.Accounts.Application.Providers;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Accounts.Infrastructure.IdentityManagers;

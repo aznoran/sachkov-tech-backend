@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Issue;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
 using SachkovTech.SharedKernel;

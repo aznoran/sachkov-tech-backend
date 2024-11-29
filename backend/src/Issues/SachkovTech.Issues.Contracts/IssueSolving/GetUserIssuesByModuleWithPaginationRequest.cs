@@ -1,4 +1,4 @@
-namespace SachkovTech.Issues.Contracts.Requests.IssueSolving;
+namespace SachkovTech.Issues.Contracts.IssueSolving;
 
 public record GetUserIssuesByModuleWithPaginationRequest(
     Guid UserId,

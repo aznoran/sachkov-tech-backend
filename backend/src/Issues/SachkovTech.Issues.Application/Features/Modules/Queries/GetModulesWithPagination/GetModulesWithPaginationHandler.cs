@@ -2,7 +2,7 @@
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Module;
 
 namespace SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 

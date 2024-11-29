@@ -1,6 +1,6 @@
 using SachkovTech.Accounts.Domain;
 
-namespace SachkovTech.Accounts.Application;
+namespace SachkovTech.Accounts.Application.Managers;
 
 public interface IAccountsManager
 {
