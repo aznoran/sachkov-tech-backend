@@ -3,7 +3,7 @@ using NotificationService.Entities;
 using NotificationService.Entities.ValueObjects;
 using NotificationService.HelperClasses;
 
-namespace NotificationService.BackgroundServices.Channels;
+namespace NotificationService.Services.Channels;
 
 public class TelegramNotificationChannel : INotificationSender
 {

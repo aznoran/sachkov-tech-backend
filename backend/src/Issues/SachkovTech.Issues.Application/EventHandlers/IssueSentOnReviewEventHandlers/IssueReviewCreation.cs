@@ -7,9 +7,9 @@ using SachkovTech.Issues.Domain.IssueSolving.Events;
 using SachkovTech.Issues.Domain.IssuesReviews;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
-namespace SachkovTech.Issues.Application.EventHandlers.UserSentIssueOnReviewEventHandlers;
+namespace SachkovTech.Issues.Application.EventHandlers.IssueSentOnReviewEventHandlers;
 
-public class IssueReviewCreation : INotificationHandler<UserIssueSentOnReviewEvent>
+public class IssueReviewCreation : INotificationHandler<IssueSentOnReviewEvent>
 {
     private readonly IIssuesReviewRepository _issuesReviewRepository;
     private readonly ILogger<IssueReviewCreation> _logger;
@@ -23,7 +23,7 @@ public class IssueReviewCreation : INotificationHandler<UserIssueSentOnReviewEve
         _logger = logger;
     }
 
-    public async Task Handle(UserIssueSentOnReviewEvent domainEvent, CancellationToken cancellationToken)
+    public async Task Handle(IssueSentOnReviewEvent domainEvent, CancellationToken cancellationToken)
     {
         var issueReviewResult = new IssueReview(
             IssueReviewId.NewIssueReviewId(),

@@ -14,7 +14,7 @@ public class OutboxRepository : IOutboxRepository
 
     public async Task Add<T>(T message, CancellationToken cancellationToken)
     {
-        var outboxMessages = new OutboxMessage()
+        var outboxMessages = new OutboxMessage
         {
             Id = Guid.NewGuid(),
             OccurredOnUtc = DateTime.Now,

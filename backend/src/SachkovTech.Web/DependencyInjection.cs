@@ -47,8 +47,7 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddIssuesApplication()
-            .AddIssuesInfrastructure(configuration)
-            .AddIssuesPresentation();
+            .AddIssuesInfrastructure(configuration);
         
         return services;
     }

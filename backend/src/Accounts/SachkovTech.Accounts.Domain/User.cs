@@ -7,7 +7,9 @@ namespace SachkovTech.Accounts.Domain;
 
 public class User : IdentityUser<Guid>
 {
-    private User() { }
+    private User()
+    {
+    }
 
     public DateTime RegistrationDate { get; set; }
 

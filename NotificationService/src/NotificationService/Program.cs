@@ -37,8 +37,6 @@ builder.Services.AddMassTransit(configure =>
 
 var app = builder.Build();
 
-app.MapGrpcService<NotificationServiceGrpc>();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

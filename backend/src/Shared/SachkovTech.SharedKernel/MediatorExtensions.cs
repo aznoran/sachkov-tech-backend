@@ -13,7 +13,7 @@ public static class MediatorExtensions
         {
             await publisher.Publish(domainEvent, cancellationToken);
         }
-        
+
         entity.ClearDomainEvents();
     }
 }

@@ -14,7 +14,5 @@ public abstract class DomainEntity<TId> : Entity<TId> where TId : IComparable<TI
 
     protected void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
 
-    public void RemoveDomainEvent(IDomainEvent domainEvent) => _domainEvents.Remove(domainEvent);
-
     public void ClearDomainEvents() => _domainEvents.Clear();
 }

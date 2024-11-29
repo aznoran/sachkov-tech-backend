@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quartz;
 using SachkovTech.Core.Abstractions;
+using SachkovTech.Issues.Application;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Contracts.Messaging;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Issues.Infrastructure.Outbox;
 using SachkovTech.Issues.Infrastructure.Repositories;
@@ -31,11 +33,15 @@ public static class DependencyInjection
 
     private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddMassTransit(configure =>
+        services.AddMassTransit<IIssueMessageBus>(configure =>
         {
             configure.SetKebabCaseEndpointNameFormatter();
 
-            configure.AddConsumer<UserIssueSentOnReviewEventConsumer>();
+            configure.AddConsumer<UserProgressConsumer, UserProgressConsumerDefinition>();
+            configure.AddConsumer<UserProgressFaultConsumer>();
+
+            configure.AddConsumer<NotificationConsumer, NotificationConsumerDefinition>();
+
 
             configure.UsingRabbitMq((context, cfg) =>
             {

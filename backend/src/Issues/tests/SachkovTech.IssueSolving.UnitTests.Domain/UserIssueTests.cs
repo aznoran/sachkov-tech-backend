@@ -22,7 +22,7 @@ public class UserIssueTests
         var result = userIssue.SendOnReview(pullRequestUrl);
 
         // Assert
-        var domainEvent = userIssue.DomainEvents.Single() as UserIssueSentOnReviewEvent;
+        var domainEvent = userIssue.DomainEvents.Single() as IssueSentOnReviewEvent;
 
         result.IsSuccess.Should().BeTrue();
         userIssue.Status.Should().Be(IssueStatus.UnderReview);

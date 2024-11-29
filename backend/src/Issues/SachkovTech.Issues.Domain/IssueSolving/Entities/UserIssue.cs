@@ -59,8 +59,8 @@ public class UserIssue : DomainEntity<UserIssueId>
         Status = IssueStatus.UnderReview;
         PullRequestUrl = pullRequestUrl;
 
-        var @event = new UserIssueSentOnReviewEvent(Id, UserId, pullRequestUrl);
-        AddDomainEvent(@event);
+        var domainEvent = new IssueSentOnReviewEvent(Id, UserId, pullRequestUrl);
+        AddDomainEvent(domainEvent);
 
         return Result.Success<Error>();
     }

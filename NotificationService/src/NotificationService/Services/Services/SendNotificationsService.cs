@@ -1,11 +1,11 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using NotificationService.BackgroundServices.Factories;
 using NotificationService.Entities;
 using NotificationService.HelperClasses;
 using NotificationService.Infrastructure;
+using NotificationService.Services.Factories;
 
-namespace NotificationService.BackgroundServices.Services;
+namespace NotificationService.Services.Services;
 
 public class SendNotificationsService
 {
@@ -70,15 +70,13 @@ public class SendNotificationsService
     {
         foreach (var notificationSetting in notificationSettings)
         {
-            var senders = _notificationSettingsFactory
-                .GetSenders(notificationSetting, cancellationToken);
+            var notificationSenders = _notificationSettingsFactory.GetSenders(notificationSetting, cancellationToken);
 
-            var processSendersRes =
-                await HandleSendersForNotificationSettingsAsync(
-                    senders, 
-                    notification, 
-                    notificationSetting,
-                    cancellationToken);
+            var processSendersRes = await HandleSendersForNotificationSettingsAsync(
+                notificationSenders,
+                notification,
+                notificationSetting,
+                cancellationToken);
 
             if (processSendersRes.IsFailure)
             {
@@ -95,7 +93,7 @@ public class SendNotificationsService
         NotificationSettings notificationSetting,
         CancellationToken cancellationToken)
     {
-        var sendTasks = senders.Select(sender => 
+        var sendTasks = senders.Select(sender =>
             sender.SendAsync(notification.Message, notificationSetting, cancellationToken)).ToList();
 
         var sendingResults = await Task.WhenAll(sendTasks);
@@ -106,7 +104,7 @@ public class SendNotificationsService
         {
             return failureResult.Error;
         }
-        
+
         return UnitResult.Success<Error>();
     }
 

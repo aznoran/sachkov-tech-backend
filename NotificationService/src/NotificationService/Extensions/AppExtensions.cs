@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using NotificationService.BackgroundServices;
-using NotificationService.BackgroundServices.Channels;
-using NotificationService.BackgroundServices.Factories;
-using NotificationService.BackgroundServices.Services;
 using NotificationService.Features.Commands.AddNotificationSettings;
 using NotificationService.Features.Commands.PatchNotificationSettings;
 using NotificationService.Features.Commands.PushNotification;
 using NotificationService.Features.Queries.GetNotificationSettings;
 using NotificationService.Infrastructure;
+using NotificationService.Services;
+using NotificationService.Services.Channels;
+using NotificationService.Services.Factories;
+using NotificationService.Services.Services;
 
 namespace NotificationService.Extensions;
 
@@ -28,9 +28,8 @@ public static class AppExtensions
         services.AddScoped<AddNotificationSettingsHandler>();
         services.AddScoped<PatchNotificationSettingsHandler>();
         services.AddScoped<GetNotificationSettingsHandler>();
-        services.AddScoped<PushNotificationHandler>();
     }
-    
+
     public static void AddNotificationService(this IServiceCollection services)
     {
         services.AddScoped<SendNotificationsService>();
@@ -38,7 +37,7 @@ public static class AppExtensions
         services.AddScoped<INotificationSender, TelegramNotificationChannel>();
         services.AddScoped<INotificationSender, WebNotificationChannel>();
         services.AddScoped<INotificationSender, EmailNotificationChannel>();
-        
+
         services.AddScoped<NotificationSettingsFactory>(provider =>
         {
             var senders = provider.GetService<IEnumerable<INotificationSender>>();

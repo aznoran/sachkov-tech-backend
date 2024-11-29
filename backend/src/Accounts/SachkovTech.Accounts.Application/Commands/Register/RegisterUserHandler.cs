@@ -74,6 +74,8 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
             await _unitOfWork.SaveChanges(cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
+            
+            
 
             _logger.LogInformation("User was created with name {userName}", command.UserName);
 

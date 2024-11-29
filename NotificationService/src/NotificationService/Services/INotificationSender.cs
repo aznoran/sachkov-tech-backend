@@ -3,7 +3,7 @@ using NotificationService.Entities;
 using NotificationService.Entities.ValueObjects;
 using NotificationService.HelperClasses;
 
-namespace NotificationService.BackgroundServices;
+namespace NotificationService.Services;
 
 public interface INotificationSender
 {
