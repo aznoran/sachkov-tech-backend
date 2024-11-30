@@ -8,7 +8,10 @@ namespace SachkovTech.Issues.Domain.Lesson;
 
 public class Lesson : SoftDeletableEntity<LessonId>
 {
+    //EF CORE
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private Lesson(LessonId id) : base(id) { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public Guid ModuleId { get; private set; }
     public Title Title { get; private set; }
     public Description Description { get; private set; }

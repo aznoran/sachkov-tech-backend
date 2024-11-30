@@ -4,13 +4,13 @@ public class UserDto
 {
     public Guid Id { get; init; }
 
-    public string? FirstName { get; init; }
+    public string FirstName { get; init; } = string.Empty;
 
-    public string? SecondName { get; init; } 
-    public string? ThirdName { get; init; } 
+    public string SecondName { get; init; } = string.Empty;
+    public string ThirdName { get; init; } = string.Empty;
 
     public DateTime RegistrationDate { get; init; }
-    public string Email { get; init; } 
+    public string Email { get; init; } = string.Empty;
 
     public StudentAccountDto? StudentAccount { get; init; }
 

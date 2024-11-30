@@ -15,8 +15,8 @@ public record LessonDataModel
     public Guid VideoId { get; init; }
     
     public Guid PreviewId { get; init; }
+
+    public Guid[] Tags { get; init; } = [];
     
-    public Guid[] Tags { get; init; }
-    
-    public Guid[] Issues { get; init; }
+    public Guid[] Issues { get; init; }= [];
 }

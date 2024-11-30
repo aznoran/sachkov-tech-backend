@@ -49,8 +49,8 @@ public class GetIssuesWithPaginationHandler
             .Select(i => new IssueResponse
                 {
                     Id = i.Id,
-                    ModuleId = i.ModuleId.Value,
-                    LessonId = i.LessonId.Value,
+                    ModuleId = i.ModuleId,
+                    LessonId = i.LessonId,
                     Title = i.Title,
                     Description = i.Description
                 }

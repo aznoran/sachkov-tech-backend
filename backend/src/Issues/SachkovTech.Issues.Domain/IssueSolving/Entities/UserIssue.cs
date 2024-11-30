@@ -11,10 +11,10 @@ namespace SachkovTech.Issues.Domain.IssueSolving.Entities;
 public class UserIssue : DomainEntity<UserIssueId>
 {
     //ef core
-    private UserIssue(UserIssueId id) : base(id)
-    {
-
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private UserIssue(UserIssueId id) : base(id){}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    
     public UserIssue(
         UserIssueId id,
         Guid userId,

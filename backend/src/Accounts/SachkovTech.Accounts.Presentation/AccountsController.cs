@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using SachkovTech.Accounts.Application;
 using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
 using SachkovTech.Accounts.Application.Commands.Login;
@@ -7,7 +6,6 @@ using SachkovTech.Accounts.Application.Commands.Logout;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Commands.StartUploadFile;
-using SachkovTech.Accounts.Application.Managers;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Application.Queries.GetUsers;
 using SachkovTech.Accounts.Application.Requests;

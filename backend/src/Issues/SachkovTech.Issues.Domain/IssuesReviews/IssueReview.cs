@@ -11,9 +11,9 @@ namespace SachkovTech.Issues.Domain.IssuesReviews;
 public sealed class IssueReview : DomainEntity<IssueReviewId>
 {
     // ef core
-    private IssueReview(IssueReviewId id) : base(id)
-    {
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private IssueReview(IssueReviewId id) : base(id){}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public IssueReview(
         IssueReviewId issueReviewId,

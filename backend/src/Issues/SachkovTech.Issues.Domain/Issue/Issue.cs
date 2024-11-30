@@ -11,9 +11,9 @@ public class Issue : SoftDeletableEntity<IssueId>
     private List<FileId> _files = [];
 
     //ef core
-    private Issue(IssueId id) : base(id)
-    {
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Issue(IssueId id) : base(id){}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     public Issue(
         IssueId id,

@@ -18,7 +18,6 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 namespace SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 
 public class AddLessonHandler(
-    IReadDbContext readDbContext,
     IValidator<AddLessonCommand> validator,
     ILessonsRepository lessonsRepository,
     IModulesRepository modulesRepository,

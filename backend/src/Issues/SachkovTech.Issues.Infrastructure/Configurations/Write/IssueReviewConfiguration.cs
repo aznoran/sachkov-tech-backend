@@ -31,7 +31,7 @@ public class IssueReviewConfiguration : IEntityTypeConfiguration<IssueReview>
 
         builder.Property(i => i.ReviewerId)
             .HasConversion(
-                id => id.Value,
+                id => id!.Value,
                 value => UserId.Create(value));
 
 

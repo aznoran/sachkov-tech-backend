@@ -2,7 +2,7 @@
 
 public record SocialNetworkDto
 {
-    public string Name { get; init; }
+    public required string Name { get; init; }
     
-    public string Link { get; init; }
+    public required string Link { get; init; }
 }

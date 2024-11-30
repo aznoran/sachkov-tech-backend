@@ -21,7 +21,7 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithId(Guid? id)
     {
-        _userQuery = _userQuery.WhereIf(id is not null,
+        _userQuery = _userQuery.WhereIf(id is not null && id != Guid.Empty,
             ud => ud.Id == id!.Value);
         
         return this;
@@ -34,8 +34,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithRole(string? roleName)
     {
-        _userQuery = _userQuery.WhereIf(roleName is not null,
-            ud => ud.Roles.Any(r => r.Name.ToLower() == roleName.ToLower()));
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(roleName) == false,
+            ud => ud.Roles.Any(r => r.Name.ToLower() == roleName!.ToLower()));
         
         return this;
     }
@@ -58,8 +58,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder ExcludeRole(string? roleName)
     {
-        _userQuery = _userQuery.WhereIf(roleName is not null, 
-            ud => ud.Roles.All(r => r.Name.ToLower() != roleName.ToLower()));
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(roleName) == false, 
+            ud => ud.Roles.All(r => r.Name.ToLower() != roleName!.ToLower()));
         
         return this;
     }
@@ -71,7 +71,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithFirstName(string? firstName)
     {
-        _userQuery = _userQuery.WhereIf(firstName is not null, ud => ud.FirstName == firstName);
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(firstName) == false,
+            ud => ud.FirstName == firstName);
         
         return this;
     }
@@ -83,7 +84,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithFirstNameStartingWith(string? sequence)
     {
-        _userQuery = _userQuery.WhereIf(sequence is not null, ud => ud.FirstName.StartsWith(sequence!));
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(sequence) == false,
+            ud => ud.FirstName.StartsWith(sequence!));
         
         return this;
     }
@@ -95,7 +97,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithSecondName(string? secondName)
     {
-        _userQuery = _userQuery.WhereIf(secondName is not null, ud => ud.SecondName == secondName);
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(secondName) == false, 
+            ud => ud.SecondName == secondName);
         
         return this;
     }
@@ -107,7 +110,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithThirdName(string? thirdName)
     {
-        _userQuery = _userQuery.WhereIf(thirdName is not null, ud => ud.ThirdName == thirdName);
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(thirdName) == false, 
+            ud => ud.ThirdName == thirdName);
         
         return this;
     }
@@ -119,7 +123,8 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithEmail(string? email)
     {
-        _userQuery = _userQuery.WhereIf(email is not null, ud => ud.Email == email);
+        _userQuery = _userQuery.WhereIf(string.IsNullOrWhiteSpace(email) == false,
+            ud => ud.Email == email);
         
         return this;
     }
@@ -131,7 +136,7 @@ internal class UserQueryBuilder
     /// <returns></returns>
     public UserQueryBuilder WithRegistrationAfter(DateTime? registrationDate)
     {
-        _userQuery = _userQuery.WhereIf(registrationDate is not null,
+        _userQuery = _userQuery.WhereIf(registrationDate is not null && registrationDate != DateTime.MinValue,
             ud => ud.RegistrationDate.Date < registrationDate!.Value.Date);
         
         return this;
@@ -252,4 +257,5 @@ internal class UserQueryBuilder
             _ => (user) => user.Id
         };
     }
+
 }

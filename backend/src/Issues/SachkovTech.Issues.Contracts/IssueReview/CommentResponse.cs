@@ -8,7 +8,7 @@ public class CommentResponse
     
     public Guid IssueReviewId { get; init; }
     
-    public string Message { get; init; }
+    public required string Message { get; init; }
     
     public DateTime CreatedAt { get; init; }
 }

@@ -14,15 +14,15 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         _httpContextAccessor = httpContextAccessor;
     }
 
-    protected override async Task HandleRequirementAsync(
+    protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         PermissionAttribute permission)
     {
-        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated 
+        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated
                                           || _httpContextAccessor.HttpContext is null)
         {
             context.Fail();
-            return;
+            return Task.CompletedTask;
         }
 
         var userScopedData = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<UserScopedData>();
@@ -30,9 +30,11 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         if (userScopedData.Permissions.Contains(permission.Code))
         {
             context.Succeed(permission);
-            return;
+            return Task.CompletedTask;
         }
 
         context.Fail();
+
+        return Task.CompletedTask;
     }
 }

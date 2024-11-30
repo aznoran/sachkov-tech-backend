@@ -33,8 +33,8 @@ public class FullName : ComparableValueObject
 
     protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
-        yield return FirstName;
-        yield return SecondName;
-        yield return ThirdName;
+        yield return FirstName ?? string.Empty;
+        yield return SecondName ?? string.Empty;
+        yield return ThirdName ?? string.Empty;
     }
 }

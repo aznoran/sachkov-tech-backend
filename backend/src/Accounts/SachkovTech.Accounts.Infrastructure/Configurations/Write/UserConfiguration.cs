@@ -21,15 +21,15 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 
         builder.ComplexProperty(a => a.FullName, fb =>
         {
-            fb.Property(a => a.FirstName).IsRequired(false).HasColumnName("first_name");
-            fb.Property(a => a.SecondName).IsRequired(false).HasColumnName("second_name");
-            fb.Property(a => a.ThirdName).IsRequired(false).HasColumnName("third_name");
+            fb.Property(a => a!.FirstName).IsRequired(false).HasColumnName("first_name");
+            fb.Property(a => a!.SecondName).IsRequired(false).HasColumnName("second_name");
+            fb.Property(a => a!.ThirdName).IsRequired(false).HasColumnName("third_name");
         });
 
         builder.Property(a => a.Photo)
             .IsRequired(false)
             .HasConversion(
-                photo => photo.FileId, 
+                photo => photo!.FileId, 
                 value => new Photo(value)
             )
             .HasColumnName("photo");
