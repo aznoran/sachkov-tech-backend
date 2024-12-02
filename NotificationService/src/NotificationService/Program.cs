@@ -1,17 +1,15 @@
 using MassTransit;
-using NotificationService.Api;
+using NotificationService.Consumers;
 using NotificationService.Extensions;
 using NotificationService.Infrastructure;
-using NotificationService.Services.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddGrpc();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<ApplicationDbContext>();
+builder.Services.AddScoped<NotificationSettingsDbContext>();
 
 builder.Services.AddHandlers();
 
@@ -21,7 +19,7 @@ builder.Services.AddMassTransit(configure =>
 {
     configure.SetKebabCaseEndpointNameFormatter();
 
-    configure.AddConsumer<UserSentIssueOnReviewConsumer>();
+    configure.AddConsumer<UserRegisteredEventConsumer>();
 
     configure.UsingRabbitMq((context, cfg) =>
     {
@@ -42,7 +40,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 
-    await app.AddMigrations();
+    //await app.AddMigrations();
 }
 
 app.UseHttpsRedirection();

@@ -1,9 +1,11 @@
 ﻿using System.Text.Json;
 using MassTransit;
+using MassTransit.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Retry;
+using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Contracts;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 
@@ -16,12 +18,12 @@ public class ProcessOutboxMessagesService
     private readonly ILogger<ProcessOutboxMessagesService> _logger;
 
     public ProcessOutboxMessagesService(
-        IPublishEndpoint publisher,
+        Bind<IIssueMessageBus, IPublishEndpoint> publisher,
         IssuesWriteDbContext dbContext,
         ILogger<ProcessOutboxMessagesService> logger)
     {
         _dbContext = dbContext;
-        _publisher = publisher;
+        _publisher = publisher.Value;
         _logger = logger;
     }
 
@@ -29,8 +31,9 @@ public class ProcessOutboxMessagesService
     {
         var messages = await _dbContext
             .Set<OutboxMessage>()
+            .OrderBy(m => m.OccurredOnUtc)
             .Where(m => m.ProcessedOnUtc == null)
-            .Take(20)
+            .Take(100)
             .ToListAsync(cancellationToken);
 
         if (messages.Count == 0)
@@ -41,8 +44,8 @@ public class ProcessOutboxMessagesService
             {
                 MaxRetryAttempts = 3,
                 BackoffType = DelayBackoffType.Exponential,
-                Delay = TimeSpan.FromSeconds(1),
-                ShouldHandle = new PredicateBuilder().Handle<Exception>(ex => ex is not NullReferenceException),
+                Delay = TimeSpan.FromSeconds(2),
+                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
                 OnRetry = retryArguments =>
                 {
                     _logger.LogCritical(retryArguments.Outcome.Exception, "Current attempt: {attemptNumber}", retryArguments.AttemptNumber);
@@ -71,14 +74,14 @@ public class ProcessOutboxMessagesService
 
         try
         {
+            var messageType = AssemblyReference.Assembly.GetType(message.Type)
+                              ?? throw new NullReferenceException("Message type not found");
+
+            var deserializedMessage = JsonSerializer.Deserialize(message.Payload, messageType)
+                                      ?? throw new NullReferenceException("Message payload not found");
+
             await pipeline.ExecuteAsync(async token =>
             {
-                var messageType = AssemblyReference.Assembly.GetType(message.Type)
-                                  ?? throw new NullReferenceException("Message type not found");
-
-                var deserializedMessage = JsonSerializer.Deserialize(message.Payload, messageType)
-                                          ?? throw new NullReferenceException("Message payload not found");
-
                 await _publisher.Publish(deserializedMessage, messageType, token);
 
                 message.ProcessedOnUtc = DateTime.UtcNow;

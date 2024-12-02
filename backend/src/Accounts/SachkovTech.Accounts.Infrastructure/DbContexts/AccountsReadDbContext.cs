@@ -1,15 +1,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using SachkovTech.Accounts.Application;
 using SachkovTech.Accounts.Application.Database;
+using SachkovTech.Accounts.Application.DataModels;
 using SachkovTech.Accounts.Contracts.Dtos;
 
 namespace SachkovTech.Accounts.Infrastructure.DbContexts;
 
 public class AccountsReadDbContext(IConfiguration configuration) : DbContext, IAccountsReadDbContext
 {
-    public IQueryable<UserDto> Users => Set<UserDto>();
+    public IQueryable<UserDataModel> Users => Set<UserDataModel>();
     public IQueryable<RoleDto> Roles => Set<RoleDto>();
     public IQueryable<StudentAccountDto> StudentAccounts => Set<StudentAccountDto>();
     public IQueryable<SupportAccountDto> SupportAccounts => Set<SupportAccountDto>();

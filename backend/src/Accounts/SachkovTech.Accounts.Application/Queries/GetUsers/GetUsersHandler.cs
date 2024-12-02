@@ -1,12 +1,12 @@
 ﻿using SachkovTech.Accounts.Application.Database;
-using SachkovTech.Accounts.Contracts.Dtos;
+using SachkovTech.Accounts.Application.DataModels;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUsers;
 
-public class GetUsersHandler : IQueryHandler<PagedList<UserDto>, GetUsersQuery>
+public class GetUsersHandler : IQueryHandler<PagedList<UserDataModel>, GetUsersQuery>
 {
     private readonly IAccountsReadDbContext _accountsReadDbContext;
 
@@ -16,7 +16,7 @@ public class GetUsersHandler : IQueryHandler<PagedList<UserDto>, GetUsersQuery>
         _accountsReadDbContext = accountsReadDbContext;
     }
 
-    public async Task<PagedList<UserDto>> Handle(
+    public async Task<PagedList<UserDataModel>> Handle(
         GetUsersQuery query,
         CancellationToken cancellationToken = default)
     {
