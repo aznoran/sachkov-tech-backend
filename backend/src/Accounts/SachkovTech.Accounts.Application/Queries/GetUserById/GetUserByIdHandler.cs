@@ -1,40 +1,46 @@
 ﻿using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using SachkovTech.Accounts.Application.Database;
-using SachkovTech.Accounts.Contracts.Dtos;
+using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Application.Queries.GetUserById;
 
-public class GetUserByIdHandler : IQueryHandlerWithResult<UserDto, GetUserByIdQuery>
+public class GetUserByIdHandler : IQueryHandlerWithResult<UserResponse, GetUserByIdQuery>
 {
-    private readonly ILogger<GetUserByIdHandler> _logger;
     private readonly IAccountsReadDbContext _accountsReadDbContext;
 
-    public GetUserByIdHandler(
-        ILogger<GetUserByIdHandler> logger,
-        IAccountsReadDbContext accountsReadDbContext)
+    public GetUserByIdHandler(IAccountsReadDbContext accountsReadDbContext)
     {
-        _logger = logger;
         _accountsReadDbContext = accountsReadDbContext;
     }
 
-    public async Task<Result<UserDto, ErrorList>> Handle(
+    public async Task<Result<UserResponse, ErrorList>> Handle(
         GetUserByIdQuery query,
         CancellationToken cancellationToken = default)
     {
         var user = await _accountsReadDbContext.Users
             .Include(u => u.StudentAccount)
             .Include(u => u.SupportAccount)
-            .Include(u => u.Roles)
             .Include(u => u.AdminAccount)
+            .Include(u => u.Roles)
             .FirstOrDefaultAsync(u => u.Id == query.UserId, cancellationToken);
 
-        if (user is not null)
-            return user;
+        if (user is null)
+            return Errors.General.NotFound(query.UserId).ToErrorList();
 
-        return Errors.General.NotFound(query.UserId).ToErrorList();
+        return new UserResponse(
+            user.Id,
+            user.FirstName,
+            user.SecondName,
+            user.ThirdName,
+            user.Email,
+            user.RegistrationDate,
+            user.SocialNetworks,
+            user.StudentAccount,
+            user.SupportAccount,
+            user.AdminAccount,
+            user.Roles);
     }
 }

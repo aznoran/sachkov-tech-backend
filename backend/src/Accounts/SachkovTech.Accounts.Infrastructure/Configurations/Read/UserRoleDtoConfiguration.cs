@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using SachkovTech.Accounts.Contracts.Dtos;
+using SachkovTech.Accounts.Application.DataModels;
 
 namespace SachkovTech.Accounts.Infrastructure.Configurations.Read;
 
-public class UserRoleDtoConfiguration : IEntityTypeConfiguration<UserRolesDto>
+public class UserRoleDtoConfiguration : IEntityTypeConfiguration<UserRolesDataModel>
 {
-    public void Configure(EntityTypeBuilder<UserRolesDto> builder)
+    public void Configure(EntityTypeBuilder<UserRolesDataModel> builder)
     {
         builder.ToTable("user_roles");
         

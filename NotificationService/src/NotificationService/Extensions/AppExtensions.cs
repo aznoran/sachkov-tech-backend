@@ -1,13 +1,9 @@
 using Microsoft.EntityFrameworkCore;
-using NotificationService.Features.Commands.AddNotificationSettings;
-using NotificationService.Features.Commands.PatchNotificationSettings;
-using NotificationService.Features.Commands.PushNotification;
-using NotificationService.Features.Queries.GetNotificationSettings;
+using NotificationService.Features.GetNotificationSettings;
+using NotificationService.Features.UpdateUserNotificationSettings;
 using NotificationService.Infrastructure;
-using NotificationService.Services;
-using NotificationService.Services.Channels;
 using NotificationService.Services.Factories;
-using NotificationService.Services.Services;
+using NotificationService.Services.Senders;
 
 namespace NotificationService.Extensions;
 
@@ -18,25 +14,22 @@ public static class AppExtensions
         CancellationToken cancellationToken = default)
     {
         await using var scoped = app.Services.CreateAsyncScope();
-        var dbContext = scoped.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var dbContext = scoped.ServiceProvider.GetRequiredService<NotificationSettingsDbContext>();
 
         await dbContext.Database.MigrateAsync(cancellationToken);
     }
 
     public static void AddHandlers(this IServiceCollection services)
     {
-        services.AddScoped<AddNotificationSettingsHandler>();
-        services.AddScoped<PatchNotificationSettingsHandler>();
+        services.AddScoped<UpdateNotificationSettingsHandler>();
         services.AddScoped<GetNotificationSettingsHandler>();
     }
 
     public static void AddNotificationService(this IServiceCollection services)
     {
-        services.AddScoped<SendNotificationsService>();
-
-        services.AddScoped<INotificationSender, TelegramNotificationChannel>();
-        services.AddScoped<INotificationSender, WebNotificationChannel>();
-        services.AddScoped<INotificationSender, EmailNotificationChannel>();
+        services.AddScoped<INotificationSender, TelegramNotificationSender>();
+        services.AddScoped<INotificationSender, WebNotificationSender>();
+        services.AddScoped<INotificationSender, EmailNotificationSender>();
 
         services.AddScoped<NotificationSettingsFactory>(provider =>
         {

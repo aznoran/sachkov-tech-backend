@@ -4,7 +4,7 @@ namespace SachkovTech.SharedKernel.ValueObjects;
 
 public class FullName : ComparableValueObject
 {
-    public static FullName Empty = new FullName(null, null, null);
+    public static readonly FullName Empty = new FullName(null, null, null);
     
     private FullName(string? firstName, string? secondName, string? thirdName)
     {

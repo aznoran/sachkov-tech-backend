@@ -1,10 +1,11 @@
+using SachkovTech.Accounts.Application.DataModels;
 using SachkovTech.Accounts.Contracts.Dtos;
 
 namespace SachkovTech.Accounts.Application.Database;
 
 public interface IAccountsReadDbContext
 {
-    IQueryable<UserDto> Users { get; }
+    IQueryable<UserDataModel> Users { get; }
     
     IQueryable<RoleDto> Roles { get; }
     

@@ -1,6 +1,5 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using SachkovTech.Accounts.Application;
 using SachkovTech.Accounts.Application.Managers;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Accounts.Infrastructure.DbContexts;
