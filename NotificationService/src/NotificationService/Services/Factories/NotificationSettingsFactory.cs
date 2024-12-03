@@ -1,5 +1,5 @@
 ﻿using NotificationService.Entities;
-using NotificationService.Services.Channels;
+using NotificationService.Services.Senders;
 
 namespace NotificationService.Services.Factories;
 
@@ -12,6 +12,6 @@ public class NotificationSettingsFactory
         _senders = senders.ToList();
     }
 
-    public IEnumerable<INotificationSender> GetSenders(NotificationSettings notificationSetting, CancellationToken cancellationToken)
-        => _senders.Where(sender => sender.CanSend(notificationSetting, cancellationToken));
+    public IEnumerable<INotificationSender> GetSenders(UserNotificationSettings userNotificationSetting, CancellationToken cancellationToken)
+        => _senders.Where(sender => sender.CanSend(userNotificationSetting, cancellationToken));
 }

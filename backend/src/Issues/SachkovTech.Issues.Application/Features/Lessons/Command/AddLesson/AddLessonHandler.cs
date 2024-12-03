@@ -2,7 +2,6 @@
 using FileService.Communication;
 using FileService.Contracts;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
@@ -10,7 +9,6 @@ using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.Issues.Domain.Lesson;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;

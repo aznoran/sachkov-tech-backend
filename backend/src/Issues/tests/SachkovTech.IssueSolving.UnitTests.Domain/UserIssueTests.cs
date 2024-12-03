@@ -1,7 +1,7 @@
 using FluentAssertions;
+using SachkovTech.Issues.Domain.IssueSolving.DomainEvents;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
-using SachkovTech.Issues.Domain.IssueSolving.Events;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 

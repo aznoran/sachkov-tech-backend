@@ -1,15 +1,15 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
-using SachkovTech.Accounts.Contracts.Dtos;
+using SachkovTech.Accounts.Application.DataModels;
 using SachkovTech.Core.Extensions;
 
 namespace SachkovTech.Accounts.Application.Queries;
 
 internal class UserQueryBuilder
 {
-    private IQueryable<UserDto> _userQuery;
+    private IQueryable<UserDataModel> _userQuery;
     
-    public UserQueryBuilder(IQueryable<UserDto> userQuery)
+    public UserQueryBuilder(IQueryable<UserDataModel> userQuery)
     {
         _userQuery = userQuery;
     }
@@ -241,12 +241,12 @@ internal class UserQueryBuilder
     /// Builds the query
     /// </summary>
     /// <returns></returns>
-    public IQueryable<UserDto> Build()
+    public IQueryable<UserDataModel> Build()
     {
         return _userQuery;
     }
 
-    private Expression<Func<UserDto, object>> KeySelector(string? sortBy)
+    private Expression<Func<UserDataModel, object>> KeySelector(string? sortBy)
     {
         return sortBy?.ToLower() switch
         {

@@ -1,14 +1,15 @@
 using EmailNotificationService.API;
+using EmailNotificationService.API.Consumers;
 using Serilog.Events;
 using Serilog;
 using EmailNotificationService.API.Middlewares;
 using EmailNotificationService.API.Models;
 using EmailNotificationService.API.Options;
-using EmailNotificationService.API.Common;
 using EmailNotificationService.API.Requests;
 using EmailNotificationService.API.Services;
-using EmailNotificationService.API.Handlebars;
 using EmailNotificationService.API.Features;
+using MassTransit;
+using Response = EmailNotificationService.API.Common.Response;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,20 +27,38 @@ services.AddScoped<SendEmailConfirmation>();
 services.AddMemoryCache();
 
 Log.Logger = new LoggerConfiguration()
-           .WriteTo.Console()
-           .WriteTo.Debug()
-           .WriteTo.Seq(config.GetConnectionString("Seq")
-               ?? throw new ArgumentNullException("Seq connection string was not found"))
-           .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Information)
-           .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Information)
-           .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Information)
-           .CreateLogger();
+    .WriteTo.Console()
+    .WriteTo.Debug()
+    .WriteTo.Seq(config.GetConnectionString("Seq")
+                 ?? throw new ArgumentNullException("Seq connection string was not found"))
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Information)
+    .CreateLogger();
 
 services.AddSerilog();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
+
+builder.Services.AddMassTransit(configure =>
+{
+    configure.SetKebabCaseEndpointNameFormatter();
+
+    configure.AddConsumer<SendEmailConsumer>();
+
+    configure.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host(new Uri(builder.Configuration["RabbitMQ:Host"]!), h =>
+        {
+            h.Username(builder.Configuration["RabbitMQ:UserName"]!);
+            h.Password(builder.Configuration["RabbitMQ:Password"]!);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 
@@ -55,15 +74,24 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapPost("send", async (MailData mailData, MailSenderService mailSender) =>
-    { 
-        var result = await mailSender.Send(mailData);
+{
+    var result = await mailSender.Send(mailData);
 
-        var response = result.IsSuccess ?
-        new Response { StatusCode = 200, Success = true } :
-        new Response { StatusCode = 400, Success = false, Message = result.Error };
+    var response = result.IsSuccess
+        ? new Response
+        {
+            StatusCode = 200,
+            Success = true
+        }
+        : new Response
+        {
+            StatusCode = 400,
+            Success = false,
+            Message = result.Error
+        };
 
-        return response;
-    });
+    return response;
+});
 
 app.MapPost("confirm-email", async (MailConfirmationRequest request, SendEmailConfirmation service) =>
 {

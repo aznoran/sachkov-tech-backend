@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NotificationService.HelperClasses;
-using static NotificationService.HelperClasses.Error;
+using NotificationService.SharedKernel;
+using static NotificationService.SharedKernel.Error;
 
 namespace NotificationService.Extensions;
 

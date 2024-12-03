@@ -1,36 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NotificationService.Entities;
-using NotificationService.Entities.ValueObjects;
 
 namespace NotificationService.Infrastructure.Configurations;
 
-public class NotificationSettingsConfiguration : IEntityTypeConfiguration<NotificationSettings>
+public class NotificationSettingsConfiguration : IEntityTypeConfiguration<UserNotificationSettings>
 {
-    public void Configure(EntityTypeBuilder<NotificationSettings> builder)
+    public void Configure(EntityTypeBuilder<UserNotificationSettings> builder)
     {
         builder.ToTable("notification_settings");
 
+        builder.HasIndex(u => u.UserId).IsUnique();
+
         builder.HasKey(x => x.Id);
-
-        builder.Property(n => n.UserId);
-
-        builder.Property(n => n.EmailAddress)
-            .HasConversion(
-                push => push.Value.ToString(),
-                pull => Email.Create(pull).Value
-            );
-
-        builder.Property(n => n.SendEmail);
-
-        builder.Property(n => n.TelegramId)
-            .IsRequired(false);
-
-        builder.Property(n => n.SendTelegram);
-
-        builder.Property(n => n.WebEndpoint)
-            .IsRequired(false);
-
-        builder.Property(n => n.SendWeb);
     }
 }
