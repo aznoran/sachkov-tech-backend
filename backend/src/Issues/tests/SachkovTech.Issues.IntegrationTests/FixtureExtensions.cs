@@ -6,6 +6,7 @@ using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo
 using SachkovTech.Issues.Application.Features.Lessons.Command.AddLesson;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
+using SachkovTech.Issues.Application.Features.Modules.Commands.Create;
 
 namespace SachkovTech.Issues.IntegrationTests;
 
@@ -85,5 +86,10 @@ public static class FixtureExtensions
             .With(c => c.Page, page)
             .With(c => c.PageSize, pageSize)
             .Create();
+    }
+
+    public static CreateModuleCommand CreateCreateModuleCommand(this IFixture fixture)
+    {
+        return fixture.Create<CreateModuleCommand>();
     }
 }
