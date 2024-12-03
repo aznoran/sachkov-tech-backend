@@ -22,7 +22,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
         builder.Property(o => o.OccurredOnUtc)
             .HasConversion(v => v.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
             .IsRequired();
-        
+
         builder.Property(o => o.ProcessedOnUtc)
             .HasConversion(v => v!.Value.ToUniversalTime(), v => DateTime.SpecifyKind(v, DateTimeKind.Utc))
             .IsRequired(false);
@@ -37,7 +37,7 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
             {
                 e.Id,
                 e.Type,
-                Content = e.Payload
+                e.Payload
             })
             .HasFilter("processed_on_utc IS NULL");
     }

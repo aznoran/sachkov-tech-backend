@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using EmailNotificationService.API.Handlebars;
 using EmailNotificationService.API.Models;
 using EmailNotificationService.API.Requests;
 using EmailNotificationService.API.Services;

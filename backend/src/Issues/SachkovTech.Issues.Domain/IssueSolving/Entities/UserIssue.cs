@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
+using SachkovTech.Issues.Domain.IssueSolving.DomainEvents;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
-using SachkovTech.Issues.Domain.IssueSolving.Events;
 using SachkovTech.Issues.Domain.IssueSolving.ValueObjects;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;

@@ -1,24 +1,24 @@
 using Microsoft.AspNetCore.Mvc;
 using NotificationService.Api.Contracts;
 using NotificationService.Extensions;
-using NotificationService.Features.Commands.PatchNotificationSettings;
-using NotificationService.Features.Queries.GetNotificationSettings;
-using NotificationService.HelperClasses;
+using NotificationService.Features.GetNotificationSettings;
+using NotificationService.Features.UpdateUserNotificationSettings;
+using NotificationService.SharedKernel;
 
 namespace NotificationService.Api;
 
-[Route("[controller]")]
+[Route("[controller]/{id:Guid}")]
 [ApiController]
 public class NotificationSettingsController : ControllerBase
 {
-    [HttpPatch("{id:Guid}")]
+    [HttpPatch]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid id,
         [FromBody] PatchNotificationSettingsRequest dto,
-        [FromServices] PatchNotificationSettingsHandler handler,
+        [FromServices] UpdateNotificationSettingsHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var command = new PatchNotificationSettingsCommand(
+        var command = new UpdateNotificationSettingsCommand(
             id, dto.NotificationType, dto.Value);
 
         var result = await handler.Handle(command, cancellationToken);
@@ -28,7 +28,7 @@ public class NotificationSettingsController : ControllerBase
         return Ok();
     }
 
-    [HttpGet("{id:Guid}")]
+    [HttpGet]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
         [FromServices] GetNotificationSettingsHandler handler,

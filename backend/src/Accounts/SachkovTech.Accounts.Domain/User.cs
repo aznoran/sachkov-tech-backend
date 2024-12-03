@@ -13,7 +13,7 @@ public class User : IdentityUser<Guid>
 
     public DateTime RegistrationDate { get; set; }
 
-    public FullName? FullName { get; set; }
+    public FullName FullName { get; set; }
     public Photo? Photo { get; set; }
 
     public IReadOnlyList<Role> Roles => _roles;

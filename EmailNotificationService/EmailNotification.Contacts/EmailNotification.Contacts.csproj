@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <Title>EmailNotification.Contracts</Title>
+        <Authors>SachkovTech</Authors>
+        <Company>SachkovTech</Company>
+        <Description>EmailNotification contracts library</Description>
+        <RepositoryUrl>https://github.com/SachkovTech/sachkov-tech-backend</RepositoryUrl>
+        <PackageDescription>EmailNotification contracts library</PackageDescription>
+        <Version>1.0.0</Version>
+    </PropertyGroup>
+
+</Project>

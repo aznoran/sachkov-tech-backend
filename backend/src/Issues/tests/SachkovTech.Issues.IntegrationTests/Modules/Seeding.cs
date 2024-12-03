@@ -2,7 +2,6 @@ using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Domain.Issue;
 using SachkovTech.Issues.Domain.Issue.ValueObjects;
 using SachkovTech.Issues.Domain.Module;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;

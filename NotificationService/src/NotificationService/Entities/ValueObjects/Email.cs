@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
-using NotificationService.HelperClasses;
 using System.Text.RegularExpressions;
+using NotificationService.SharedKernel;
 
 namespace NotificationService.Entities.ValueObjects;
 
