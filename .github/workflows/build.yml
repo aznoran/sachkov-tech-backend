@@ -31,13 +31,5 @@ jobs:
       - name: Build
         run: dotnet build ./backend/SachkovTech.sln --configuration Release --no-restore
 
-      - name: Wait for PostgreSQL
-        run: |
-          for i in {1..30}; do
-            nc -z localhost 5434 && echo "PostgreSQL is up!" && break
-            echo "Waiting for PostgreSQL..."
-            sleep 1
-          done
-
       - name: Tests
         run: dotnet test ./backend/SachkovTech.sln
