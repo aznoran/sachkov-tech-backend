@@ -13,13 +13,10 @@ public class AccountsMigrator(AccountsWriteDbContext context, ILogger<AccountsMi
         
         if (await context.Database.CanConnectAsync(cancellationToken) is false)
         {
-            throw new Exception($"Can't connect to database.");
+            await context.Database.EnsureCreatedAsync(cancellationToken);
         }
         
-        var createResult = await context.Database.EnsureCreatedAsync(cancellationToken);
-        
-        if(createResult is false)
-            await context.Database.MigrateAsync(cancellationToken);
+        await context.Database.MigrateAsync(cancellationToken);
         
         logger.Log(LogLevel.Information, "Migrations accounts applied successfully.");
     }

@@ -13,13 +13,10 @@ public class IssuesMigrator(IssuesWriteDbContext context, ILogger<IssuesMigrator
         
         if (await context.Database.CanConnectAsync(cancellationToken) == false)
         {
-            throw new Exception($"Can't connect to database");
+            await context.Database.EnsureCreatedAsync(cancellationToken);
         }
 
-        var createResult = await context.Database.EnsureCreatedAsync(cancellationToken);
-        
-        if(createResult is false)
-            await context.Database.MigrateAsync(cancellationToken);
+        await context.Database.MigrateAsync(cancellationToken);
         
         logger.Log(LogLevel.Information, "Migrations issues applied successfully.");
     }
