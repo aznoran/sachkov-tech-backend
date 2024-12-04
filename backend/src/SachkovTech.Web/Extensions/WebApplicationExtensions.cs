@@ -19,7 +19,7 @@ public static class WebApplicationExtensions
         app.UseSerilogRequestLogging();
         app.ConfigureCors();
         app.UseAuthentication();
-        //app.UseScopeDataMiddleware();
+        app.UseScopeDataMiddleware();
         app.UseAuthorization();
         app.MapControllers();
     }

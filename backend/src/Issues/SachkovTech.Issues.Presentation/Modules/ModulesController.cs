@@ -12,6 +12,7 @@ namespace SachkovTech.Issues.Presentation.Modules;
 
 public class ModulesController : ApplicationController
 {
+    [Permission(Permissions.Modules.READ_MODULE)]
     [HttpGet]
     public async Task<IActionResult> Get(
         [FromQuery] GetModulesWithPaginationQuery query,
@@ -23,7 +24,7 @@ public class ModulesController : ApplicationController
         return Ok(response);
     }
 
-    [Permission(Permissions.Modules.CreateModule)]
+    [Permission(Permissions.Modules.CREATE_MODULE)]
     [HttpPost]
     public async Task<ActionResult> Create(
         [FromServices] CreateModuleHandler handler,
@@ -42,7 +43,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Modules.UpdateModule)]
+    [Permission(Permissions.Modules.UPDATE_MODULE)]
     [HttpPut("{moduleId:guid}/main-info")]
     public async Task<ActionResult> UpdateMainInfo(
         [FromRoute] Guid moduleId,
@@ -63,7 +64,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     [HttpPut("{id:guid}/issue/{issueId:guid}")]
     public async Task<ActionResult> UpdateIssuePosition(
         [FromRoute] Guid id,

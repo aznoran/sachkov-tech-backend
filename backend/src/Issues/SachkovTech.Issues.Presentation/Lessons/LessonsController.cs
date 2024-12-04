@@ -19,7 +19,7 @@ namespace SachkovTech.Issues.Presentation.Lessons;
 public class LessonsController : ApplicationController
 {
     [HttpPost]
-    [Permission(Permissions.Lessons.CreateLesson)]
+    [Permission(Permissions.Lessons.CREATE_LESSON)]
     public async Task<IActionResult> CreateLesson(
         [FromBody] AddLessonRequest request,
         [FromServices] AddLessonHandler handler,
@@ -49,7 +49,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPut]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> UpdateLesson(
         [FromBody] UpdateLessonRequest request,
         [FromServices] UpdateLessonHandler handler,
@@ -74,7 +74,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPatch("{lessonId}/tag")]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> AddTagToLesson(
         [FromRoute] Guid lessonId,
         [FromBody] Guid tagId,
@@ -90,7 +90,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPatch("{lessonId}/issue")]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> AddIssueToLesson(
         [FromRoute] Guid lessonId,
         [FromBody] Guid issueId,
@@ -106,7 +106,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpDelete("{lessonId}/issue")]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> RemoveIssueFromLesson(
         [FromRoute] Guid lessonId,
         [FromBody] Guid issueId,
@@ -122,7 +122,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpDelete("{lessonId}/tag")]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> RemoveTagFromLesson(
         [FromRoute] Guid lessonId,
         [FromBody] Guid tagId,
@@ -138,7 +138,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPatch("{lessonId}/restore")]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> RestoreLesson(
         [FromRoute] Guid lessonId,
         [FromServices] RestoreLessonHandler handler,
@@ -153,7 +153,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpDelete("{lessonId:guid}")]
-    [Permission(Permissions.Lessons.DeleteLesson)]
+    [Permission(Permissions.Lessons.DELETE_LESSON)]
     public async Task<IActionResult> SoftDeleteLesson(
         [FromRoute] Guid lessonId,
         [FromServices] SoftDeleteLessonHandler handler,
@@ -168,7 +168,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpGet]
-    [Permission(Permissions.Lessons.ReadLesson)]
+    [Permission(Permissions.Lessons.READ_LESSON)]
     public async Task<IActionResult> GetLessonsWithPagination(
         [FromQuery] int page,
         [FromQuery] int pageSize,
@@ -185,7 +185,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpGet("{lessonId:guid}")]
-    [Permission(Permissions.Lessons.ReadLesson)]
+    [Permission(Permissions.Lessons.READ_LESSON)]
     public async Task<IActionResult> GetLessonById(
         [FromRoute] Guid lessonId,
         [FromServices] GetLessonByIdHandler handler,
@@ -200,7 +200,7 @@ public class LessonsController : ApplicationController
     }
 
     [HttpPost("{lessonId:guid}/start-upload-video")]
-    [Permission(Permissions.Lessons.UpdateLesson)]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
     public async Task<IActionResult> StartUploadVideo(
         [FromServices] StartUploadVideoHandler handler,
         [FromBody] FileMetadataRequest request,
