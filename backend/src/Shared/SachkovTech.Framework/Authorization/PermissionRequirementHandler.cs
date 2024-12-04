@@ -21,12 +21,16 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         if (context.User.Identity is null || !context.User.Identity.IsAuthenticated
                                           || _httpContextAccessor.HttpContext is null)
         {
+            context.Fail();
             return Task.CompletedTask;
         }
 
         var userScopedData = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<UserScopedData>();
         if (!userScopedData.Permissions.Contains(permission.Code))
+        {
+            context.Fail();
             return Task.CompletedTask;
+        }
 
         context.Succeed(permission);
         return Task.CompletedTask;
