@@ -8,7 +8,9 @@ using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
 using SachkovTech.Issues.Application.Features.Modules.Commands.Create;
 using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
+using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
+using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 
 namespace SachkovTech.Issues.IntegrationTests;
 
@@ -106,6 +108,25 @@ public static class FixtureExtensions
     {
         return fixture.Build<UpdateMainInfoCommand>()
             .With(c => c.ModuleId, moduleId)
+            .Create();
+    }
+    
+    public static UpdateIssuePositionCommand CreateUpdateIssuePositionCommand(
+        this IFixture fixture,
+        Guid moduleId,
+        Guid issueId,
+        int position)
+    {
+        return fixture.Build<UpdateIssuePositionCommand>()
+            .With(c => c.ModuleId, moduleId)
+            .With(c => c.IssueId, issueId)
+            .With(c => c.NewPosition, position)
+            .Create();
+    }
+    
+    public static GetModulesWithPaginationQuery CreateGetModulesQuery(this IFixture fixture)
+    {
+        return fixture.Build<GetModulesWithPaginationQuery>()
             .Create();
     }
 }

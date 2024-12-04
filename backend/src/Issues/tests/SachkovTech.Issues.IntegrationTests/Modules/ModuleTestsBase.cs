@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.Module;
 using SachkovTech.Issues.Infrastructure.DbContexts;
-using SachkovTech.Issues.IntegrationTests.Lessons;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -22,7 +21,6 @@ public class ModuleTestsBase : IClassFixture<ModuleTestWebFactory>, IAsyncLifeti
     protected ModuleTestsBase(ModuleTestWebFactory factory)
     {
         _resetDatabase = factory.ResetDatabaseAsync;
-
         Scope = factory.Services.CreateScope();
         WriteDbContext = Scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
         ReadDbContext = Scope.ServiceProvider.GetRequiredService<IReadDbContext>();
@@ -42,9 +40,9 @@ public class ModuleTestsBase : IClassFixture<ModuleTestWebFactory>, IAsyncLifeti
     {
         var module = new Module(
             ModuleId.NewModuleId(),
-            Title.Create("title").Value,
-            Description.Create("description").Value);
-
+            Title.Create(Fixture.Create<String>()).Value,
+            Description.Create(Fixture.Create<String>()).Value);
+        
         await WriteDbContext.Modules.AddAsync(module);
 
         await WriteDbContext.SaveChangesAsync();
