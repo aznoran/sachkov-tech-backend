@@ -30,10 +30,9 @@ public class DeleteModuleTests: ModuleTestsBase
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
 
-        var module = await ReadDbContext.Modules
-            .FirstOrDefaultAsync(x => x.Id == moduleId, cancellationToken);
+        var modules = await ReadDbContext.Modules
+            .ToListAsync(cancellationToken);
         
-        module.Should().NotBeNull();
-        module?.IsDeleted.Should().BeTrue();
+        modules.Should().BeNullOrEmpty();
     }
 }

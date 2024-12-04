@@ -8,6 +8,7 @@ using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonById;
 using SachkovTech.Issues.Application.Features.Lessons.Queries.GetLessonsWithPagination;
 using SachkovTech.Issues.Application.Features.Modules.Commands.Create;
 using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
+using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 
 namespace SachkovTech.Issues.IntegrationTests;
 
@@ -97,6 +98,13 @@ public static class FixtureExtensions
     public static DeleteModuleCommand CreateDeleteModuleCommand(this IFixture fixture, Guid moduleId)
     {
         return fixture.Build<DeleteModuleCommand>()
+            .With(c => c.ModuleId, moduleId)
+            .Create();
+    }
+    
+    public static UpdateMainInfoCommand CreateUpdateMainInfoCommand(this IFixture fixture, Guid moduleId)
+    {
+        return fixture.Build<UpdateMainInfoCommand>()
             .With(c => c.ModuleId, moduleId)
             .Create();
     }
