@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -25,22 +26,34 @@ public class ExceptionMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, ex.Message);
-            
-            var error = Error.Failure("server.internal", ex.Message);
-            var envelope = Envelope.Error(error);
-            
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-            await context.Response.WriteAsJsonAsync(envelope);
+            await HandleExceptionAsync(context, ex);
         }
+    }
+
+    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    {
+        _logger.LogError(exception, exception.Message);
+
+        var (statusCode, error) = exception switch
+        {
+            AuthenticationException => (StatusCodes.Status401Unauthorized,
+                Error.Failure("authentication.failed", exception.Message)),
+
+            _ => (StatusCodes.Status500InternalServerError,
+                Error.Failure("server.internal", exception.Message))
+        };
+
+        var envelope = Envelope.Error(error);
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = statusCode;
+
+        await context.Response.WriteAsJsonAsync(envelope);
     }
 }
 
 public static class ExceptionMiddlewareExtensions
 {
-    public static IApplicationBuilder UseExceptionMiddleware(
-        this IApplicationBuilder builder)
+    public static IApplicationBuilder UseExceptionMiddleware(this IApplicationBuilder builder)
     {
         return builder.UseMiddleware<ExceptionMiddleware>();
     }

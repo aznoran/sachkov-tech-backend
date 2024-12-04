@@ -22,8 +22,6 @@ public class UserRegisteredEventConsumer : IConsumer<UserRegisteredEvent>
             new
             {
                 ConfirmationLink = "link",
-                Firstname = userResponse.FirstName,
-                Secondname = userResponse.SecondName
             }
         );
 

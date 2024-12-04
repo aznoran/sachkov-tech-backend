@@ -26,15 +26,13 @@ public class PermissionRequirementHandler : AuthorizationHandler<PermissionAttri
         }
 
         var userScopedData = _httpContextAccessor.HttpContext.RequestServices.GetRequiredService<UserScopedData>();
-
-        if (userScopedData.Permissions.Contains(permission.Code))
+        if (!userScopedData.Permissions.Contains(permission.Code))
         {
-            context.Succeed(permission);
+            context.Fail();
             return Task.CompletedTask;
         }
 
-        context.Fail();
-
+        context.Succeed(permission);
         return Task.CompletedTask;
     }
 }

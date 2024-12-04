@@ -25,12 +25,12 @@ public static class DependencyInjection
 
         services.AddEndpointsApiExplorer()
             .AddSwaggerConfiguration()
-            .AddAuthServices(configuration)
             .AddLogging(configuration)
             .AddApplicationLayers()
             .AddFramework()
             .AddAccountsModule(configuration)
-            .AddIssuesModule(configuration);
+            .AddIssuesModule(configuration)
+            .AddAuthServices(configuration);
     }
 
     private static IServiceCollection AddAccountsModule(
