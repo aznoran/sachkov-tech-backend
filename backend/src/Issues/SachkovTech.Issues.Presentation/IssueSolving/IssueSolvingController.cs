@@ -13,7 +13,7 @@ namespace SachkovTech.Issues.Presentation.IssueSolving;
 
 public class IssueSolvingController : ApplicationController
 {
-    [Permission(Permissions.SolvingIssues.CreateSolvingIssue)]
+    [Permission(Permissions.SolvingIssues.CREATE_SOLVING_ISSUE)]
     [HttpPost("{issueId:guid}")]
     public async Task<ActionResult> TakeOnWork(
         [FromRoute] Guid moduleId,
@@ -32,7 +32,7 @@ public class IssueSolvingController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.SolvingIssues.UpdateSolvingIssue)]
+    [Permission(Permissions.SolvingIssues.UPDATE_SOLVING_ISSUE)]
     [HttpPost("{userIssueId:guid}/review")]
     public async Task<ActionResult> SendOnReview(
         [FromRoute] Guid userIssueId,
@@ -51,7 +51,7 @@ public class IssueSolvingController : ApplicationController
         return Ok();
     }
 
-    [Permission(Permissions.SolvingIssues.UpdateSolvingIssue)]
+    [Permission(Permissions.SolvingIssues.UPDATE_SOLVING_ISSUE)]
     [HttpPost("{userIssueId:guid}/cancel")]
     public async Task<ActionResult> StopWorking(
         [FromRoute] Guid userIssueId,

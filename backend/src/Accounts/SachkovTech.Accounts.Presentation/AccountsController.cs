@@ -138,7 +138,7 @@ public class AccountsController : ApplicationController
         return Ok();
     }
 
-    [Permission(Permissions.Accounts.EnrollAccount)]
+    [Permission(Permissions.Accounts.ENROLL_ACCOUNT)]
     [HttpPut("student-role")]
     public async Task<ActionResult> EnrollParticipant(
         [FromBody] EnrollParticipantRequest request,
@@ -156,7 +156,7 @@ public class AccountsController : ApplicationController
     }
 
     [HttpGet("{userId:guid}")]
-    [Permission(Permissions.Accounts.ReadAccount)]
+    [Permission(Permissions.Accounts.READ_ACCOUNT)]
     public async Task<IActionResult> GetUserById(
         [FromRoute] Guid userId,
         [FromServices] GetUserByIdHandler handler,
@@ -168,7 +168,7 @@ public class AccountsController : ApplicationController
     }
 
     [HttpGet]
-    [Permission(Permissions.Accounts.ReadAccount)]
+    [Permission(Permissions.Accounts.READ_ACCOUNT)]
     public async Task<IActionResult> GetUsers(
         [FromQuery] GetUsersQuery query,
         [FromServices] GetUsersHandler handler,
@@ -178,7 +178,7 @@ public class AccountsController : ApplicationController
     }
 
     [HttpPost("/start-upload-photo")]
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     public async Task<IActionResult> StartUploadPhoto(
         [FromServices] StartUploadPhotoHandler handler,
         [FromServices] UserScopedData userScopedData,
@@ -200,7 +200,7 @@ public class AccountsController : ApplicationController
     }
 
     [HttpPost("/complete-upload-photo")]
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     public async Task<IActionResult> CompleteUploadPhoto(
         [FromServices] CompleteUploadPhotoHandler handler,
         [FromServices] UserScopedData userScopedData,

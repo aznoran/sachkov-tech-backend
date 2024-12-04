@@ -9,7 +9,7 @@ public static class WebApplicationExtensions
 {
     public static async Task Configure(this WebApplication app)
     {
-        app.Services.RunMigrations();
+        await app.Services.RunMigrations();
 
         var seeder = app.Services.GetRequiredService<AccountsSeeder>();
 
@@ -19,7 +19,7 @@ public static class WebApplicationExtensions
         app.UseSerilogRequestLogging();
         app.ConfigureCors();
         app.UseAuthentication();
-        //app.UseScopeDataMiddleware();
+        app.UseScopeDataMiddleware();
         app.UseAuthorization();
         app.MapControllers();
     }

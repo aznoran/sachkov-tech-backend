@@ -9,12 +9,15 @@ public class AccountsMigrator(AccountsWriteDbContext context, ILogger<AccountsMi
 {
     public async Task Migrate(CancellationToken cancellationToken = default)
     {
-        if (await context.Database.CanConnectAsync(cancellationToken) == false)
+        logger.Log(LogLevel.Information, "Applying accounts migrations...");
+        
+        if (await context.Database.CanConnectAsync(cancellationToken) is false)
         {
             await context.Database.EnsureCreatedAsync(cancellationToken);
         }
-        logger.Log(LogLevel.Information, "Applying accounts migrations...");
+        
         await context.Database.MigrateAsync(cancellationToken);
+        
         logger.Log(LogLevel.Information, "Migrations accounts applied successfully.");
     }
 }

@@ -16,7 +16,7 @@ namespace SachkovTech.Issues.Presentation.Issues;
 
 public class IssuesController : ApplicationController
 {
-    [Permission(Permissions.Issues.ReadIssue)]
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet("dapper")]
     public async Task<ActionResult> GetDapper(
         [FromQuery] GetIssuesWithPaginationRequest request,
@@ -37,7 +37,7 @@ public class IssuesController : ApplicationController
         return Ok(response);
     }
 
-    [Permission(Permissions.Issues.ReadIssue)]
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetIssuesWithPaginationRequest request,
@@ -58,7 +58,7 @@ public class IssuesController : ApplicationController
         return Ok(response);
     }
 
-    [Permission(Permissions.Issues.ReadIssue)]
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet("module/{moduleId:guid}")]
     public async Task<ActionResult> GetByModule(
         [FromRoute] Guid moduleId,
@@ -82,7 +82,7 @@ public class IssuesController : ApplicationController
         return Ok(response.Value);
     }
 
-    [Permission(Permissions.Issues.ReadIssue)]
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,
@@ -99,7 +99,7 @@ public class IssuesController : ApplicationController
         return Ok(response.Value);
     }
 
-    [Permission(Permissions.Issues.CreateIssue)]
+    [Permission(Permissions.Issues.CREATE_ISSUE)]
     [HttpPost]
     public async Task<ActionResult> AddIssue(
         [FromBody] AddIssueRequest request,
@@ -121,7 +121,7 @@ public class IssuesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     [HttpPut("{issueId:guid}/main-info")]
     public async Task<ActionResult> UpdateIssueMainInfo(
         [FromRoute] Guid issueId,
@@ -145,7 +145,7 @@ public class IssuesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     [HttpPut("{issueId:guid}/restore")]
     public async Task<ActionResult> RestoreIssue(
         [FromRoute] Guid issueId,
@@ -162,7 +162,7 @@ public class IssuesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.DeleteIssue)]
+    [Permission(Permissions.Issues.DELETE_ISSUE)]
     [HttpDelete("{issueId:guid}/soft")]
     public async Task<ActionResult> SoftDeleteIssue(
         [FromRoute] Guid issueId,
@@ -178,7 +178,7 @@ public class IssuesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.DeleteIssue)]
+    [Permission(Permissions.Issues.DELETE_ISSUE)]
     [HttpDelete("{issueId:guid}/force")]
     public async Task<ActionResult> ForceDeleteIssue(
         [FromRoute] Guid issueId,
