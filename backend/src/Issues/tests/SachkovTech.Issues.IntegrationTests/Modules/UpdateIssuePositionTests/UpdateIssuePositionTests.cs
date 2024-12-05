@@ -3,16 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
-using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
-using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.IntegrationTests.Modules.UpdateIssuePositionTests;
 
 public class UpdateIssuePositionTests: ModuleTestsBase
 {
+    private readonly ICommandHandler<Guid, UpdateIssuePositionCommand> _sut;
     public UpdateIssuePositionTests(ModuleTestWebFactory factory) : base(factory)
     {
+        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdateIssuePositionCommand>>();
     }
     [Fact]
     public async Task UpdateIssuePosition_should_move_forth_to_second_position()
@@ -26,9 +25,8 @@ public class UpdateIssuePositionTests: ModuleTestsBase
         
         var command = Fixture.CreateUpdateIssuePositionCommand(moduleId, issueId, 2);
 
-        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdateIssuePositionCommand>>();
         // Act
-        var result = await sut.Handle(command, cancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         //Assert
         result.Should().NotBeNull();
@@ -42,18 +40,5 @@ public class UpdateIssuePositionTests: ModuleTestsBase
             .Should().Equal(2);
     }
 
-    private async Task<Guid> SeedIssuePositions(Guid moduleId, CancellationToken cancellationToken = default)
-    {
-        var module = await WriteDbContext.Modules
-            .FirstOrDefaultAsync(x => x.Id == moduleId, cancellationToken);
-        if (module is  null)
-            throw new Exception($"Seeded Module {moduleId} not found, something wrong with DB");
-            
-        for (var i = 0; i < 4; i++)
-        {
-            module.AddIssue(IssueId.NewIssueId()); 
-        }
-        await WriteDbContext.SaveChangesAsync(cancellationToken);
-        return module.IssuesPosition[3].IssueId;
-    }    
+    
 }

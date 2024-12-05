@@ -8,8 +8,10 @@ namespace SachkovTech.Issues.IntegrationTests.Modules.DeleteModuleTests;
 
 public class DeleteModuleTests: ModuleTestsBase
 {
+    private readonly ICommandHandler<Guid, DeleteModuleCommand> _sut;
     public DeleteModuleTests(ModuleTestWebFactory factory) : base(factory)
     {
+        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteModuleCommand>>();
     }
     
     [Fact]
@@ -21,10 +23,8 @@ public class DeleteModuleTests: ModuleTestsBase
         var moduleId = await SeedModule();
         var command = Fixture.CreateDeleteModuleCommand(moduleId);
 
-        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteModuleCommand>>();
-
         // Act
-        var result = await sut.Handle(command, cancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

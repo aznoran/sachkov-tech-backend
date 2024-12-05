@@ -9,8 +9,10 @@ namespace SachkovTech.Issues.IntegrationTests.Modules.UpdateMainInfoTests;
 
 public class UpdateMainInfoTests : ModuleTestsBase
 {
+    private readonly ICommandHandler<Guid, UpdateMainInfoCommand> _sut;
     public UpdateMainInfoTests(ModuleTestWebFactory factory) : base(factory)
     {
+        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdateMainInfoCommand>>();
     }
 
     [Fact]
@@ -22,9 +24,8 @@ public class UpdateMainInfoTests : ModuleTestsBase
         var moduleId = await SeedModule();
         var command = Fixture.CreateUpdateMainInfoCommand(moduleId);
 
-        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, UpdateMainInfoCommand>>();
         // Act
-        var result = await sut.Handle(command, cancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         //Assert
         result.Should().NotBeNull();

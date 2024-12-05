@@ -1,4 +1,5 @@
 using AutoFixture;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Domain.Module;
@@ -49,4 +50,19 @@ public class ModuleTestsBase : IClassFixture<ModuleTestWebFactory>, IAsyncLifeti
 
         return module.Id;
     }
+    
+    protected async Task<Guid> SeedIssuePositions(Guid moduleId, CancellationToken cancellationToken = default)
+    {
+        var module = await WriteDbContext.Modules
+            .FirstOrDefaultAsync(x => x.Id == moduleId, cancellationToken);
+        if (module is  null)
+            throw new Exception($"Seeded Module {moduleId} not found, something wrong with DB");
+            
+        for (var i = 0; i < 4; i++)
+        {
+            module.AddIssue(IssueId.NewIssueId()); 
+        }
+        await WriteDbContext.SaveChangesAsync(cancellationToken);
+        return module.IssuesPosition[3].IssueId;
+    }    
 }
