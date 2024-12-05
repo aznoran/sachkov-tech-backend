@@ -82,7 +82,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    //[Permission(Permissions.Modules.DeleteModule)]
+    [Permission(Permissions.Modules.DELETE_MODULE)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,

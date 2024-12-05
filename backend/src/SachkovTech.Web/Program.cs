@@ -1,7 +1,3 @@
-using MassTransit;
-using MassTransit.DependencyInjection;
-using SachkovTech.Accounts.Application.MessageBus;
-using SachkovTech.Accounts.Contracts.Messaging;
 using SachkovTech.Web;
 using SachkovTech.Web.Extensions;
 

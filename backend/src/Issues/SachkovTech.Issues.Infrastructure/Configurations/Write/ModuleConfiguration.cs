@@ -40,27 +40,26 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
 
         builder.Property(i => i.IssuesPosition)
             .ValueObjectsCollectionJsonConversion(
-                valueObject 
+                valueObject
                     => new IssuePositionDto(valueObject.IssueId, valueObject.Position),
                 issuePosition =>
                     new IssuePosition(issuePosition.IssueId, Position.Create(issuePosition.Position).Value))
             .HasColumnName("issues_position");
-        
+
         builder.Property(i => i.LessonsPosition)
             .ValueObjectsCollectionJsonConversion(
                 valueObject => new LessonPositionDto(valueObject.LessonId, valueObject.Position),
                 lessonPosition =>
                     new LessonPosition(lessonPosition.LessonId, Position.Create(lessonPosition.Position).Value))
             .HasColumnName("lessons_position");
-        
-        builder.Property<bool>("_isDeleted")
-            .UsePropertyAccessMode(PropertyAccessMode.Field)
+
+        builder.Property(m => m.IsDeleted)
             .HasColumnName("is_deleted");
 
         builder.Property(m => m.DeletionDate)
             .IsRequired(false)
             .HasColumnName("deletion_date");
 
-        builder.HasQueryFilter(f => f.IsDeleted == false);
+        builder.HasQueryFilter(f => f.IsDeleted == true);
     }
 }
