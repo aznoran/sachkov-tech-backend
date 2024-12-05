@@ -1,3 +1,4 @@
+using SachkovTech.Core.Extensions;
 using SachkovTech.Web;
 using SachkovTech.Web.Extensions;
 
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddProgramDependencies(builder.Configuration);
 
 var app = builder.Build();
+
 await app.Configure();
 
 if (app.Environment.IsDevelopment())

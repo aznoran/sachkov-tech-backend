@@ -54,13 +54,8 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         using var scope = Services.CreateScope();
         var issuesDbContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
-        var accountsDbContext = scope.ServiceProvider.GetRequiredService<AccountsWriteDbContext>();
         
-        await accountsDbContext.Database.EnsureCreatedAsync();
         await issuesDbContext.Database.EnsureCreatedAsync();
-        
-        await accountsDbContext.Database.MigrateAsync();
-        await issuesDbContext.Database.MigrateAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();

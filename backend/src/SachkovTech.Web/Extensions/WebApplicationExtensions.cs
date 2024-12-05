@@ -9,12 +9,12 @@ public static class WebApplicationExtensions
 {
     public static async Task Configure(this WebApplication app)
     {
-        await app.Services.RunMigrations();
-
-        var seeder = app.Services.GetRequiredService<AccountsSeeder>();
-
-        await seeder.SeedAsync();
-
+        
+        if (app.Environment.IsDevelopment())
+        {
+            await app.Services.RunMigrations();
+            await app.SeedAccounts();
+        }
         app.UseExceptionMiddleware();
         app.UseSerilogRequestLogging();
         app.ConfigureCors();
@@ -32,5 +32,12 @@ public static class WebApplicationExtensions
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
+    }
+    
+    private static async Task SeedAccounts(this WebApplication app)
+    {
+        var seeder = app.Services.GetRequiredService<AccountsSeeder>();
+
+        await seeder.SeedAsync();
     }
 }
