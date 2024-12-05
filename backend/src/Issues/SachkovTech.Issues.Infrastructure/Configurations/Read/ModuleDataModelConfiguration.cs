@@ -12,18 +12,20 @@ public class ModuleDataModelConfiguration : IEntityTypeConfiguration<ModuleDataM
     {
         builder.ToTable("modules");
 
-        builder.HasKey(i => i.Id);
+        builder.HasKey(m => m.Id);
 
-        builder.Property(i => i.IssuesPosition)
+        builder.HasQueryFilter(m => m.IsDeleted == false);
+
+        builder.Property(m => m.IssuesPosition)
             .HasConversion(
                 issues => string.Empty,
                 json => JsonSerializer.Deserialize<IssuePositionDto[]>(json, JsonSerializerOptions.Default) ??
                         Array.Empty<IssuePositionDto>())
             .HasColumnType("jsonb");
 
-        builder.Property(i => i.LessonsPosition)
+        builder.Property(m => m.LessonsPosition)
             .HasConversion(
-                issues => string.Empty,
+                lessons => string.Empty,
                 json => JsonSerializer.Deserialize<LessonPositionDto[]>(json, JsonSerializerOptions.Default) ??
                         Array.Empty<LessonPositionDto>())
             .HasColumnType("jsonb");
