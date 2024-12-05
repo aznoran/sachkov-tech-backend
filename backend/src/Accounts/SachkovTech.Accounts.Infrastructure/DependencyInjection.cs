@@ -9,6 +9,7 @@ using SachkovTech.Accounts.Application.Providers;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Accounts.Infrastructure.IdentityManagers;
+using SachkovTech.Accounts.Infrastructure.Migrator;
 using SachkovTech.Accounts.Infrastructure.Options;
 using SachkovTech.Accounts.Infrastructure.Providers;
 using SachkovTech.Accounts.Infrastructure.Seeding;
@@ -28,8 +29,9 @@ public static class DependencyInjection
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
             .AddMessageBus(configuration)
-            .AddProviders();
-
+            .AddProviders()
+            .AddMigrators();
+            
         return services;
     }
 
@@ -54,6 +56,12 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddMigrators(this IServiceCollection services)
+    {
+        services.AddScoped<IMigrator, AccountsMigrator>();
+
+        return services;
+    }
     private static IServiceCollection RegisterIdentity(this IServiceCollection services)
     {
         services
