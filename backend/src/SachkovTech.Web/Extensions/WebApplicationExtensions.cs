@@ -9,7 +9,7 @@ public static class WebApplicationExtensions
 {
     public static async Task Configure(this WebApplication app)
     {
-        app.Services.RunMigrations();
+        await app.Services.RunMigrations();
 
         var seeder = app.Services.GetRequiredService<AccountsSeeder>();
 

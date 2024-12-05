@@ -5,12 +5,14 @@ namespace SachkovTech.Core.Extensions;
 
 public static class MigratorExtensions
 {
-    public static void RunMigrations(this IServiceProvider serviceProvider)
+    public static async Task RunMigrations(this IServiceProvider serviceProvider)
     {
-        var migrators = serviceProvider.GetServices<IMigrator>();
+        var scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
+        using var scope = scopeFactory.CreateScope();
+        var migrators = scope.ServiceProvider.GetServices<IMigrator>();
         foreach (var migrator in migrators)
         {
-            migrator.Migrate();
+            await migrator.Migrate();
         }
     }
 }

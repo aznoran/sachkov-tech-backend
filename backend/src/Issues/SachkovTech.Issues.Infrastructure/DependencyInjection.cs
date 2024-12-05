@@ -5,6 +5,7 @@ using Quartz;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.Issues.Infrastructure.Migrator;
 using SachkovTech.Issues.Infrastructure.Outbox;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
@@ -24,11 +25,19 @@ public static class DependencyInjection
             .AddHostedServices()
             .AddServices()
             .AddQuartzService()
-            .AddMessageBus(configuration);
+            .AddMessageBus(configuration)
+            .AddMigrators();
 
         return services;
     }
+    
+    private static IServiceCollection AddMigrators(this IServiceCollection services)
+    {
+        services.AddScoped<IMigrator, IssuesMigrator>();
 
+        return services;
+    }
+    
     private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddMassTransit<IIssueMessageBus>(configure =>
