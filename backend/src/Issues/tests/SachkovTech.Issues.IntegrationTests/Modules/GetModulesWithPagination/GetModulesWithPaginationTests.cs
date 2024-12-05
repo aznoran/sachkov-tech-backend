@@ -10,8 +10,11 @@ namespace SachkovTech.Issues.IntegrationTests.Modules.GetModulesWithPagination;
 
 public class GetModulesWithPaginationTests: ModuleTestsBase
 {
+    private readonly IQueryHandler<PagedList<ModuleResponse>, GetModulesWithPaginationQuery> _sut;
     public GetModulesWithPaginationTests(ModuleTestWebFactory factory) : base(factory)
     {
+        _sut = Scope.ServiceProvider.GetRequiredService
+            <IQueryHandler<PagedList<ModuleResponse>, GetModulesWithPaginationQuery>>();;
     }
     
     [Fact]
@@ -26,11 +29,8 @@ public class GetModulesWithPaginationTests: ModuleTestsBase
         
         var query = new GetModulesWithPaginationQuery(null, 2, 2);
         
-        var sut = Scope.ServiceProvider.GetRequiredService
-            <IQueryHandler<PagedList<ModuleResponse>, GetModulesWithPaginationQuery>>();
-        
         // Act
-        var result = await sut.Handle(query, cancellationToken);
+        var result = await _sut.Handle(query, cancellationToken);
 
         //Assert
         result.Should().NotBeNull();
@@ -47,22 +47,12 @@ public class GetModulesWithPaginationTests: ModuleTestsBase
         // Arrange
         var cancellationToken = new CancellationTokenSource().Token;
 
-        var moduleId = await SeedModule();
-        await SeedModule();
-        await SeedModule();
+        var seededModules = await SeedModules(3);
         
-        var module = await ReadDbContext.Modules
-            .FirstOrDefaultAsync(x => x.Id == moduleId, cancellationToken);
-        if(module is null)
-            throw new Exception($"Seeded Module {moduleId} not found, something wrong with DB");
-        
-        var query = new GetModulesWithPaginationQuery(module.Title, 1, 2);
-        
-        var sut = Scope.ServiceProvider.GetRequiredService
-            <IQueryHandler<PagedList<ModuleResponse>, GetModulesWithPaginationQuery>>();
+        var query = new GetModulesWithPaginationQuery(seededModules[0].Title.Value, 1, 2);
         
         // Act
-        var result = await sut.Handle(query, cancellationToken);
+        var result = await _sut.Handle(query, cancellationToken);
 
         //Assert
         result.Should().NotBeNull();

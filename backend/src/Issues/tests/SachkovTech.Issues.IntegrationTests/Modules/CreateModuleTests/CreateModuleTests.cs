@@ -8,8 +8,10 @@ namespace SachkovTech.Issues.IntegrationTests.Modules.CreateModuleTests;
 
 public class CreateModuleTests : ModuleTestsBase
 {
+    private readonly ICommandHandler<Guid, CreateModuleCommand> _sut;
     public CreateModuleTests(ModuleTestWebFactory factory) : base(factory)
     {
+        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateModuleCommand>>();
     }
 
     [Fact]
@@ -20,10 +22,8 @@ public class CreateModuleTests : ModuleTestsBase
         var cancellationToken = new CancellationTokenSource().Token;
         var command = Fixture.CreateCreateModuleCommand();
 
-        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateModuleCommand>>();
-
         // Act
-        var result = await sut.Handle(command, cancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         // Assert
         result.IsSuccess.Should().BeTrue();

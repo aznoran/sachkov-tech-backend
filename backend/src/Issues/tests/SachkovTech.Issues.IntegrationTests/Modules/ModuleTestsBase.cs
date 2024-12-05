@@ -39,16 +39,29 @@ public class ModuleTestsBase : IClassFixture<ModuleTestWebFactory>, IAsyncLifeti
 
     protected async Task<Guid> SeedModule()
     {
-        var module = new Module(
-            ModuleId.NewModuleId(),
-            Title.Create(Fixture.Create<String>()).Value,
-            Description.Create(Fixture.Create<String>()).Value);
+        var module = Fixture.CreateModule();
         
         await WriteDbContext.Modules.AddAsync(module);
 
         await WriteDbContext.SaveChangesAsync();
 
         return module.Id;
+    }
+    
+    protected async Task<List<Module>> SeedModules(int count)
+    {
+        List<Module> modulesToSeed = [];
+        
+        for (var i = 0; i < count; i++)
+        {
+            modulesToSeed.Add(Fixture.CreateModule());
+        }
+        
+        await WriteDbContext.Modules.AddRangeAsync(modulesToSeed);
+
+        await WriteDbContext.SaveChangesAsync();
+
+        return modulesToSeed;
     }
     
     protected async Task<Guid> SeedIssuePositions(Guid moduleId, CancellationToken cancellationToken = default)

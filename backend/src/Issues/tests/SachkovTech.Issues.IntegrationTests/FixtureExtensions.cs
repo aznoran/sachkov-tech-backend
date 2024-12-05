@@ -11,6 +11,9 @@ using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
+using SachkovTech.Issues.Domain.Module;
+using SachkovTech.SharedKernel.ValueObjects;
+using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.IntegrationTests;
 
@@ -128,5 +131,13 @@ public static class FixtureExtensions
     {
         return fixture.Build<GetModulesWithPaginationQuery>()
             .Create();
+    }
+
+    public static Module CreateModule(this IFixture fixture)
+    {
+        return new Module(
+            ModuleId.NewModuleId(),
+            Title.Create(fixture.Create<String>()).Value,
+            Description.Create(fixture.Create<String>()).Value);
     }
 }
