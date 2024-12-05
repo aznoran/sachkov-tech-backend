@@ -2,6 +2,7 @@ using System.Data.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
@@ -52,8 +53,6 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         await _dbContainer.StartAsync();
 
         using var scope = Services.CreateScope();
-        var issuesContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
-        await issuesContext.Database.EnsureCreatedAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();
