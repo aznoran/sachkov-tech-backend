@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Respawn;
+using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Web;
@@ -31,23 +33,18 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
     protected virtual void ConfigureDefaultServices(IServiceCollection services)
     {
-        var writeContext = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(IssuesWriteDbContext));
-
-        var readContext = services.SingleOrDefault(s =>
-            s.ServiceType == typeof(IReadDbContext));
-
-        if (writeContext is not null)
-            services.Remove(writeContext);
-
-        if (readContext is not null)
-            services.Remove(readContext);
+        services.RemoveAll(typeof(IssuesWriteDbContext));
+        services.RemoveAll(typeof(IReadDbContext));
+        services.RemoveAll(typeof(AccountsWriteDbContext));
 
         services.AddScoped<IssuesWriteDbContext>(_ =>
             new IssuesWriteDbContext(_dbContainer.GetConnectionString()));
 
         services.AddScoped<IReadDbContext, IssuesReadDbContext>(_ =>
             new IssuesReadDbContext(_dbContainer.GetConnectionString()));
+
+        services.AddScoped<AccountsWriteDbContext>(_ =>
+            new AccountsWriteDbContext(_dbContainer.GetConnectionString()));
     }
 
     public async Task InitializeAsync()
@@ -55,8 +52,8 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         await _dbContainer.StartAsync();
 
         using var scope = Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
+        var issuesContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
+        await issuesContext.Database.EnsureCreatedAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
         await InitializeRespawner();
