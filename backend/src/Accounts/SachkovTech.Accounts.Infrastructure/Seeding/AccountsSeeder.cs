@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace SachkovTech.Accounts.Infrastructure.Seeding;
 
-public class AccountsSeeder
+public class AccountsSeeder: IAccountsSeeder
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
@@ -19,4 +19,9 @@ public class AccountsSeeder
 
         await service.SeedAsync();
     }
+}
+
+public interface IAccountsSeeder
+{
+    Task SeedAsync();
 }

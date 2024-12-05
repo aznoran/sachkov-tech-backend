@@ -36,7 +36,7 @@ public static class WebApplicationExtensions
     
     private static async Task SeedAccounts(this WebApplication app)
     {
-        var seeder = app.Services.GetRequiredService<AccountsSeeder>();
+        var seeder = app.Services.GetRequiredService<IAccountsSeeder>();
 
         await seeder.SeedAsync();
     }

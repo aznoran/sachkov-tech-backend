@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Npgsql;
 using Respawn;
 using SachkovTech.Accounts.Infrastructure.DbContexts;
+using SachkovTech.Accounts.Infrastructure.Seeding;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Infrastructure.DbContexts;
 using SachkovTech.Web;
@@ -37,6 +38,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         services.RemoveAll(typeof(IssuesWriteDbContext));
         services.RemoveAll(typeof(IReadDbContext));
         services.RemoveAll(typeof(AccountsWriteDbContext));
+        services.RemoveAll(typeof(IAccountsSeeder));
 
         services.AddScoped<IssuesWriteDbContext>(_ =>
             new IssuesWriteDbContext(_dbContainer.GetConnectionString()));
@@ -46,6 +48,8 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         services.AddScoped<AccountsWriteDbContext>(_ =>
             new AccountsWriteDbContext(_dbContainer.GetConnectionString()));
+
+        services.AddSingleton<IAccountsSeeder, FakeAccountsSeeder>();
     }
 
     public async Task InitializeAsync()
@@ -81,5 +85,13 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         await _dbContainer.StopAsync();
         await _dbContainer.DisposeAsync();
+    }
+}
+
+public class FakeAccountsSeeder : IAccountsSeeder
+{
+    public Task SeedAsync()
+    {
+        return Task.CompletedTask;
     }
 }
