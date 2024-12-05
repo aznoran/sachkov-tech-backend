@@ -77,6 +77,6 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
             .IsRequired(false)
             .HasColumnName("deletion_date");
         
-        builder.HasQueryFilter(f => f.IsDeleted == true);
+        builder.HasQueryFilter(f => f.IsDeleted == false);
     }
 }

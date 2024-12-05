@@ -60,6 +60,6 @@ public class ModuleConfiguration : IEntityTypeConfiguration<Module>
             .IsRequired(false)
             .HasColumnName("deletion_date");
 
-        builder.HasQueryFilter(f => f.IsDeleted == true);
+        builder.HasQueryFilter(f => f.IsDeleted == false);
     }
 }

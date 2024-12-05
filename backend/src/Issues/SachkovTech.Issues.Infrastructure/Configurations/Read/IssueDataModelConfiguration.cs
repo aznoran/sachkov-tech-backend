@@ -12,7 +12,9 @@ public class IssueDataModelConfiguration : IEntityTypeConfiguration<IssueDataMod
         builder.ToTable("issues");
 
         builder.HasKey(i => i.Id);
-        
+
+        builder.HasQueryFilter(i => i.IsDeleted == false);
+
         builder.Property(i => i.Files)
             .HasConversion(
                 values => EfCoreFluentApiExtensions.SerializeValueObjectsCollection(),

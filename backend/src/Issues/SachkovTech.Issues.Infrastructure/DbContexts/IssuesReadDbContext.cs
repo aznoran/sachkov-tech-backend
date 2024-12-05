@@ -8,20 +8,20 @@ namespace SachkovTech.Issues.Infrastructure.DbContexts;
 public class IssuesReadDbContext : DbContext, IReadDbContext
 {
     private readonly string _connectionString;
-    
+
     public IssuesReadDbContext(string connectionString)
     {
         _connectionString = connectionString;
     }
-    
+
     public IQueryable<IssueDataModel> Issues => Set<IssueDataModel>();
-    
+
     public IQueryable<ModuleDataModel> Modules => Set<ModuleDataModel>();
-    
+
     public IQueryable<IssueReviewDataModel> IssueReviewDtos => Set<IssueReviewDataModel>();
-    
+
     public IQueryable<CommentDataModel> Comments => Set<CommentDataModel>();
-    
+
     public IQueryable<UserIssueDataModel> UserIssues => Set<UserIssueDataModel>();
     public IQueryable<LessonDataModel> Lessons => Set<LessonDataModel>();
 
@@ -38,12 +38,10 @@ public class IssuesReadDbContext : DbContext, IReadDbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("issues");
-        
+
         modelBuilder.ApplyConfigurationsFromAssembly(
             typeof(IssuesWriteDbContext).Assembly,
             type => type.FullName?.Contains("Configurations.Read") ?? false);
-
-        modelBuilder.Entity<IssueDataModel>().HasQueryFilter(i => !i.IsDeleted);
     }
 
     private ILoggerFactory CreateLoggerFactory() =>
