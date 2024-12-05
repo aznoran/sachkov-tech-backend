@@ -37,7 +37,6 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
     {
         services.RemoveAll(typeof(IssuesWriteDbContext));
         services.RemoveAll(typeof(IReadDbContext));
-        services.RemoveAll(typeof(AccountsWriteDbContext));
         services.RemoveAll(typeof(IAccountsSeeder));
 
         services.AddScoped<IssuesWriteDbContext>(_ =>
@@ -45,9 +44,6 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
 
         services.AddScoped<IReadDbContext, IssuesReadDbContext>(_ =>
             new IssuesReadDbContext(_dbContainer.GetConnectionString()));
-
-        services.AddScoped<AccountsWriteDbContext>(_ =>
-            new AccountsWriteDbContext(_dbContainer.GetConnectionString()));
 
         services.AddSingleton<IAccountsSeeder, FakeAccountsSeeder>();
     }
@@ -59,6 +55,7 @@ public class IntegrationTestsWebFactory : WebApplicationFactory<Program>, IAsync
         using var scope = Services.CreateScope();
         var issuesDbContext = scope.ServiceProvider.GetRequiredService<IssuesWriteDbContext>();
         
+        await issuesDbContext.Database.EnsureCreatedAsync();
         await issuesDbContext.Database.EnsureCreatedAsync();
 
         _dbConnection = new NpgsqlConnection(_dbContainer.GetConnectionString());
