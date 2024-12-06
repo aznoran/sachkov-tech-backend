@@ -39,7 +39,7 @@ public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleRes
 
         return new PagedList<ModuleResponse>
         {
-            Items = modules.ToList(),
+            Items = modules.Skip((query.Page-1) * query.PageSize).ToList(),
             TotalCount = totalCount,
             PageSize = query.PageSize,
             Page = query.Page

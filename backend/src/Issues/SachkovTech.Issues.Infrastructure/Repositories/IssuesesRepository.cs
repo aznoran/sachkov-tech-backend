@@ -12,10 +12,17 @@ namespace SachkovTech.Issues.Infrastructure.Repositories;
 public class IssuesesRepository : IIssuesRepository
 {
     private readonly IssuesWriteDbContext _dbContext;
-    
+    private bool _includeDeleted;
+
     public IssuesesRepository(IssuesWriteDbContext dbContext)
     {
         _dbContext = dbContext;
+    }
+
+    public IIssuesRepository IncludeDeleted()
+    {
+        _includeDeleted = true;
+        return this;
     }
 
     public async Task<Guid> Add(Issue issue, CancellationToken cancellationToken = default)
@@ -40,7 +47,27 @@ public class IssuesesRepository : IIssuesRepository
     public async Task<Result<Issue, Error>> GetById(
         IssueId issueId, CancellationToken cancellationToken = default)
     {
+        IQueryable<Issue> query = _dbContext.Issues;
+
+        if (_includeDeleted)
+        {
+            query = query.IgnoreQueryFilters();
+        }
+
+        var issue = await query
+            .FirstOrDefaultAsync(m => m.Id == issueId, cancellationToken);
+
+        if (issue is null)
+            return Errors.General.NotFound(issueId);
+
+        return issue;
+    }
+
+    public async Task<Result<Issue, Error>> GetByIdForRestore(
+        IssueId issueId, CancellationToken cancellationToken = default)
+    {
         var issue = await _dbContext.Issues
+            .IgnoreQueryFilters()
             .FirstOrDefaultAsync(m => m.Id == issueId, cancellationToken);
 
         if (issue is null)
