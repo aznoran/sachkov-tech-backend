@@ -25,13 +25,13 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services.RegisterIdentity()
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
             .AddMessageBus(configuration)
             .AddProviders()
             .AddMigrators();
-            
+
         return services;
     }
 
@@ -62,6 +62,7 @@ public static class DependencyInjection
 
         return services;
     }
+
     private static IServiceCollection RegisterIdentity(this IServiceCollection services)
     {
         services
@@ -78,9 +79,13 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<AccountsWriteDbContext>();
+        services.AddScoped<AccountsWriteDbContext>(_ =>
+            new AccountsWriteDbContext(configuration.GetConnectionString("Database")!));
+
         services.AddScoped<IAccountsReadDbContext, AccountsReadDbContext>();
 
         services.AddKeyedScoped<IUnitOfWork, UnitOfWork>(Modules.Accounts);
@@ -90,15 +95,15 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSeeding(this IServiceCollection services)
     {
-        services.AddSingleton<AccountsSeeder>();
+        services.AddSingleton<IAutoSeeder, AccountsSeeder>();
         services.AddScoped<AccountsSeederService>();
 
         return services;
     }
 
-    private static IServiceCollection ConfigureCustomOptions(this IServiceCollection services, IConfiguration configuration)
+    private static IServiceCollection ConfigureCustomOptions(this IServiceCollection services,
+        IConfiguration configuration)
     {
-
         services.Configure<JwtOptions>(configuration.GetSection(JwtOptions.JWT));
         services.Configure<AdminOptions>(configuration.GetSection(AdminOptions.ADMIN));
 

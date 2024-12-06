@@ -1,4 +1,5 @@
 ﻿using SachkovTech.Accounts.Infrastructure.Seeding;
+using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Framework.Middlewares;
 using Serilog;
@@ -9,12 +10,12 @@ public static class WebApplicationExtensions
 {
     public static async Task Configure(this WebApplication app)
     {
-        await app.Services.RunMigrations();
-
-        var seeder = app.Services.GetRequiredService<AccountsSeeder>();
-
-        await seeder.SeedAsync();
-
+        
+        if (app.Environment.IsDevelopment())
+        {
+            await app.Services.RunMigrations();
+            await app.Services.RunAutoSeeding();
+        }
         app.UseExceptionMiddleware();
         app.UseSerilogRequestLogging();
         app.ConfigureCors();
