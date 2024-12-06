@@ -15,4 +15,15 @@ public static class MigratorExtensions
             await migrator.Migrate();
         }
     }
+    
+    public static async Task RunAutoSeeding(this IServiceProvider serviceProvider)
+    {
+        var scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
+        using var scope = scopeFactory.CreateScope();
+        var seeders = scope.ServiceProvider.GetServices<IAutoSeeder>();
+        foreach (var seeder in seeders)
+        {
+            await seeder.SeedAsync();
+        }
+    }
 }

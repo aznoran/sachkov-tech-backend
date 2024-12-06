@@ -95,7 +95,7 @@ public static class DependencyInjection
 
     private static IServiceCollection AddSeeding(this IServiceCollection services)
     {
-        services.AddSingleton<IAccountsSeeder, AccountsSeeder>();
+        services.AddSingleton<IAutoSeeder, AccountsSeeder>();
         services.AddScoped<AccountsSeederService>();
 
         return services;

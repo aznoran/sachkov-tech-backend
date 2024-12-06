@@ -1,4 +1,5 @@
 ﻿using SachkovTech.Accounts.Infrastructure.Seeding;
+using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Framework.Middlewares;
 using Serilog;
@@ -13,7 +14,7 @@ public static class WebApplicationExtensions
         if (app.Environment.IsDevelopment())
         {
             await app.Services.RunMigrations();
-            await app.SeedAccounts();
+            await app.Services.RunAutoSeeding();
         }
         app.UseExceptionMiddleware();
         app.UseSerilogRequestLogging();
@@ -32,12 +33,5 @@ public static class WebApplicationExtensions
                 .AllowAnyHeader()
                 .AllowAnyMethod();
         });
-    }
-    
-    private static async Task SeedAccounts(this WebApplication app)
-    {
-        var seeder = app.Services.GetRequiredService<IAccountsSeeder>();
-
-        await seeder.SeedAsync();
     }
 }
