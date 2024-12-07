@@ -98,11 +98,8 @@ public static class DependencyInjection
                 options =>
                 {
                     options.DataStream = new DataStreamName(indexFormat);
-                    options.TextFormatting = new EcsTextFormatterConfiguration()
-                    {
-                        
-                    };
-                    options.BootstrapMethod = BootstrapMethod.Failure;
+                    options.TextFormatting = new EcsTextFormatterConfiguration();
+                    options.BootstrapMethod = BootstrapMethod.Silent;
                 })
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
