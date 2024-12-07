@@ -1,5 +1,4 @@
-﻿using MassTransit.Initializers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;

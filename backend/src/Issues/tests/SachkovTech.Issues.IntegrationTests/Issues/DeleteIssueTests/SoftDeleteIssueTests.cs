@@ -1,17 +1,19 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using SachkovTech.Core.Abstractions;
+using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.SoftDeleteIssue;
 
 namespace SachkovTech.Issues.IntegrationTests.Issues.DeleteIssueTests;
 
 public class SoftDeleteIssueTests : IssueTestsBase
 {
-    private readonly SoftDeleteIssueHandler sut;
+    private readonly SoftDeleteIssueHandler _sut;
 
     public SoftDeleteIssueTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        sut = Scope.ServiceProvider.GetRequiredService<SoftDeleteIssueHandler>();
+        _sut = Scope.ServiceProvider.GetRequiredService<SoftDeleteIssueHandler>();
     }
 
     [Fact]
@@ -25,7 +27,7 @@ public class SoftDeleteIssueTests : IssueTestsBase
         var command = Fixture.CreateDeleteIssueCommand(issueId);
 
         // act
-        var result = await sut.Handle(command, cancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         //assert
         result.IsSuccess.Should().BeTrue();
@@ -40,7 +42,7 @@ public class SoftDeleteIssueTests : IssueTestsBase
     }
 
     [Fact]
-    public async Task Soft_delete_issue_successfully_when_issue_is_already_soft_deleted()
+    public async Task SoftDeleteIssue_when_issue_already_deleted_should_be_failure()
     {
         // arrange
         var cancellationToken = new CancellationTokenSource().Token;
@@ -49,18 +51,15 @@ public class SoftDeleteIssueTests : IssueTestsBase
 
         var command = Fixture.CreateDeleteIssueCommand(issueId);
 
-        var sut = Scope.ServiceProvider.GetRequiredService<SoftDeleteIssueHandler>();
-
         // act
-        var result = await sut.Handle(command, cancellationToken);
+        var result = await _sut.Handle(command, cancellationToken);
 
         //assert
-        result.IsSuccess.Should().BeTrue();
-        result.Value.Should().NotBeEmpty();
+        result.IsSuccess.Should().Be(false);
 
         var issue = await ReadDbContext.Issues
             .IgnoreQueryFilters()
-            .FirstOrDefaultAsync(l => l.Id == result.Value, cancellationToken);
+            .FirstOrDefaultAsync(l => l.Id == issueId, cancellationToken);;
 
         issue.Should().NotBeNull();
         issue?.IsDeleted.Should().BeTrue();

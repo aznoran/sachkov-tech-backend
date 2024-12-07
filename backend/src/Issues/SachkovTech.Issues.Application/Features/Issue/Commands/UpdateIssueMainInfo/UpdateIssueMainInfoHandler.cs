@@ -47,7 +47,7 @@ public class UpdateIssueMainInfoHandler : ICommandHandler<Guid, UpdateIssueMainI
             return validationResult.ToList();
         }
 
-        var issueResult = await _issuesRepository.GetById(command.IssueId, cancellationToken);
+        var issueResult = await _issuesRepository.GetById(command.IssueId, false, cancellationToken);
         if (issueResult.IsFailure)
             return Errors.General.NotFound(command.IssueId).ToErrorList();
 
