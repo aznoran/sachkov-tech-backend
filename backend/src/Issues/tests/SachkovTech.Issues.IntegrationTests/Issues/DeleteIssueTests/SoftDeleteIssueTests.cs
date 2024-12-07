@@ -9,11 +9,11 @@ namespace SachkovTech.Issues.IntegrationTests.Issues.DeleteIssueTests;
 
 public class SoftDeleteIssueTests : IssueTestsBase
 {
-    private readonly ICommandHandler<Guid, DeleteIssueCommand> _sut;
+    private readonly SoftDeleteIssueHandler _sut;
 
     public SoftDeleteIssueTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        _sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, DeleteIssueCommand>>();
+        _sut = Scope.ServiceProvider.GetRequiredService<SoftDeleteIssueHandler>();
     }
 
     [Fact]

@@ -28,8 +28,7 @@ public class RestoreIssueHandler : ICommandHandler<Guid, RestoreIssueCommand>
         CancellationToken cancellationToken = default)
     {
         var restoreResult = await _issuesRepository
-            .IncludeDeleted()
-            .GetById(command.IssueId, cancellationToken);
+            .GetById(command.IssueId, true, cancellationToken);
         
         if (restoreResult.IsFailure)
             return restoreResult.Error.ToErrorList();
