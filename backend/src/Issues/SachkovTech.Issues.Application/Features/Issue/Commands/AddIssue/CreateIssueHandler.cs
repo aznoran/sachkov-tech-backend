@@ -12,23 +12,23 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Commands.AddIssue;
 
-public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
+public class CreateIssueHandler : ICommandHandler<Guid, CreateIssueCommand>
 {
     private readonly IIssuesRepository _issuesRepository;
     private readonly ILessonsRepository _lessonsRepository;
     private readonly IModulesRepository _modulesRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IValidator<AddIssueCommand> _validator;
-    private readonly ILogger<AddIssueHandler> _logger;
+    private readonly IValidator<CreateIssueCommand> _validator;
+    private readonly ILogger<CreateIssueHandler> _logger;
 
-    public AddIssueHandler(
+    public CreateIssueHandler(
         IIssuesRepository issuesRepository,
         ILessonsRepository lessonsRepository,
         IModulesRepository modulesRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)]
         IUnitOfWork unitOfWork,
-        IValidator<AddIssueCommand> validator,
-        ILogger<AddIssueHandler> logger)
+        IValidator<CreateIssueCommand> validator,
+        ILogger<CreateIssueHandler> logger)
     {
         _issuesRepository = issuesRepository;
         _lessonsRepository = lessonsRepository;
@@ -39,7 +39,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
     }
 
     public async Task<Result<Guid, ErrorList>> Handle(
-        AddIssueCommand command,
+        CreateIssueCommand command,
         CancellationToken cancellationToken = default)
     {
         var validationResult = await _validator.ValidateAsync(command, cancellationToken);
@@ -80,7 +80,7 @@ public class AddIssueHandler : ICommandHandler<Guid, AddIssueCommand>
     private Domain.Issue.Issue InitIssue(
         ModuleId moduleId, 
         LessonId? lessonId,
-        AddIssueCommand command)
+        CreateIssueCommand command)
     {
         var issueId = IssueId.NewIssueId();
         var title = Title.Create(command.Title).Value;

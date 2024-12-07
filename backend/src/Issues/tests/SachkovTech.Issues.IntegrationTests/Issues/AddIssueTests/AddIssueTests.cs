@@ -8,11 +8,11 @@ namespace SachkovTech.Issues.IntegrationTests.Issues.AddIssueTests;
 
 public class AddIssueTests : IssueTestsBase
 {
-    private readonly ICommandHandler<Guid, AddIssueCommand> sut;
+    private readonly ICommandHandler<Guid, CreateIssueCommand> sut;
 
     public AddIssueTests(IntegrationTestsWebFactory factory) : base(factory)
     {
-        sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, AddIssueCommand>>();
+        sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateIssueCommand>>();
     }
 
     [Fact]
@@ -53,7 +53,7 @@ public class AddIssueTests : IssueTestsBase
 
         var command = Fixture.CreateAddIssueCommand(moduleId, lessonId);
 
-        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, AddIssueCommand>>();
+        var sut = Scope.ServiceProvider.GetRequiredService<ICommandHandler<Guid, CreateIssueCommand>>();
 
         // act
         var result = await sut.Handle(command, cancellationToken);

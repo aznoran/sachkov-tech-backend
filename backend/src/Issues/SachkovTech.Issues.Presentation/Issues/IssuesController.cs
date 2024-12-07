@@ -103,10 +103,10 @@ public class IssuesController : ApplicationController
     [HttpPost]
     public async Task<ActionResult> AddIssue(
         [FromBody] AddIssueRequest request,
-        [FromServices] AddIssueHandler handler,
+        [FromServices] CreateIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new AddIssueCommand(
+        var command = new CreateIssueCommand(
             request.LessonId,
             request.ModuleId,
             request.Title,
