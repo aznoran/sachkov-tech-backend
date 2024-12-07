@@ -4,11 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
-using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.SharedKernel;
 
-namespace SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssue;
+namespace SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.ForceDeleteIssue;
 
 public class ForceDeleteIssueHandler : ICommandHandler<Guid, DeleteIssueCommand>
 {

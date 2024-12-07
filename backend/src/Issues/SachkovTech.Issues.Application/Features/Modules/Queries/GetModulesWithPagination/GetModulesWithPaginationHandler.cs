@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MassTransit.Initializers;
+using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
+using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
 using SachkovTech.Issues.Contracts.Module;
@@ -19,7 +21,7 @@ public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleRes
     public async Task<PagedList<ModuleResponse>> Handle(GetModulesWithPaginationQuery query, CancellationToken cancellationToken = default)
     {
         var modulesQuery = _readDbContext.Modules.AsQueryable();
-        
+
         var totalCount = await modulesQuery.CountAsync(cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(query.Title))
@@ -27,19 +29,16 @@ public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleRes
             modulesQuery = modulesQuery.Where(m => EF.Functions.Like(m.Title.ToLower(), $"%{query.Title.ToLower()}%"));
         }
 
-        var modules = modulesQuery.ToList()
-            .Select(i => new ModuleResponse
-                {
-                    Id = i.Id,
-                    Title = i.Title,
-                    Description = i.Description,
-                    IssuesPosition = i.IssuesPosition,
-                }
-            );
+        var modulesPagedList = await modulesQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
 
         return new PagedList<ModuleResponse>
         {
-            Items = modules.Skip((query.Page-1) * query.PageSize).ToList(),
+            Items = modulesPagedList.Items.Select(m => new ModuleResponse(
+                m.Id,
+                m.Title,
+                m.Description,
+                m.IssuesPosition,
+                m.LessonsPosition)).ToList(),
             TotalCount = totalCount,
             PageSize = query.PageSize,
             Page = query.Page

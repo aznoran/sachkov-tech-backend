@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssue;
+using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.ForceDeleteIssue;
 
 namespace SachkovTech.Issues.IntegrationTests.Issues.DeleteIssueTests;
 

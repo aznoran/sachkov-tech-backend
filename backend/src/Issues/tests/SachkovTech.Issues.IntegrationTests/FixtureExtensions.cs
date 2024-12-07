@@ -31,12 +31,12 @@ public static class FixtureExtensions
             .Create();
     }
     
-    public static AddIssueCommand CreateAddIssueCommand(
+    public static CreateIssueCommand CreateAddIssueCommand(
         this IFixture fixture,
         Guid moduleId,
         Guid lessonId)
     {
-        return fixture.Build<AddIssueCommand>()
+        return fixture.Build<CreateIssueCommand>()
             .With(c => c.LessonId, lessonId)
             .With(c => c.ModuleId, moduleId)
             .With(c => c.Experience, 5)

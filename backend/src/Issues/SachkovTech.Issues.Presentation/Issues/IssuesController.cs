@@ -3,8 +3,8 @@ using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Issue.Commands.AddIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue;
+using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.ForceDeleteIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.SoftDeleteIssue;
-using SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.RestoreIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
@@ -103,10 +103,10 @@ public class IssuesController : ApplicationController
     [HttpPost]
     public async Task<ActionResult> AddIssue(
         [FromBody] AddIssueRequest request,
-        [FromServices] AddIssueHandler handler,
+        [FromServices] CreateIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = new AddIssueCommand(
+        var command = new CreateIssueCommand(
             request.LessonId,
             request.ModuleId,
             request.Title,

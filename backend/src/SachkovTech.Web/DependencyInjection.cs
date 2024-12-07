@@ -1,4 +1,10 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using Elastic.Channels;
+using Elastic.CommonSchema.Serilog;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using SachkovTech.Accounts.Infrastructure;
 using SachkovTech.Framework.Authorization;
@@ -39,7 +45,7 @@ public static class DependencyInjection
         services.AddAccountsInfrastructure(configuration)
             .AddAccountsApplication(configuration)
             .AddAccountsPresentation();
-        
+
         return services;
     }
 
@@ -48,7 +54,7 @@ public static class DependencyInjection
     {
         services.AddIssuesApplication()
             .AddIssuesInfrastructure(configuration);
-        
+
         return services;
     }
 
@@ -80,18 +86,31 @@ public static class DependencyInjection
     private static IServiceCollection AddLogging(
         this IServiceCollection services, IConfiguration configuration)
     {
+        var indexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM-dd}";
+
         Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
             .WriteTo.Console()
             .WriteTo.Debug()
             .WriteTo.Seq(configuration.GetConnectionString("Seq")
                          ?? throw new ArgumentNullException("Seq"))
+            .WriteTo.Elasticsearch([new Uri("http://localhost:9200")],
+                options =>
+                {
+                    options.DataStream = new DataStreamName(indexFormat);
+                    options.TextFormatting = new EcsTextFormatterConfiguration()
+                    {
+                        
+                    };
+                    options.BootstrapMethod = BootstrapMethod.Failure;
+                })
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
             .CreateLogger();
 
         services.AddSerilog();
-        
+
         return services;
     }
 
@@ -99,7 +118,7 @@ public static class DependencyInjection
     {
         services.AddHttpContextAccessor()
             .AddScoped<UserScopedData>();
-        
+
         return services;
     }
 
@@ -107,8 +126,7 @@ public static class DependencyInjection
     {
         var assemblies = new[]
         {
-            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
+            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly, typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
         };
 
         services.Scan(scan => scan.FromAssemblies(assemblies)
@@ -131,7 +149,11 @@ public static class DependencyInjection
     {
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "My API",
+                Version = "v1"
+            });
             c.AddSecurityDefinition("Bearer",
                 new OpenApiSecurityScheme
                 {
@@ -145,7 +167,11 @@ public static class DependencyInjection
                 {
                     new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
                     },
                     []
                 }
