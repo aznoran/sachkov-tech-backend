@@ -7,51 +7,52 @@ public static class Permissions
 {
     public static class Lessons
     {
-        public const string ReadLesson = "lessons.read";
-        public const string CreateLesson = "lessons.create";
-        public const string UpdateLesson = "lessons.update";
-        public const string DeleteLesson = "lessons.delete";
+        public const string READ_LESSON = "lessons.read";
+        public const string CREATE_LESSON = "lessons.create";
+        public const string UPDATE_LESSON = "lessons.update";
+        public const string DELETE_LESSON = "lessons.delete";
     }
 
     public static class Modules
     {
-        //public const string ReadModule = "modules.read";
-        public const string CreateModule = "modules.create";
-        public const string UpdateModule = "modules.update";
-        public const string DeleteModule = "modules.delete";
+        public const string READ_MODULE = "modules.read";
+        public const string CREATE_MODULE = "modules.create";
+        public const string UPDATE_MODULE = "modules.update";
+        public const string DELETE_MODULE = "modules.delete";
     }
 
     public static class Issues
     {
-        public const string ReadIssue = "issues.read";
-        public const string CreateIssue = "issues.create";
-        public const string UpdateIssue = "issues.update";
-        public const string DeleteIssue = "issues.delete";
+        public const string READ_ISSUE = "issues.read";
+        public const string CREATE_ISSUE = "issues.create";
+        public const string UPDATE_ISSUE = "issues.update";
+        public const string DELETE_ISSUE = "issues.delete";
     }
 
     public static class SolvingIssues
     {
         //public const string ReadSolvingIssue = "solving.issues.read";
-        public const string CreateSolvingIssue = "solving.issues.create";
-        public const string UpdateSolvingIssue = "solving.issues.update";
+        public const string CREATE_SOLVING_ISSUE = "solving.issues.create";
+        public const string UPDATE_SOLVING_ISSUE = "solving.issues.update";
     }
 
     public static class IssuesReview
     {
-        public const string ReadReviewIssue = "review.issues.read";
-        public const string CreateReviewIssue = "review.issues.create";
-        public const string UpdateReviewIssue = "review.issues.update";
-        public const string CommentReviewIssue = "review.issues.comment";
+        public const string READ_REVIEW_ISSUE = "review.issues.read";
+        public const string CREATE_REVIEW_ISSUE = "review.issues.create";
+        public const string UPDATE_REVIEW_ISSUE = "review.issues.update";
+        public const string COMMENT_REVIEW_ISSUE = "review.issues.comment";
     }
 
     public static class Files
     {
         //public const string ReadFile = "files.read";
-        public const string Upload = "files.create";
+        public const string UPLOAD = "files.create";
     }
 
     public static class Accounts
     {
-        public const string EnrollAccount = "accounts.enroll";
+        public const string ENROLL_ACCOUNT = "accounts.enroll";
+        public const string READ_ACCOUNT = "accounts.read";
     }
 }

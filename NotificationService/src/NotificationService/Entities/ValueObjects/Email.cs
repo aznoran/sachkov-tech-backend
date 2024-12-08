@@ -1,10 +1,10 @@
 using CSharpFunctionalExtensions;
-using NotificationService.HelperClasses;
 using System.Text.RegularExpressions;
+using NotificationService.SharedKernel;
 
 namespace NotificationService.Entities.ValueObjects;
 
-public class Email : ValueObject
+public class Email : ComparableValueObject
 {
     private const string REGEX = @"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$";
     public string Value { get; }
@@ -24,9 +24,8 @@ public class Email : ValueObject
         return new Email(email);
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }
-
 }

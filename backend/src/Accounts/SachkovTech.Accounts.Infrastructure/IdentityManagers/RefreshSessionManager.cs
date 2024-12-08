@@ -1,6 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
-using SachkovTech.Accounts.Application;
+using SachkovTech.Accounts.Application.Managers;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Accounts.Infrastructure.DbContexts;
 using SachkovTech.SharedKernel;
@@ -14,6 +14,7 @@ public class RefreshSessionManager(AccountsWriteDbContext accountsWriteContext) 
     {
         var refreshSession = await accountsWriteContext.RefreshSessions
             .Include(r => r.User)
+            .ThenInclude(u => u.Roles)
             .FirstOrDefaultAsync(r => r.RefreshToken == refreshToken, cancellationToken);
 
         if (refreshSession is null)

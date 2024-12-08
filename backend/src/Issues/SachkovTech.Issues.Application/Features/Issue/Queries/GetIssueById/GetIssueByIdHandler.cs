@@ -1,9 +1,8 @@
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Files.Contracts;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Issue;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
@@ -30,10 +29,10 @@ public class GetIssueByIdHandler : IQueryHandlerWithResult<IssueResponse, GetIss
         var response = new IssueResponse
         {
             Id = issueDto.Id,
-            ModuleId = issueDto.ModuleId.Value,
+            ModuleId = issueDto.ModuleId,
             Title = issueDto.Title,
             Description = issueDto.Description,
-            LessonId = issueDto.LessonId.Value,
+            LessonId = issueDto.LessonId,
         };
 
         return response;

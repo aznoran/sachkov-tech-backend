@@ -2,13 +2,8 @@
 
 namespace SachkovTech.SharedKernel.ValueObjects.Ids;
 
-public class UserId : ValueObject
+public class UserId : ComparableValueObject
 {
-    // ef core
-    private UserId()
-    {
-        
-    }
     private UserId(Guid value)
     {
         Value = value;
@@ -27,8 +22,8 @@ public class UserId : ValueObject
         ArgumentNullException.ThrowIfNull(userId);
         return userId.Value;
     }
-    
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

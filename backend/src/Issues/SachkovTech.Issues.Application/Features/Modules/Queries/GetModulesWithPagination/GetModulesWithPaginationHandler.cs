@@ -1,15 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Contracts.Module;
 
 namespace SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
 
-public record GetModulesWithPaginationQuery(string? Title, int PageNumber, int PageSize) : IQuery;
+public record GetModulesWithPaginationQuery(string? Title, int Page, int PageSize) : IQuery;
 
-public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleDto>, GetModulesWithPaginationQuery>
+public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleResponse>, GetModulesWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
     public GetModulesWithPaginationHandler(IReadDbContext readDbContext)
@@ -17,15 +17,30 @@ public class GetModulesWithPaginationHandler : IQueryHandler<PagedList<ModuleDto
         _readDbContext = readDbContext;
     }
 
-    public async Task<PagedList<ModuleDto>> Handle(GetModulesWithPaginationQuery query, CancellationToken cancellationToken = default)
+    public async Task<PagedList<ModuleResponse>> Handle(GetModulesWithPaginationQuery query, CancellationToken cancellationToken = default)
     {
         var modulesQuery = _readDbContext.Modules.AsQueryable();
+
+        var totalCount = await modulesQuery.CountAsync(cancellationToken);
 
         if (!string.IsNullOrWhiteSpace(query.Title))
         {
             modulesQuery = modulesQuery.Where(m => EF.Functions.Like(m.Title.ToLower(), $"%{query.Title.ToLower()}%"));
         }
 
-        return await modulesQuery.ToPagedList(query.PageNumber, query.PageSize, cancellationToken);
+        var modulesPagedList = await modulesQuery.ToPagedList(query.Page, query.PageSize, cancellationToken);
+
+        return new PagedList<ModuleResponse>
+        {
+            Items = modulesPagedList.Items.Select(m => new ModuleResponse(
+                m.Id,
+                m.Title,
+                m.Description,
+                m.IssuesPosition,
+                m.LessonsPosition)).ToList(),
+            TotalCount = totalCount,
+            PageSize = query.PageSize,
+            Page = query.Page
+        };
     }
 }

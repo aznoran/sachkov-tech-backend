@@ -1,41 +1,38 @@
 ﻿using CSharpFunctionalExtensions;
 using SachkovTech.Issues.Domain.IssuesReviews.Entities;
 using SachkovTech.Issues.Domain.IssuesReviews.Enums;
+using SachkovTech.Issues.Domain.IssuesReviews.Events;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.IssuesReviews;
 
-public sealed class IssueReview : Entity<IssueReviewId>
+public sealed class IssueReview : DomainEntity<IssueReviewId>
 {
     // ef core
-    private IssueReview(IssueReviewId id) : base(id)
-    {
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private IssueReview(IssueReviewId id) : base(id){}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
-    private IssueReview(
+    public IssueReview(
         IssueReviewId issueReviewId,
         UserIssueId userIssueId,
-        UserId userId,
-        IssueReviewStatus issueReviewStatus,
-        DateTime reviewStartedTime,
-        DateTime? issueApprovedTime,
+        Guid userId,
         PullRequestUrl pullRequestUrl)
         : base(issueReviewId)
     {
         UserIssueId = userIssueId;
         UserId = userId;
-        IssueReviewStatus = issueReviewStatus;
-        ReviewStartedTime = reviewStartedTime;
-        IssueApprovedTime = issueApprovedTime;
+        IssueReviewStatus = IssueReviewStatus.WaitingForReviewer;
+        ReviewStartedTime = DateTime.UtcNow;
         PullRequestUrl = pullRequestUrl;
     }
 
     public UserIssueId UserIssueId { get; private set; }
-    public UserId UserId { get; private set; }
+    public Guid UserId { get; private set; }
 
-    public UserId? ReviewerId { get; private set; } = null;
+    public Guid? ReviewerId { get; private set; } = null;
 
     public IssueReviewStatus IssueReviewStatus { get; private set; }
 
@@ -49,28 +46,12 @@ public sealed class IssueReview : Entity<IssueReviewId>
 
     public PullRequestUrl PullRequestUrl { get; private set; }
 
-    public static Result<IssueReview, Error> Create(UserIssueId userIssueId,
-        UserId userId,
-        PullRequestUrl pullRequestUrl)
-    {
-        return Result.Success<IssueReview, Error>(new(
-            IssueReviewId.NewIssueReviewId(),
-            userIssueId,
-            userId,
-            IssueReviewStatus.WaitingForReviewer,
-            DateTime.UtcNow,
-            null,
-            pullRequestUrl));
-    }
     public void StartReview(UserId reviewerId)
     {
         ReviewerId = reviewerId;
         IssueReviewStatus = IssueReviewStatus.OnReview;
 
-        if (IssueTakenTime == null)
-        {
-            IssueTakenTime = DateTime.UtcNow;
-        }
+        IssueTakenTime ??= DateTime.UtcNow;
     }
 
     public UnitResult<Error> SendIssueForRevision(UserId reviewerId)
@@ -86,6 +67,8 @@ public sealed class IssueReview : Entity<IssueReviewId>
         }
 
         IssueReviewStatus = IssueReviewStatus.AskedForRevision;
+
+        AddDomainEvent(new IssueSentForRevisionEvent(UserIssueId));
 
         return UnitResult.Success<Error>();
     }
@@ -118,6 +101,7 @@ public sealed class IssueReview : Entity<IssueReviewId>
 
         return UnitResult.Success<Error>();
     }
+
     public UnitResult<Error> DeleteComment(CommentId commentId, UserId userId)
     {
         var comment = _comments.FirstOrDefault(c => c.Id == commentId);

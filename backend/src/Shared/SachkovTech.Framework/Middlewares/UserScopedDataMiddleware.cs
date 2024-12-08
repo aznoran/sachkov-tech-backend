@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Security.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Models;
 using SachkovTech.Framework.Models;
@@ -22,36 +22,33 @@ public class UserScopedDataMiddleware
 
     public async Task InvokeAsync(HttpContext context, UserScopedData userScopedData)
     {
-        if (context.User.Identity is null || !context.User.Identity.IsAuthenticated)
+        if (context.User.Identity is not null && context.User.Identity.IsAuthenticated)
         {
-            await _next(context);
-            return;
+            var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == CustomClaims.Id)!.Value;
+
+            if (!Guid.TryParse(userIdClaim, out var userId))
+                throw new AuthenticationException("The user id claim is not in a valid format.");
+
+            if (userScopedData.UserId == userId)
+            {
+                await _next(context);
+            }
+
+            userScopedData.UserId = userId;
+
+            userScopedData.Permissions = context.User.Claims
+                .Where(c => c.Type == CustomClaims.Permission)
+                .Select(c => c.Value)
+                .ToList();
+
+            userScopedData.Roles = context.User.Claims
+                .Where(c => c.Type == CustomClaims.Role)
+                .Select(c => c.Value)
+                .ToList();
+
+            _logger.LogInformation("Roles and permission sets to user scoped data");
         }
-        
-        var userIdClaim = context.User.Claims.FirstOrDefault(c => c.Type == CustomClaims.Id)!.Value;
 
-        if (!Guid.TryParse(userIdClaim, out Guid userId))
-            throw new ApplicationException("The user id claim is not in a valid format.");
-
-        if (userScopedData.UserId == userId)
-            await _next(context);
-
-        userScopedData.UserId = userId;
-
-        userScopedData.Permissions = context.User.Claims
-            .Where(c => c.Type == CustomClaims.Permission)
-            .Select(c => c.Value)
-            .ToList();
-            
-        userScopedData.Roles = context.User.Claims
-            .Where(c => c.Type == CustomClaims.Role)
-            .Select(c => c.Value)
-            .ToList();
-
-        context.Items["user-scoped-data"] = userScopedData;
-        
-        _logger.LogInformation("Roles and permission sets to user scoped data");
-            
         await _next(context);
     }
 }

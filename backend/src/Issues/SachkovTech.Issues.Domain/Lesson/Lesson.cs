@@ -8,15 +8,18 @@ namespace SachkovTech.Issues.Domain.Lesson;
 
 public class Lesson : SoftDeletableEntity<LessonId>
 {
-    private Lesson(LessonId id) : base(id){}
+    //EF CORE
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Lesson(LessonId id) : base(id) { }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     public Guid ModuleId { get; private set; }
     public Title Title { get; private set; }
     public Description Description { get; private set; }
     public Experience Experience { get; private set; }
-    public Guid VideoId { get; private set; }
     public Guid PreviewId { get; private set; }
     public Guid[] Tags { get; private set; }
     public Guid[] Issues { get; private set; }
+    public Video Video { get; private set; }
 
     public Lesson(
         LessonId id,
@@ -24,7 +27,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Title title,
         Description description,
         Experience experience,
-        Guid videoId,
+        Video video,
         Guid previewId,
         Guid[] tags,
         Guid[] issues) : base(id)
@@ -33,7 +36,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Title = title;
         Description = description;
         Experience = experience;
-        VideoId = videoId;
+        Video = video;
         PreviewId = previewId;
         Tags = tags;
         Issues = issues;
@@ -45,7 +48,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
     /// <param name="title">Название</param>
     /// <param name="description">Описание</param>
     /// <param name="experience">Опыт за урок</param>
-    /// <param name="videoId">Ссылка на видео</param>
+    /// <param name="video">Ссылка на видео</param>
     /// <param name="fileId">Ссылка на файл</param>
     /// <param name="tags">Список тегов к уроку</param>
     /// <param name="issues">Список задач к уроку</param>
@@ -53,7 +56,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Title title,
         Description description,
         Experience experience,
-        Guid videoId,
+        Video video,
         Guid fileId,
         Guid[] tags,
         Guid[] issues)
@@ -61,7 +64,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Title = title;
         Description = description;
         Experience = experience;
-        VideoId = videoId;
+        Video = video;
         PreviewId = fileId;
         Tags = tags;
         Issues = issues;
@@ -94,7 +97,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Tags = Tags.Append(tagId).ToArray();
         return UnitResult.Success<Error>();
     }
-    
+
     /// <summary>
     /// Удалить тег у урока
     /// </summary>
@@ -108,7 +111,7 @@ public class Lesson : SoftDeletableEntity<LessonId>
         Tags = Tags.Where(id => id != tagId).ToArray();
         return UnitResult.Success<Error>();
     }
-    
+
     /// <summary>
     /// Удалить задачу у урока
     /// </summary>

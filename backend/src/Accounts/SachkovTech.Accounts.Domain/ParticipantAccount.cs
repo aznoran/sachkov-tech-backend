@@ -4,7 +4,9 @@ public class ParticipantAccount
 {
     public const string PARTICIPANT = "Participant";
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     private ParticipantAccount()
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
     {
         
     }

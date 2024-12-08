@@ -7,10 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Files\SachkovTech.Files.Contracts\SachkovTech.Files.Contracts.csproj" />
       <ProjectReference Include="..\..\Shared\SachkovTech.Framework\SachkovTech.Framework.csproj" />
       <ProjectReference Include="..\SachkovTech.Issues.Application\SachkovTech.Issues.Application.csproj" />
       <ProjectReference Include="..\SachkovTech.Issues.Contracts\SachkovTech.Issues.Contracts.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
 </Project>

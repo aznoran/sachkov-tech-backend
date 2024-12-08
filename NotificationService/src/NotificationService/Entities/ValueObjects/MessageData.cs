@@ -2,19 +2,21 @@ using CSharpFunctionalExtensions;
 
 namespace NotificationService.Entities.ValueObjects;
 
-public class MessageData : ValueObject
+public class MessageData : ComparableValueObject
 {
-    public string Title { get; } = null!;
-    public string Message { get; } = null!;
-    public MessageData(string title, string message)
+    public string Title { get; }
+    public string Template { get; }
+    public string Data { get; }
+    public MessageData(string title, string template, string data)
     {
         Title = title;
-        Message = message;
+        Template = template;
+        Data = data;
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Title;
-        yield return Message;
+        yield return Template;
     }
 }

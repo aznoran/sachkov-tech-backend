@@ -2,7 +2,7 @@ using CSharpFunctionalExtensions;
 
 namespace SachkovTech.Issues.Domain.IssueSolving.ValueObjects;
 
-public class Attempts : ValueObject
+public class Attempts : ComparableValueObject
 {
     private Attempts(int value)
     {
@@ -18,7 +18,7 @@ public class Attempts : ValueObject
         return new Attempts(attempts);
     }
 
-    protected override IEnumerable<IComparable> GetEqualityComponents()
+    protected override IEnumerable<IComparable> GetComparableEqualityComponents()
     {
         yield return Value;
     }

@@ -1,4 +1,5 @@
 using CSharpFunctionalExtensions;
+using SachkovTech.Issues.Domain.IssueSolving.DomainEvents;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
 using SachkovTech.Issues.Domain.IssueSolving.ValueObjects;
 using SachkovTech.SharedKernel;
@@ -7,30 +8,30 @@ using SachkovTech.SharedKernel.ValueObjects.Ids;
 
 namespace SachkovTech.Issues.Domain.IssueSolving.Entities;
 
-public class UserIssue : Entity<UserIssueId>
+public class UserIssue : DomainEntity<UserIssueId>
 {
     //ef core
-    private UserIssue(UserIssueId id) : base(id)
-    {
-
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private UserIssue(UserIssueId id) : base(id){}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    
     public UserIssue(
         UserIssueId id,
-        UserId userId,
+        Guid userId,
         IssueId issueId,
         ModuleId moduleId) : base(id)
     {
         UserId = userId;
         IssueId = issueId;
         ModuleId = moduleId;
-        
+
         TakeOnWork();
     }
 
-    public UserId UserId { get; private set; }
+    public Guid UserId { get; private set; }
 
     public IssueId IssueId { get; private set; }
-    
+
     public ModuleId ModuleId { get; private set; }
 
     public IssueStatus Status { get; private set; }
@@ -58,20 +59,22 @@ public class UserIssue : Entity<UserIssueId>
         Status = IssueStatus.UnderReview;
         PullRequestUrl = pullRequestUrl;
 
+        var domainEvent = new IssueSentOnReviewEvent(Id, UserId, pullRequestUrl);
+        AddDomainEvent(domainEvent);
+
         return Result.Success<Error>();
     }
 
     public UnitResult<Error> SendForRevision()
     {
-        if (Status == IssueStatus.UnderReview)
-        {
-            Status = IssueStatus.AtWork;
-            Attempts = Attempts.Add();
+        if (Status != IssueStatus.UnderReview)
+            return Error.Failure("issue.status.invalid", "issue status should be not completed or under review");
 
-            return Result.Success<Error>();
-        }
+        Status = IssueStatus.AtWork;
+        Attempts = Attempts.Add();
 
-        return Error.Failure("issue.status.invalid", "issue status should be not completed or under review");
+        return Result.Success<Error>();
+
     }
 
     public UnitResult<Error> StopWorking()

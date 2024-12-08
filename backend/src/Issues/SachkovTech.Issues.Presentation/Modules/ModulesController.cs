@@ -6,12 +6,13 @@ using SachkovTech.Issues.Application.Features.Modules.Commands.Delete;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateIssuePosition;
 using SachkovTech.Issues.Application.Features.Modules.Commands.UpdateMainInfo;
 using SachkovTech.Issues.Application.Features.Modules.Queries.GetModulesWithPagination;
-using SachkovTech.Issues.Presentation.Modules.Requests;
+using SachkovTech.Issues.Contracts.Module;
 
 namespace SachkovTech.Issues.Presentation.Modules;
 
 public class ModulesController : ApplicationController
 {
+    [Permission(Permissions.Modules.READ_MODULE)]
     [HttpGet]
     public async Task<IActionResult> Get(
         [FromQuery] GetModulesWithPaginationQuery query,
@@ -23,30 +24,17 @@ public class ModulesController : ApplicationController
         return Ok(response);
     }
 
-    [Permission(Permissions.Modules.CreateModule)]
+    [Permission(Permissions.Modules.CREATE_MODULE)]
     [HttpPost]
     public async Task<ActionResult> Create(
         [FromServices] CreateModuleHandler handler,
         [FromBody] CreateModuleRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await handler.Handle(request.ToCommand(), cancellationToken);
+        var command = new CreateModuleCommand(
+            request.Title,
+            request.Description);
 
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [Permission(Permissions.Modules.UpdateModule)]
-    [HttpPut("{id:guid}/main-info")]
-    public async Task<ActionResult> UpdateMainInfo(
-        [FromRoute] Guid id,
-        [FromBody] UpdateMainInfoRequest request,
-        [FromServices] UpdateMainInfoHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var command = request.ToCommand(id);
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
@@ -55,7 +43,28 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Modules.UPDATE_MODULE)]
+    [HttpPut("{moduleId:guid}/main-info")]
+    public async Task<ActionResult> UpdateMainInfo(
+        [FromRoute] Guid moduleId,
+        [FromBody] UpdateMainInfoRequest request,
+        [FromServices] UpdateMainInfoHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var command = new UpdateMainInfoCommand(
+            moduleId,
+            request.Title,
+            request.Description);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     [HttpPut("{id:guid}/issue/{issueId:guid}")]
     public async Task<ActionResult> UpdateIssuePosition(
         [FromRoute] Guid id,
@@ -73,7 +82,7 @@ public class ModulesController : ApplicationController
         return Ok(result.Value);
     }
 
-    //[Permission(Permissions.Modules.DeleteModule)]
+    [Permission(Permissions.Modules.DELETE_MODULE)]
     [HttpDelete("{id:guid}")]
     public async Task<ActionResult> Delete(
         [FromRoute] Guid id,

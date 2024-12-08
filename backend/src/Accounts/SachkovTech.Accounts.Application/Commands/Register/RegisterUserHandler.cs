@@ -1,9 +1,14 @@
 using CSharpFunctionalExtensions;
 using FluentValidation;
+using MassTransit;
+using MassTransit.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SachkovTech.Accounts.Application.Managers;
+using SachkovTech.Accounts.Application.MessageBus;
+using SachkovTech.Accounts.Contracts.Messaging;
 using SachkovTech.Accounts.Domain;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
@@ -18,6 +23,7 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
     private readonly IAccountsManager _accountsManager;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<RegisterUserHandler> _logger;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly IValidator<RegisterUserCommand> _validator;
 
     public RegisterUserHandler(
@@ -26,6 +32,7 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
         IAccountsManager accountsManager,
         [FromKeyedServices(Modules.Accounts)] IUnitOfWork unitOfWork,
         ILogger<RegisterUserHandler> logger,
+        Bind<IAccountMessageBus, IPublishEndpoint> publishEndpoint,
         IValidator<RegisterUserCommand> validator)
     {
         _userManager = userManager;
@@ -33,6 +40,7 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
         _accountsManager = accountsManager;
         _unitOfWork = unitOfWork;
         _validator = validator;
+        _publishEndpoint = publishEndpoint.Value;
         _logger = logger;
     }
 
@@ -53,13 +61,15 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
 
             if (role is null)
                 return Errors.General.NotFound(null, "role").ToErrorList();
-            
+
             var userResult = User.CreateParticipant(command.UserName, command.Email, role);
 
             if (userResult.IsFailure)
                 return userResult.Error.ToErrorList();
 
-            var result = await _userManager.CreateAsync(userResult.Value, command.Password);
+            var user = userResult.Value;
+
+            var result = await _userManager.CreateAsync(user, command.Password);
 
             if (!result.Succeeded)
             {
@@ -67,13 +77,15 @@ public class RegisterUserHandler : ICommandHandler<RegisterUserCommand>
                 return new ErrorList(errors);
             }
 
-            var participantAccount = new ParticipantAccount(userResult.Value);
+            var participantAccount = new ParticipantAccount(user);
 
             await _accountsManager.CreateParticipantAccount(participantAccount, cancellationToken);
 
             await _unitOfWork.SaveChanges(cancellationToken);
 
             await transaction.CommitAsync(cancellationToken);
+
+            await _publishEndpoint.Publish(new UserRegisteredEvent(user.Id), cancellationToken);
 
             _logger.LogInformation("User was created with name {userName}", command.UserName);
 

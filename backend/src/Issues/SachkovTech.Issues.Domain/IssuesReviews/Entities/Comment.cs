@@ -8,10 +8,9 @@ namespace SachkovTech.Issues.Domain.IssuesReviews.Entities;
 public class Comment : Entity<CommentId>
 {
     //Ef core
-    public IssueReview IssueReview { get; private set; }
-    private Comment(CommentId id) : base(id)
-    {
-    }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+    private Comment(CommentId id) : base(id) {}
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
     private Comment(CommentId id,
         UserId userId,
@@ -23,6 +22,7 @@ public class Comment : Entity<CommentId>
         CreatedAt = createdAt;
     }
 
+    public IssueReview? IssueReview { get; private set; }
     public UserId UserId { get; private set; }
 
     public Message Message { get; private set; }

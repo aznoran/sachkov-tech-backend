@@ -1,51 +1,64 @@
-﻿using FluentValidation;
+﻿using System.Reflection;
+using Elastic.Channels;
+using Elastic.CommonSchema.Serilog;
+using Elastic.Ingest.Elasticsearch;
+using Elastic.Ingest.Elasticsearch.DataStreams;
+using Elastic.Serilog.Sinks;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using SachkovTech.Accounts.Infrastructure;
-using SachkovTech.Files.Infrastructure;
-using SachkovTech.Files.Presentation;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Infrastructure;
-using SachkovTech.Issues.Presentation;
 using Serilog.Events;
 using Serilog;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using SachkovTech.Core.Options;
 using SachkovTech.Accounts.Presentation;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Framework;
+using SachkovTech.Framework.Models;
+using SachkovTech.Accounts.Application;
+using SachkovTech.Issues.Application;
 
 namespace SachkovTech.Web;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddAccountsModule(
+    public static void AddProgramDependencies(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddControllers();
+
+        services.AddEndpointsApiExplorer()
+            .AddSwaggerConfiguration()
+            .AddLogging(configuration)
+            .AddApplicationLayers()
+            .AddFramework()
+            .AddAccountsModule(configuration)
+            .AddIssuesModule(configuration)
+            .AddAuthServices(configuration);
+    }
+
+    private static IServiceCollection AddAccountsModule(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddAccountsInfrastructure(configuration);
-        services.AddAccountsPresentation();
+        services.AddAccountsInfrastructure(configuration)
+            .AddAccountsApplication(configuration)
+            .AddAccountsPresentation(configuration);
 
         return services;
     }
 
-    public static IServiceCollection AddFilesModule(
+    private static IServiceCollection AddIssuesModule(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddFilesInfrastructure(configuration);
-        services.AddFilesPresentation();
+        services.AddIssuesApplication()
+            .AddIssuesInfrastructure(configuration);
 
         return services;
     }
 
-    public static IServiceCollection AddIssuesModule(
-        this IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddIssuesInfrastructure(configuration);
-        services.AddIssuesPresentation();
-
-        return services;
-    }
-
-    public static IServiceCollection AddAuthServices(
+    private static IServiceCollection AddAuthServices(
         this IServiceCollection services, IConfiguration configuration)
     {
         services.AddSingleton<IAuthorizationHandler, PermissionRequirementHandler>();
@@ -67,18 +80,27 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
-
         return services;
     }
-    
-    public static IServiceCollection AddLogging(
+
+    private static IServiceCollection AddLogging(
         this IServiceCollection services, IConfiguration configuration)
     {
+        var indexFormat = $"{Assembly.GetExecutingAssembly().GetName().Name?.ToLower().Replace(".", "-")}-{DateTime.UtcNow:yyyy-MM-dd}";
+
         Log.Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
             .WriteTo.Console()
             .WriteTo.Debug()
             .WriteTo.Seq(configuration.GetConnectionString("Seq")
                          ?? throw new ArgumentNullException("Seq"))
+            .WriteTo.Elasticsearch([new Uri("http://localhost:9200")],
+                options =>
+                {
+                    options.DataStream = new DataStreamName(indexFormat);
+                    options.TextFormatting = new EcsTextFormatterConfiguration();
+                    options.BootstrapMethod = BootstrapMethod.Silent;
+                })
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.AspNetCore.Mvc", LogEventLevel.Warning)
             .MinimumLevel.Override("Microsoft.AspNetCore.Routing", LogEventLevel.Warning)
@@ -89,13 +111,19 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddApplicationLayers(this IServiceCollection services)
+    private static IServiceCollection AddFramework(this IServiceCollection services)
+    {
+        services.AddHttpContextAccessor()
+            .AddScoped<UserScopedData>();
+
+        return services;
+    }
+
+    private static IServiceCollection AddApplicationLayers(this IServiceCollection services)
     {
         var assemblies = new[]
         {
-            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.Files.Application.DependencyInjection).Assembly,
-            typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
+            typeof(SachkovTech.Accounts.Application.DependencyInjection).Assembly, typeof(SachkovTech.Issues.Application.DependencyInjection).Assembly,
         };
 
         services.Scan(scan => scan.FromAssemblies(assemblies)
@@ -111,6 +139,41 @@ public static class DependencyInjection
             .WithScopedLifetime());
 
         services.AddValidatorsFromAssemblies(assemblies);
+        return services;
+    }
+
+    private static IServiceCollection AddSwaggerConfiguration(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "My API",
+                Version = "v1"
+            });
+            c.AddSecurityDefinition("Bearer",
+                new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please insert JWT with Bearer into field",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    []
+                }
+            });
+        });
         return services;
     }
 }

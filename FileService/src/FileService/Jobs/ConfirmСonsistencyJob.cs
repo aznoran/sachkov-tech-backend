@@ -14,8 +14,6 @@ public class ConfirmConsistencyJob(
     {
         logger.LogInformation("Start ConfirmConsistencyJob with {fileId} and {key}", fileId, key);
 
-        throw new Exception("Baaag");
-
         await Task.Delay(3000);
 
         logger.LogInformation("End ConfirmConsistencyJob");

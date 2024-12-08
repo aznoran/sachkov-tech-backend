@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Domain.Issue;
-using SachkovTech.Issues.Domain.Module.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
 
@@ -77,5 +76,7 @@ public class IssueConfiguration : IEntityTypeConfiguration<Issue>
         builder.Property(i => i.DeletionDate)
             .IsRequired(false)
             .HasColumnName("deletion_date");
+        
+        builder.HasQueryFilter(f => f.IsDeleted == false);
     }
 }

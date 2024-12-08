@@ -7,9 +7,14 @@ using SachkovTech.Accounts.Domain;
 
 namespace SachkovTech.Accounts.Infrastructure.DbContexts;
 
-public class AccountsWriteDbContext(IConfiguration configuration)
+public class AccountsWriteDbContext
     : IdentityDbContext<User, Role, Guid>
 {
+    private readonly string _connectionString;
+    public AccountsWriteDbContext(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
     public DbSet<RolePermission> RolePermissions => Set<RolePermission>();
     public DbSet<Permission> Permissions => Set<Permission>();
     public DbSet<AdminAccount> AdminAccounts => Set<AdminAccount>();
@@ -19,7 +24,7 @@ public class AccountsWriteDbContext(IConfiguration configuration)
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseNpgsql(configuration.GetConnectionString("Database"));
+        optionsBuilder.UseNpgsql(_connectionString);
         optionsBuilder.UseSnakeCaseNamingConvention();
         optionsBuilder.EnableSensitiveDataLogging();
         optionsBuilder.UseLoggerFactory(CreateLoggerFactory());

@@ -1,14 +1,14 @@
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Core.Dtos;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Interfaces;
+using SachkovTech.Issues.Contracts.IssueSolving;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
 
 namespace SachkovTech.Issues.Application.Features.IssueSolving.Queries.GetUserIssuesByModuleWithPagination;
 
 public class GetUserIssuesByModuleWithPaginationHandler
-    : IQueryHandler<PagedList<UserIssueDto>, GetUserIssuesByModuleWithPaginationQuery>
+    : IQueryHandler<PagedList<UserIssueResponse>, GetUserIssuesByModuleWithPaginationQuery>
 {
     private readonly IReadDbContext _readDbContext;
     
@@ -17,7 +17,7 @@ public class GetUserIssuesByModuleWithPaginationHandler
         _readDbContext = readDbContext;
     }
 
-    public async Task<PagedList<UserIssueDto>> Handle(
+    public async Task<PagedList<UserIssueResponse>> Handle(
         GetUserIssuesByModuleWithPaginationQuery query,
         CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class GetUserIssuesByModuleWithPaginationHandler
                   && userIssue.ModuleId == query.ModuleId 
                   && userIssue.Status == query.Status
             orderby Enum.Parse<IssueStatus>(userIssue.Status)
-            select new UserIssueDto()
+            select new UserIssueResponse()
             {
                 Id = userIssue.Id,
                 UserId = userIssue.UserId,

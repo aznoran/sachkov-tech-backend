@@ -3,9 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
-using SachkovTech.Files.Contracts;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Issue;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
 using SachkovTech.SharedKernel;
@@ -53,10 +52,10 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         var previousUserIssue = await _readDbContext.UserIssues
             .FirstOrDefaultAsync(u => u.UserId == command.UserId, cancellationToken);
 
-        if (previousUserIssue is null)
-            return Errors.General.NotFound(null, "Previous solved issue").ToErrorList();
-
-        var previousUserIssueStatus = Enum.Parse<IssueStatus>(previousUserIssue.Status);
+        var previousUserIssueStatus =
+            previousUserIssue is null
+            ? IssueStatus.Completed
+            : Enum.Parse<IssueStatus>(previousUserIssue.Status);
 
         if (previousUserIssueStatus != IssueStatus.Completed)
             return Error.Failure("prev.issue.not.solved", "previous issue not solved").ToErrorList();
@@ -89,10 +88,10 @@ public class TakeOnWorkHandler : ICommandHandler<Guid, TakeOnWorkCommand>
         var response = new IssueResponse
         {
             Id = issueDto.Id,
-            ModuleId = issueDto.ModuleId.Value,
+            ModuleId = issueDto.ModuleId,
             Title = issueDto.Title,
             Description = issueDto.Description,
-            LessonId = issueDto.LessonId.Value,
+            LessonId = issueDto.LessonId,
         };
 
         return response;

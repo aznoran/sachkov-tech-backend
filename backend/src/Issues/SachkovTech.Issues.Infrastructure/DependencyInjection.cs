@@ -1,11 +1,15 @@
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Quartz;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Infrastructure.BackgroundServices;
 using SachkovTech.Issues.Infrastructure.DbContexts;
+using SachkovTech.Issues.Infrastructure.Migrator;
+using SachkovTech.Issues.Infrastructure.Outbox;
 using SachkovTech.Issues.Infrastructure.Repositories;
 using SachkovTech.Issues.Infrastructure.Services;
+using SachkovTech.Issues.Infrastructure.TestConsumers;
 
 namespace SachkovTech.Issues.Infrastructure;
 
@@ -15,11 +19,45 @@ public static class DependencyInjection
         this IServiceCollection services, IConfiguration configuration)
     {
         services
-            .AddDbContexts()
+            .AddDbContexts(configuration)
             .AddRepositories()
             .AddDatabase()
             .AddHostedServices()
-            .AddServices();
+            .AddServices()
+            .AddQuartzService()
+            .AddMessageBus(configuration)
+            .AddMigrators();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddMigrators(this IServiceCollection services)
+    {
+        services.AddScoped<IMigrator, IssuesMigrator>();
+
+        return services;
+    }
+    
+    private static IServiceCollection AddMessageBus(this IServiceCollection services, IConfiguration configuration)
+    {
+        services.AddMassTransit<IIssueMessageBus>(configure =>
+        {
+            configure.SetKebabCaseEndpointNameFormatter();
+
+            configure.AddConsumer<UserProgressConsumer>();
+            configure.AddConsumer<NotificationConsumer>();
+
+            configure.UsingRabbitMq((context, cfg) =>
+            {
+                cfg.Host(new Uri(configuration["RabbitMQ:Host"]!), h =>
+                {
+                    h.Username(configuration["RabbitMQ:UserName"]!);
+                    h.Password(configuration["RabbitMQ:Password"]!);
+                });
+
+                cfg.ConfigureEndpoints(context);
+            });
+        });
 
         return services;
     }
@@ -34,6 +72,25 @@ public static class DependencyInjection
         return services;
     }
 
+    private static IServiceCollection AddQuartzService(this IServiceCollection services)
+    {
+        services.AddScoped<ProcessOutboxMessagesService>();
+
+        services.AddQuartz(configure =>
+        {
+            var jobKey = new JobKey(nameof(ProcessOutboxMessagesJob));
+
+            configure
+                .AddJob<ProcessOutboxMessagesJob>(jobKey)
+                .AddTrigger(trigger => trigger.ForJob(jobKey).WithSimpleSchedule(
+                    schedule => schedule.WithIntervalInSeconds(1).RepeatForever()));
+        });
+
+        services.AddQuartzHostedService(options => { options.WaitForJobsToComplete = true; });
+
+        return services;
+    }
+
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
         services.AddScoped<ILessonsRepository, LessonsRepository>();
@@ -42,14 +99,20 @@ public static class DependencyInjection
         services.AddScoped<IUserIssueRepository, UserIssueRepository>();
         services.AddScoped<IModulesRepository, ModulesRepository>();
         services.AddScoped<IIssuesRepository, IssuesesRepository>();
+        services.AddScoped<IOutboxRepository, OutboxRepository>();
 
         return services;
     }
 
-    private static IServiceCollection AddDbContexts(this IServiceCollection services)
+    private static IServiceCollection AddDbContexts(
+        this IServiceCollection services,
+        IConfiguration configuration)
     {
-        services.AddScoped<IssuesWriteDbContext>();
-        services.AddScoped<IReadDbContext, IssuesReadDbContext>();
+        services.AddScoped<IssuesWriteDbContext>(provider =>
+            new IssuesWriteDbContext(configuration.GetConnectionString("Database")!));
+
+        services.AddScoped<IReadDbContext, IssuesReadDbContext>(provider =>
+            new IssuesReadDbContext(configuration.GetConnectionString("Database")!));
 
         return services;
     }

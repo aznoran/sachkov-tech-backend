@@ -1,11 +1,11 @@
 ﻿using CSharpFunctionalExtensions;
 using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Extensions;
 using SachkovTech.Issues.Application.Interfaces;
-using SachkovTech.Issues.Domain.IssuesReviews;
 using SachkovTech.SharedKernel;
 using SachkovTech.SharedKernel.ValueObjects;
 using SachkovTech.SharedKernel.ValueObjects.Ids;
@@ -16,22 +16,24 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
 {
     private readonly IUserIssueRepository _userIssueRepository;
     private readonly ILogger<SendOnReviewHandler> _logger;
-    private readonly IIssuesReviewRepository _issuesReviewRepository;
+    private readonly IOutboxRepository _outboxRepository;
+    private readonly IPublisher _publisher;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<SendOnReviewCommand> _validator;
 
     public SendOnReviewHandler(
         IUserIssueRepository userIssueRepository,
         ILogger<SendOnReviewHandler> logger,
-        IIssuesReviewRepository issuesReviewRepository,
         [FromKeyedServices(SharedKernel.Modules.Issues)] IUnitOfWork unitOfWork,
-        IValidator<SendOnReviewCommand> validator)
+        IValidator<SendOnReviewCommand> validator,
+        IOutboxRepository outboxRepository, IPublisher publisher)
     {
-        _issuesReviewRepository = issuesReviewRepository;
         _logger = logger;
         _userIssueRepository = userIssueRepository;
         _unitOfWork = unitOfWork;
         _validator = validator;
+        _outboxRepository = outboxRepository;
+        _publisher = publisher;
     }
 
     public async Task<UnitResult<ErrorList>> Handle(SendOnReviewCommand command,
@@ -44,57 +46,30 @@ public class SendOnReviewHandler : ICommandHandler<SendOnReviewCommand>
             return validationResult.ToList();
         }
 
-        var userIssue = await _userIssueRepository
+        var (_, isFailure, userIssue, error) = await _userIssueRepository
             .GetUserIssueById(UserIssueId.Create(command.UserIssueId), cancellationToken);
 
-        if (userIssue.IsFailure)
+        if (isFailure)
         {
             _logger.LogError("UserIssue with {Id} not found", command.UserIssueId);
-            return userIssue.Error.ToErrorList();
+            return error.ToErrorList();
         }
 
         var pullRequestUrl = PullRequestUrl.Create(command.PullRequestUrl).Value;
 
-        var sendOnReviewRes = userIssue.Value.SendOnReview(pullRequestUrl);
+        var sendOnReviewResult = userIssue.SendOnReview(pullRequestUrl);
 
-        if (sendOnReviewRes.IsFailure)
+        if (sendOnReviewResult.IsFailure)
         {
-            return sendOnReviewRes.Error.ToErrorList();
+            return sendOnReviewResult.Error.ToErrorList();
         }
 
-        var createIssueReviewRes = await CreateIssueReview(
-            command.UserIssueId, command.UserId, pullRequestUrl.Value, cancellationToken);
-
-        if (createIssueReviewRes.IsFailure)
-        {
-            return createIssueReviewRes.Error;
-        }
+        await _publisher.PublishDomainEvents(userIssue, cancellationToken);
 
         await _unitOfWork.SaveChanges(cancellationToken);
 
         _logger.LogInformation("Issue with UserIssueId {UserIssueId} was created", command.UserIssueId);
-        _logger.LogInformation("IssueReview {issueReviewId} was created", createIssueReviewRes.Value);
 
         return UnitResult.Success<ErrorList>();
-    }
-    private async Task<Result<Guid, ErrorList>> CreateIssueReview(
-        Guid userIssueId,
-        Guid userId,
-        string pullRequestUrl,
-        CancellationToken cancellationToken)
-    {
-        var issueReview = IssueReview.Create(
-        UserIssueId.Create(userIssueId),
-           UserId.Create(userId),
-           PullRequestUrl.Create(pullRequestUrl).Value);
-
-        if (issueReview.IsFailure)
-        {
-            return issueReview.Error.ToErrorList();
-        }
-
-        await _issuesReviewRepository.Add(issueReview.Value, cancellationToken);
-
-        return issueReview.Value.Id.Value;
     }
 }

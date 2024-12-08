@@ -1,5 +1,7 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using SachkovTech.Accounts.Application.Managers;
+using SachkovTech.Accounts.Application.Providers;
 using SachkovTech.Accounts.Contracts.Responses;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
@@ -45,10 +47,14 @@ public class RefreshTokensHandler : ICommandHandler<LoginResponse, RefreshTokens
         var refreshToken = await _tokenProvider
             .GenerateRefreshToken(oldRefreshSession.Value.User, cancellationToken);
 
+        var roles = oldRefreshSession.Value.User.Roles
+            .Where(r => !string.IsNullOrEmpty(r.Name))
+            .Select(r => r.Name!.ToLower());
+
         return new LoginResponse(
             accessToken.AccessToken,
             refreshToken,
             oldRefreshSession.Value.User.Id,
-            oldRefreshSession.Value.User.Email!);
+            roles);
     }
 }

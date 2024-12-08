@@ -1,5 +1,6 @@
 using CSharpFunctionalExtensions;
 using Microsoft.Extensions.DependencyInjection;
+using SachkovTech.Accounts.Application.Managers;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.SharedKernel;
 

@@ -34,7 +34,7 @@ public class PermissionManager(AccountsWriteDbContext accountsWriteContext)
             .Where(u => u.Id == userId)
             .SelectMany(u => u.Roles)
             .SelectMany(r => r.RolePermissions)
-            .Select(rp => rp.Permission.Code)
+            .Select(rp => rp.Permission!.Code)
             .ToListAsync(cancellationToken);
 
         return permissions.ToHashSet();

@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SachkovTech.Accounts.Application.DataModels;
 using SachkovTech.Accounts.Contracts.Dtos;
 using SachkovTech.Core.Extensions;
 
 namespace SachkovTech.Accounts.Infrastructure.Configurations.Read;
 
-public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
+public class UserDtoConfiguration : IEntityTypeConfiguration<UserDataModel>
 {
-    public void Configure(EntityTypeBuilder<UserDto> builder)
+    public void Configure(EntityTypeBuilder<UserDataModel> builder)
     {
         builder.ToTable("users");
 
@@ -16,38 +17,33 @@ public class UserDtoConfiguration : IEntityTypeConfiguration<UserDto>
         builder.Property(u => u.Id)
             .HasColumnName("id");
 
-        builder.Property(u => u.FirstName)
-            .HasColumnName("first_name")
-            .IsRequired(false);
-
-        builder.Property(u => u.SecondName)
-            .HasColumnName("second_name")
-            .IsRequired(false);
-
         builder.HasMany(u => u.Roles)
             .WithMany()
-            .UsingEntity<UserRolesDto>(
-                e => e.HasOne<UserDto>()
+            .UsingEntity<UserRolesDataModel>(
+                e => e.HasOne<UserDataModel>()
                     .WithMany(u => u.UserRoles)
                     .HasForeignKey("UserId")
             );
 
         builder.Property(s => s.SocialNetworks)
             .ValueObjectsCollectionJsonConversion(
-                input => input, 
+                input => input,
                 output => output)
             .HasColumnName("social_networks");
 
         builder.HasOne(u => u.StudentAccount)
             .WithOne()
+            .IsRequired(false)
             .HasForeignKey<StudentAccountDto>(s => s.UserId);
 
         builder.HasOne(u => u.SupportAccount)
             .WithOne()
+            .IsRequired(false)
             .HasForeignKey<SupportAccountDto>(s => s.UserId);
 
         builder.HasOne(u => u.AdminAccount)
             .WithOne()
+            .IsRequired(false)
             .HasForeignKey<AdminAccountDto>(s => s.UserId);
     }
 }

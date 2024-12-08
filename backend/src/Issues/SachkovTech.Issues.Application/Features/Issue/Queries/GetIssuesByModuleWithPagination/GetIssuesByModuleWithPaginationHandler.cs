@@ -1,11 +1,10 @@
 ﻿using System.Text;
-using System.Text.Json;
 using CSharpFunctionalExtensions;
 using Dapper;
 using SachkovTech.Core.Abstractions;
 using SachkovTech.Core.Models;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
-using SachkovTech.Issues.Contracts.Responses;
+using SachkovTech.Issues.Contracts.Issue;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesByModuleWithPagination;
@@ -25,6 +24,7 @@ public class GetIssuesByModuleWithPaginationHandler
         CancellationToken cancellationToken = default)
     {
         using var connection = _sqlConnectionFactory.Create();
+        
         var parameters = new DynamicParameters();
 
         var sqlBuilder = new StringBuilder(

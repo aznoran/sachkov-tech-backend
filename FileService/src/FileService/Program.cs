@@ -62,3 +62,5 @@ app.UseCors(c => c.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 app.MapEndpoints();
 
 app.Run();
+
+public partial class Program;

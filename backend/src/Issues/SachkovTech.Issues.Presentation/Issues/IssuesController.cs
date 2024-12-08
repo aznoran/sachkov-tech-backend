@@ -3,48 +3,62 @@ using SachkovTech.Framework;
 using SachkovTech.Framework.Authorization;
 using SachkovTech.Issues.Application.Features.Issue.Commands.AddIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue;
+using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.ForceDeleteIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.DeleteIssue.SoftDeleteIssue;
-using SachkovTech.Issues.Application.Features.Issue.Commands.ForceDeleteIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.RestoreIssue;
 using SachkovTech.Issues.Application.Features.Issue.Commands.UpdateIssueMainInfo;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssueById;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesByModuleWithPagination;
 using SachkovTech.Issues.Application.Features.Issue.Queries.GetIssuesWithPagination;
-using SachkovTech.Issues.Presentation.Issues.Requests;
+using SachkovTech.Issues.Contracts.Issue;
 
 namespace SachkovTech.Issues.Presentation.Issues;
 
 public class IssuesController : ApplicationController
 {
-    [Permission(Permissions.Issues.ReadIssue)]
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet("dapper")]
     public async Task<ActionResult> GetDapper(
         [FromQuery] GetIssuesWithPaginationRequest request,
         [FromServices] GetIssuesWithPaginationHandlerDapper handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery();
-        
+        var query = new GetFilteredIssuesWithPaginationQuery(
+            request.Title,
+            request.PositionFrom,
+            request.PositionTo,
+            request.SortBy,
+            request.SortDirection,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         return Ok(response);
     }
-    
-    [Permission(Permissions.Issues.ReadIssue)]
+
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet]
     public async Task<ActionResult> Get(
         [FromQuery] GetIssuesWithPaginationRequest request,
         [FromServices] GetIssuesWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery();
-        
+        var query = new GetFilteredIssuesWithPaginationQuery(
+            request.Title,
+            request.PositionFrom,
+            request.PositionTo,
+            request.SortBy,
+            request.SortDirection,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         return Ok(response);
     }
-    
-    [Permission(Permissions.Issues.ReadIssue)]
+
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet("module/{moduleId:guid}")]
     public async Task<ActionResult> GetByModule(
         [FromRoute] Guid moduleId,
@@ -52,17 +66,23 @@ public class IssuesController : ApplicationController
         [FromServices] GetIssuesByModuleWithPaginationHandler handler,
         CancellationToken cancellationToken)
     {
-        var query = request.ToQuery(moduleId);
-        
+        var query = new GetFilteredIssuesByModuleWithPaginationQuery(
+            moduleId,
+            request.Title,
+            request.SortBy,
+            request.SortDirection,
+            request.Page,
+            request.PageSize);
+
         var response = await handler.Handle(query, cancellationToken);
-        
+
         if (response.IsFailure)
             return response.Error.ToResponse();
-        
+
         return Ok(response.Value);
     }
 
-    [Permission(Permissions.Issues.ReadIssue)]
+    [Permission(Permissions.Issues.READ_ISSUE)]
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetById(
         [FromRoute] Guid id,
@@ -78,15 +98,20 @@ public class IssuesController : ApplicationController
 
         return Ok(response.Value);
     }
-    
-    [Permission(Permissions.Issues.CreateIssue)]
+
+    [Permission(Permissions.Issues.CREATE_ISSUE)]
     [HttpPost]
     public async Task<ActionResult> AddIssue(
         [FromBody] AddIssueRequest request,
-        [FromServices] AddIssueHandler handler,
+        [FromServices] CreateIssueHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand();
+        var command = new CreateIssueCommand(
+            request.LessonId,
+            request.ModuleId,
+            request.Title,
+            request.Description,
+            request.Experience);
 
         var result = await handler.Handle(command, cancellationToken);
 
@@ -95,8 +120,8 @@ public class IssuesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
-    [Permission(Permissions.Issues.UpdateIssue)]
+
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     [HttpPut("{issueId:guid}/main-info")]
     public async Task<ActionResult> UpdateIssueMainInfo(
         [FromRoute] Guid issueId,
@@ -104,7 +129,14 @@ public class IssuesController : ApplicationController
         [FromServices] UpdateIssueMainInfoHandler handler,
         CancellationToken cancellationToken)
     {
-        var command = request.ToCommand(issueId);
+        var command = new UpdateIssueMainInfoCommand(
+            issueId,
+            request.LessonId,
+            request.ModuleId,
+            request.Title,
+            request.Description,
+            request.Experience);
+        
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
@@ -113,7 +145,7 @@ public class IssuesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.UpdateIssue)]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
     [HttpPut("{issueId:guid}/restore")]
     public async Task<ActionResult> RestoreIssue(
         [FromRoute] Guid issueId,
@@ -129,8 +161,8 @@ public class IssuesController : ApplicationController
 
         return Ok(result.Value);
     }
-    
-    [Permission(Permissions.Issues.DeleteIssue)]
+
+    [Permission(Permissions.Issues.DELETE_ISSUE)]
     [HttpDelete("{issueId:guid}/soft")]
     public async Task<ActionResult> SoftDeleteIssue(
         [FromRoute] Guid issueId,
@@ -146,7 +178,7 @@ public class IssuesController : ApplicationController
         return Ok(result.Value);
     }
 
-    [Permission(Permissions.Issues.DeleteIssue)]
+    [Permission(Permissions.Issues.DELETE_ISSUE)]
     [HttpDelete("{issueId:guid}/force")]
     public async Task<ActionResult> ForceDeleteIssue(
         [FromRoute] Guid issueId,

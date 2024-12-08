@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="DotNetEnv" Version="3.1.1" />
+        <PackageReference Include="Elastic.Serilog.Sinks" Version="8.12.3" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,16 +22,16 @@
         <PackageReference Include="Serilog.Sinks.Http" Version="9.0.0" />
         <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
         <PackageReference Include="Serilog.Sinks.Trace" Version="4.0.0" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Accounts\SachkovTech.Accounts.Infrastructure\SachkovTech.Accounts.Infrastructure.csproj" />
       <ProjectReference Include="..\Accounts\SachkovTech.Accounts.Presentation\SachkovTech.Accounts.Presentation.csproj" />
-
-      <ProjectReference Include="..\Files\SachkovTech.Files.Application\SachkovTech.Files.Application.csproj" />
-      <ProjectReference Include="..\Files\SachkovTech.Files.Infrastructure\SachkovTech.Files.Infrastructure.csproj" />
-      <ProjectReference Include="..\Files\SachkovTech.Files.Presentation\SachkovTech.Files.Presentation.csproj" />
 
       <ProjectReference Include="..\Issues\SachkovTech.Issues.Infrastructure\SachkovTech.Issues.Infrastructure.csproj" />
       <ProjectReference Include="..\Issues\SachkovTech.Issues.Presentation\SachkovTech.Issues.Presentation.csproj" />

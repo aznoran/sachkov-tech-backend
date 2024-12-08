@@ -1,4 +1,5 @@
 using FluentAssertions;
+using SachkovTech.Issues.Domain.IssueSolving.DomainEvents;
 using SachkovTech.Issues.Domain.IssueSolving.Entities;
 using SachkovTech.Issues.Domain.IssueSolving.Enums;
 using SachkovTech.SharedKernel.ValueObjects;
@@ -8,20 +9,26 @@ namespace SachkovTech.IssueSolving.UnitTests.DomainTestProject1;
 
 public class UserIssueTests
 {
+    private const string PULL_REQUEST_URL = "https://github.com/Test/test/pull/1";
+
     [Fact]
     public void Send_issue_on_review_from_work()
     {
         // Arrange
         var userIssue = CreateUserIssue();
-        var pullRequestUrl = PullRequestUrl.Empty;
+        var pullRequestUrl = PullRequestUrl.Create(PULL_REQUEST_URL).Value;
 
         // Act
         var result = userIssue.SendOnReview(pullRequestUrl);
 
         // Assert
+        var domainEvent = userIssue.DomainEvents.Single() as IssueSentOnReviewEvent;
+
         result.IsSuccess.Should().BeTrue();
         userIssue.Status.Should().Be(IssueStatus.UnderReview);
         userIssue.PullRequestUrl.Should().Be(pullRequestUrl);
+        domainEvent.Should().NotBeNull();
+        domainEvent!.PullRequestUrl.Should().Be(pullRequestUrl);
     }
 
     [Fact]

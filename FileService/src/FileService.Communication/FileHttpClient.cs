@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace FileService.Communication;
 
-public class FileHttpClient(HttpClient httpClient)
+public class FileHttpClient(HttpClient httpClient) : IFileService
 {
     /// <summary>
     /// Function get URLs to upload files from repository.
