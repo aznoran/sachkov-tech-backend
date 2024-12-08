@@ -24,7 +24,7 @@ public static class DependencyInjection
     public static IServiceCollection AddAccountsInfrastructure(
         this IServiceCollection services, IConfiguration configuration)
     {
-        services.RegisterIdentity()
+        services.AddIdentity()
             .AddDbContexts(configuration)
             .AddSeeding()
             .ConfigureCustomOptions(configuration)
@@ -63,10 +63,13 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection RegisterIdentity(this IServiceCollection services)
+    private static IServiceCollection AddIdentity(this IServiceCollection services)
     {
         services
-            .AddIdentity<User, Role>(options => { options.User.RequireUniqueEmail = true; })
+            .AddIdentity<User, Role>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
             .AddEntityFrameworkStores<AccountsWriteDbContext>()
             .AddDefaultTokenProviders();
 

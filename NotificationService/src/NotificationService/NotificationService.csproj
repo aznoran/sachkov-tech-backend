@@ -9,6 +9,7 @@
     </PropertyGroup>
 
 	<ItemGroup>
+        <PackageReference Include="Accounts.Communication" Version="1.1.0" />
         <PackageReference Include="CSharpFunctionalExtensions" Version="3.2.0" />
         <PackageReference Include="EmailNotification.Contacts" Version="1.0.0" />
         <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.2" />
@@ -17,7 +18,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
-        <PackageReference Include="SachkovTech.Accounts.Contracts" Version="1.0.1" />
+        <PackageReference Include="SachkovTech.Accounts.Contracts" Version="1.0.2" />
         <PackageReference Include="sachkovtech.issues.contracts" Version="1.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>

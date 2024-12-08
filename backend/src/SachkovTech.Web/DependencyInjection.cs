@@ -44,7 +44,7 @@ public static class DependencyInjection
     {
         services.AddAccountsInfrastructure(configuration)
             .AddAccountsApplication(configuration)
-            .AddAccountsPresentation();
+            .AddAccountsPresentation(configuration);
 
         return services;
     }

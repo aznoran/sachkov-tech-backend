@@ -14,3 +14,4 @@ public record UserResponse(
     SupportAccountDto? SupportAccount,
     AdminAccountDto? AdminAccount,
     IEnumerable<RoleDto> Roles);
+    

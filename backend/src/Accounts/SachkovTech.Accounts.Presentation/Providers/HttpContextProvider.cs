@@ -1,5 +1,7 @@
-﻿using CSharpFunctionalExtensions;
+﻿using System.Security.Claims;
+using CSharpFunctionalExtensions;
 using Microsoft.AspNetCore.Http;
+using SachkovTech.Core.Models;
 using SachkovTech.SharedKernel;
 
 namespace SachkovTech.Accounts.Presentation.Providers;
@@ -13,7 +15,23 @@ public class HttpContextProvider
     {
         _httpContextAccessor = httpContextAccessor;
     }
+    
+    
 
+    public Result<Guid, Error> GetUserId()
+    {
+        if (_httpContextAccessor.HttpContext is null)
+        {
+            return Errors.General.Failure();
+        }
+        
+        var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(CustomClaims.Id);
+        
+        if (userId == null)
+            return Errors.User.InvalidCredentials();
+
+        return Guid.Parse(userId);
+    }
     public Result<Guid, Error> GetRefreshSessionCookie()
     {
         if (_httpContextAccessor.HttpContext is null)
@@ -47,7 +65,7 @@ public class HttpContextProvider
         {
             return Errors.General.Failure();
         }
-
+        
         _httpContextAccessor.HttpContext.Response.Cookies.Delete(REFRESH_TOKEN);
 
         return UnitResult.Success<Error>();

@@ -8,6 +8,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9227B646-C84B-41D7-B2AC-28BD2AA4C6CF}"
 	ProjectSection(SolutionItems) = preProject
 		dbscript.cmd = dbscript.cmd
+		..\docker-compose.yml = ..\docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{696505DF-F3E6-478B-AA1E-A35BECBB3AF1}"
@@ -55,6 +56,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SachkovTech.Issues.IntegrationTests", "src\Issues\tests\SachkovTech.Issues.IntegrationTests\SachkovTech.Issues.IntegrationTests.csproj", "{3858CC35-4A3D-48AD-93E7-6C6BDC73FAB7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SachkovTech.Issues.UnitTests.Domain", "src\Issues\tests\SachkovTech.Issues.UnitTests.Domain\SachkovTech.Issues.UnitTests.Domain.csproj", "{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SachkovTech.Accounts.Communication", "src\Accounts\SachkovTech.Accounts.Communication\SachkovTech.Accounts.Communication.csproj", "{5EDEE26D-ABE9-4149-AC14-0636DCCA1253}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +141,10 @@ Global
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EDEE26D-ABE9-4149-AC14-0636DCCA1253}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EDEE26D-ABE9-4149-AC14-0636DCCA1253}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EDEE26D-ABE9-4149-AC14-0636DCCA1253}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EDEE26D-ABE9-4149-AC14-0636DCCA1253}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -166,6 +173,7 @@ Global
 		{CAE5A324-8D37-4D8B-ABBB-DE61F0313BC6} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
 		{3858CC35-4A3D-48AD-93E7-6C6BDC73FAB7} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
 		{DBB34D63-8A28-47A4-86E9-D2518F81ED3F} = {C05ECE0D-33EF-49E2-A9FC-4B2110708813}
+		{5EDEE26D-ABE9-4149-AC14-0636DCCA1253} = {0F5BCE9B-E821-499E-A48C-F47F19E4A632}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {06591CB3-5D76-4012-AA6A-ACA4A8D2D8DF}

@@ -2,8 +2,12 @@ using MassTransit;
 using NotificationService.Consumers;
 using NotificationService.Extensions;
 using NotificationService.Infrastructure;
+using SachkovTech.Accounts.Communication;
 
 var builder = WebApplication.CreateBuilder(args);
+
+//Я знаю что ты напишешь что оно итак подтягиваться поэтому я отвечу что так будет лучше
+var configuration = builder.Configuration.AddJsonFile("appsettings.json").Build();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -32,6 +36,8 @@ builder.Services.AddMassTransit(configure =>
         cfg.ConfigureEndpoints(context);
     });
 });
+
+builder.Services.AddAccountHttpCommunication(configuration);
 
 var app = builder.Build();
 

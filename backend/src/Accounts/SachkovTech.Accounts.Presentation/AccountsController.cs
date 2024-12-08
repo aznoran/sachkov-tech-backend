@@ -1,11 +1,18 @@
+using System.Text;
+using System.Web;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Hosting;
 using SachkovTech.Accounts.Application.Commands.CompleteUploadPhoto;
 using SachkovTech.Accounts.Application.Commands.EnrollParticipant;
+using SachkovTech.Accounts.Application.Commands.GenerateConfirmationLink;
 using SachkovTech.Accounts.Application.Commands.Login;
 using SachkovTech.Accounts.Application.Commands.Logout;
 using SachkovTech.Accounts.Application.Commands.RefreshTokens;
 using SachkovTech.Accounts.Application.Commands.Register;
 using SachkovTech.Accounts.Application.Commands.StartUploadFile;
+using SachkovTech.Accounts.Application.Commands.VerifyConfirmationLink;
 using SachkovTech.Accounts.Application.Queries.GetUserById;
 using SachkovTech.Accounts.Application.Queries.GetUsers;
 using SachkovTech.Accounts.Application.Requests;
@@ -50,56 +57,32 @@ public class AccountsController : ApplicationController
     {
         return Ok(await handler.Handle(query, cancellationToken));
     }
-
-    [HttpPost("/start-upload-photo")]
-    [Permission(Permissions.Issues.UPDATE_ISSUE)]
-    public async Task<IActionResult> StartUploadPhoto(
-        [FromServices] StartUploadPhotoHandler handler,
-        [FromServices] UserScopedData userScopedData,
-        [FromBody] FileMetadataRequest request,
+    
+    [HttpPost("confirmation-link/{userId:guid}")]
+    public async Task<IActionResult> GetConfirmationLink(
+        [FromRoute] Guid userId,
+        [FromServices] GenerateConfirmationLinkHandler handler,
         CancellationToken cancellationToken = default)
     {
-        var command = new StartUploadPhotoCommand(
-            userScopedData.UserId,
-            request.FileName,
-            request.ContentType,
-            request.FileSize);
+        var command = new GenerateConfirmationLinkCommand(userId);
 
         var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
-            result.Error.ToResponse();
-
+            return result.Error.ToResponse();
+        
         return Ok(result.Value);
     }
 
-    [HttpPost("/complete-upload-photo")]
-    [Permission(Permissions.Issues.UPDATE_ISSUE)]
-    public async Task<IActionResult> CompleteUploadPhoto(
-        [FromServices] CompleteUploadPhotoHandler handler,
-        [FromServices] UserScopedData userScopedData,
-        [FromBody] CompleteMultipartUploadRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new CompleteUploadPhotoCommand(
-            userScopedData.UserId,
-            request.FileMetadata.FileName,
-            request.FileMetadata.ContentType,
-            request.FileMetadata.FileSize,
-            request.UploadId,
-            request.Parts);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            result.Error.ToResponse();
-
-        return Ok();
-    }
-    
     [HttpPost("admin-token-for-test")]
-    public async Task<IActionResult> Testing([FromServices] LoginHandler handler, CancellationToken cancellationToken)
+    public async Task<IActionResult> Testing(
+        [FromServices] LoginHandler handler,
+        [FromServices] IWebHostEnvironment env, 
+        CancellationToken cancellationToken)
     {
+        
+        if(env.IsDevelopment() == false) return BadRequest();
+        
         return new ObjectResult("Bearer " +
                                 (((await Login(new LoginUserRequest("admin@admin.com", "!Admin123"),
                                                 handler, cancellationToken)
@@ -120,6 +103,25 @@ public class AccountsController : ApplicationController
                 request.UserName,
                 request.Password),
             cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
+    
+    [HttpPost("email-verification/{code:required}")]
+    public async Task<IActionResult> VerifyEmail(
+        [FromRoute] string code,
+        [FromServices] VerifyConfirmationLinkHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        CancellationToken cancellationToken)
+    {
+        var decodedToken = NormalizeBase64UrlStringAndGetResult(code);
+        
+        var command = new VerifyConfirmationLinkCommand(userScopedData.UserId, decodedToken);
+        
+        var result = await handler.Handle(command, cancellationToken);
 
         if (result.IsFailure)
             return result.Error.ToResponse();
@@ -178,6 +180,55 @@ public class AccountsController : ApplicationController
         return Ok(result.Value);
     }
 
+    //TODO: уберите это отсюда
+    [HttpPost("/start-upload-photo")]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
+    public async Task<IActionResult> StartUploadPhoto(
+        [FromServices] StartUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        [FromBody] FileMetadataRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new StartUploadPhotoCommand(
+            userScopedData.UserId,
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    //TODO: уберите это отсюда
+    [HttpPost("/complete-upload-photo")]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
+    public async Task<IActionResult> CompleteUploadPhoto(
+        [FromServices] CompleteUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        [FromBody] CompleteMultipartUploadRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new CompleteUploadPhotoCommand(
+            userScopedData.UserId,
+            request.FileMetadata.FileName,
+            request.FileMetadata.ContentType,
+            request.FileMetadata.FileSize,
+            request.UploadId,
+            request.Parts);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok();
+    }
+    
+    //TODO: для общей стилистики можно переделать в log-out , но придется искать еще на фронте
     [HttpPost("logOut")]
     public async Task<IActionResult> Logout([FromServices] LogoutHandler handler,
         CancellationToken cancellationToken)
@@ -205,7 +256,7 @@ public class AccountsController : ApplicationController
 
         return Ok();
     }
-
+    
     [Permission(Permissions.Accounts.ENROLL_ACCOUNT)]
     [HttpPut("student-role")]
     public async Task<ActionResult> EnrollParticipant(
@@ -221,5 +272,22 @@ public class AccountsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok();
+    }
+    
+    private static string NormalizeBase64UrlStringAndGetResult(string input)
+    {
+        // Заменяем символы URL в стандартные элементы Base64
+        var base64 = input.Replace('-', '+').Replace('_', '/');
+
+        // Длина должна делиться на 4, поэтому мы добавляем недостающие знаки "="
+        switch (input.Length % 4)
+        {
+            case 2: base64 += "=="; break;
+            case 3: base64 += "="; break;
+        }
+
+        var decodedBytes = WebEncoders.Base64UrlDecode(base64);
+        
+        return Encoding.UTF8.GetString(decodedBytes);
     }
 }

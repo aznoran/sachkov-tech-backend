@@ -1,30 +1,40 @@
 ﻿using EmailNotification.Contacts;
 using MassTransit;
+using SachkovTech.Accounts.Communication;
 using SachkovTech.Accounts.Contracts.Messaging;
-using SachkovTech.Accounts.Contracts.Responses;
 
 namespace NotificationService.Consumers;
 
 public class UserRegisteredEventConsumer : IConsumer<UserRegisteredEvent>
 {
+    private readonly AccountHttpClient _httpClient;
+
+    public UserRegisteredEventConsumer(AccountHttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
     public async Task Consume(ConsumeContext<UserRegisteredEvent> context)
     {
-        // достать информацию о пользователе из Account service
-        
-        // создать комманду для отправки уведомления на почту, телеграм или веб
-        
-        var userResponse = new UserResponse(Guid.NewGuid(), "", "", "", "sachkov@gmail.com", DateTime.Now, [], null, null, null, []);
+        if (context.Message.UserId == Guid.Empty) return;
 
+        var result = await _httpClient.GetConfirmationLink(context.Message.UserId);
+
+        if (result.IsFailure)
+        {
+            throw new Exception(result.Error);
+        }
+        
         var sendEmailCommand = new SendEmailCommand(
-            userResponse.Email,
-            "Hello! You have successfully registered!",
-            "registration",
+            result.Value.Email,
+            "Подтверждение почты!",
+            "registration-confirmation",
             new
             {
-                ConfirmationLink = "link",
+                ConfirmationLink = result.Value.ConfirmationLink
             }
         );
 
         await context.Publish(sendEmailCommand, context.CancellationToken);
     }
 }
+
