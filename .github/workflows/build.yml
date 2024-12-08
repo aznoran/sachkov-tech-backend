@@ -9,9 +9,9 @@ env:
 
 on:
   push:
-    branches: ["dev"]
+    branches: [ "dev" ]
   pull_request:
-    branches: ["dev"]
+    branches: [ "dev" ]
 
 jobs:
   build:
@@ -27,9 +27,37 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore ./backend/SachkovTech.sln
-
+        
+      - name: Restore NuGet packages
+        run: |
+          dotnet restore ./backend/SachkovTech.sln
+          dotnet restore ./CommentService/CommentService.sln
+          dotnet restore ./EmailNotificationService/EmailNotificationService.sln
+          dotnet restore ./FileService/FileService.sln
+          dotnet restore ./NotificationService/NotificationService.sln
+          dotnet restore ./TagService/TagService.sln
+          dotnet restore ./TelegramBotService/TelegramBotService.sln
+          dotnet restore ./tests/CodeAnalyzer.Tests/CodeAnalyzer.Tests.sln
+          
       - name: Build
-        run: dotnet build ./backend/SachkovTech.sln --configuration Release --no-restore
+        run: |
+          dotnet build ./backend/SachkovTech.sln --configuration Release --no-restore
+          dotnet build ./CommentService/CommentService.sln --configuration Release --no-restore
+          dotnet build ./EmailNotificationService/EmailNotificationService.sln --configuration Release --no-restore
+          dotnet build ./FileService/FileService.sln --configuration Release --no-restore
+          dotnet build ./NotificationService/NotificationService.sln --configuration Release --no-restore
+          dotnet build ./TagService/TagService.sln --configuration Release --no-restore
+          dotnet build ./TelegramBotService/TelegramBotService.sln --configuration Release --no-restore
+          dotnet build ./tests/CodeAnalyzer.Tests/CodeAnalyzer.Tests.sln
 
-      - name: Tests
-        run: dotnet test ./backend/SachkovTech.sln
+      - name: Services_Tests
+        run: |
+          dotnet test ./backend/SachkovTech.sln --configuration Release --no-restore
+          dotnet test ./CommentService/CommentService.sln --configuration Release --no-restore
+          dotnet test ./EmailNotificationService/EmailNotificationService.sln --configuration Release --no-restore
+          dotnet test ./NotificationService/NotificationService.sln --configuration Release --no-restore
+          dotnet test ./TagService/TagService.sln --configuration Release --no-restore
+          dotnet test ./TelegramBotService/TelegramBotService.sln --configuration Release --no-restore
+          
+      - name: General_Tests
+        run: dotnet test ./tests/CodeAnalyzer.Tests/CodeAnalyzer.Tests.sln

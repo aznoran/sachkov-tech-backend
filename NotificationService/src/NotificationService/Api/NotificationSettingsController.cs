@@ -11,6 +11,22 @@ namespace NotificationService.Api;
 [ApiController]
 public class NotificationSettingsController : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid id,
+        [FromServices] GetNotificationSettingsHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetNotificationSettingsQuery(id);
+
+        var result = await handler.Handle(query, cancellationToken);
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        var envelope = Envelope.Ok(result.Value);
+        return Ok(envelope);
+    }
+    
     [HttpPatch]
     public async Task<IActionResult> Patch(
         [FromRoute] Guid id,
@@ -26,21 +42,5 @@ public class NotificationSettingsController : ControllerBase
             return result.Error.ToResponse();
 
         return Ok();
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Get(
-        [FromRoute] Guid id,
-        [FromServices] GetNotificationSettingsHandler handler,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetNotificationSettingsQuery(id);
-
-        var result = await handler.Handle(query, cancellationToken);
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        var envelope = Envelope.Ok(result.Value);
-        return Ok(envelope);
     }
 }

@@ -29,6 +29,74 @@ public class AccountsController : ApplicationController
         _httpContextProvider = httpContextProvider;
     }
 
+    [HttpGet("{userId:guid}")]
+    [Permission(Permissions.Accounts.READ_ACCOUNT)]
+    public async Task<IActionResult> GetUserById(
+        [FromRoute] Guid userId,
+        [FromServices] GetUserByIdHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetUserByIdQuery(userId);
+
+        return Ok(await handler.Handle(query, cancellationToken));
+    }
+
+    [HttpGet]
+    [Permission(Permissions.Accounts.READ_ACCOUNT)]
+    public async Task<IActionResult> GetUsers(
+        [FromQuery] GetUsersQuery query,
+        [FromServices] GetUsersHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        return Ok(await handler.Handle(query, cancellationToken));
+    }
+
+    [HttpPost("/start-upload-photo")]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
+    public async Task<IActionResult> StartUploadPhoto(
+        [FromServices] StartUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        [FromBody] FileMetadataRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new StartUploadPhotoCommand(
+            userScopedData.UserId,
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("/complete-upload-photo")]
+    [Permission(Permissions.Issues.UPDATE_ISSUE)]
+    public async Task<IActionResult> CompleteUploadPhoto(
+        [FromServices] CompleteUploadPhotoHandler handler,
+        [FromServices] UserScopedData userScopedData,
+        [FromBody] CompleteMultipartUploadRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new CompleteUploadPhotoCommand(
+            userScopedData.UserId,
+            request.FileMetadata.FileName,
+            request.FileMetadata.ContentType,
+            request.FileMetadata.FileSize,
+            request.UploadId,
+            request.Parts);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok();
+    }
+    
     [HttpPost("admin-token-for-test")]
     public async Task<IActionResult> Testing([FromServices] LoginHandler handler, CancellationToken cancellationToken)
     {
@@ -151,74 +219,6 @@ public class AccountsController : ApplicationController
 
         if (result.IsFailure)
             return result.Error.ToResponse();
-
-        return Ok();
-    }
-
-    [HttpGet("{userId:guid}")]
-    [Permission(Permissions.Accounts.READ_ACCOUNT)]
-    public async Task<IActionResult> GetUserById(
-        [FromRoute] Guid userId,
-        [FromServices] GetUserByIdHandler handler,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetUserByIdQuery(userId);
-
-        return Ok(await handler.Handle(query, cancellationToken));
-    }
-
-    [HttpGet]
-    [Permission(Permissions.Accounts.READ_ACCOUNT)]
-    public async Task<IActionResult> GetUsers(
-        [FromQuery] GetUsersQuery query,
-        [FromServices] GetUsersHandler handler,
-        CancellationToken cancellationToken = default)
-    {
-        return Ok(await handler.Handle(query, cancellationToken));
-    }
-
-    [HttpPost("/start-upload-photo")]
-    [Permission(Permissions.Issues.UPDATE_ISSUE)]
-    public async Task<IActionResult> StartUploadPhoto(
-        [FromServices] StartUploadPhotoHandler handler,
-        [FromServices] UserScopedData userScopedData,
-        [FromBody] FileMetadataRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new StartUploadPhotoCommand(
-            userScopedData.UserId,
-            request.FileName,
-            request.ContentType,
-            request.FileSize);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [HttpPost("/complete-upload-photo")]
-    [Permission(Permissions.Issues.UPDATE_ISSUE)]
-    public async Task<IActionResult> CompleteUploadPhoto(
-        [FromServices] CompleteUploadPhotoHandler handler,
-        [FromServices] UserScopedData userScopedData,
-        [FromBody] CompleteMultipartUploadRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new CompleteUploadPhotoCommand(
-            userScopedData.UserId,
-            request.FileMetadata.FileName,
-            request.FileMetadata.ContentType,
-            request.FileMetadata.FileSize,
-            request.UploadId,
-            request.Parts);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            result.Error.ToResponse();
 
         return Ok();
     }

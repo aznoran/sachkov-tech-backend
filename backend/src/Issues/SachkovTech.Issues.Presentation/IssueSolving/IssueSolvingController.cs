@@ -13,6 +13,24 @@ namespace SachkovTech.Issues.Presentation.IssueSolving;
 
 public class IssueSolvingController : ApplicationController
 {
+    [HttpGet]
+    public async Task<ActionResult> GetUserIssuesByModuleId(
+        [FromQuery] GetUserIssuesByModuleWithPaginationRequest request,
+        [FromServices] GetUserIssuesByModuleWithPaginationHandler handler,
+        CancellationToken cancellationToken = default)
+    {
+        var query = new GetUserIssuesByModuleWithPaginationQuery(
+            request.UserId,
+            request.ModuleId,
+            request.Status,
+            request.Page,
+            request.PageSize);
+
+        var response = await handler.Handle(query, cancellationToken);
+
+        return Ok(response);
+    }
+    
     [Permission(Permissions.SolvingIssues.CREATE_SOLVING_ISSUE)]
     [HttpPost("{issueId:guid}")]
     public async Task<ActionResult> TakeOnWork(
@@ -67,23 +85,5 @@ public class IssueSolvingController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok();
-    }
-
-    [HttpGet]
-    public async Task<ActionResult> GetUserIssuesByModuleId(
-        [FromQuery] GetUserIssuesByModuleWithPaginationRequest request,
-        [FromServices] GetUserIssuesByModuleWithPaginationHandler handler,
-        CancellationToken cancellationToken = default)
-    {
-        var query = new GetUserIssuesByModuleWithPaginationQuery(
-            request.UserId,
-            request.ModuleId,
-            request.Status,
-            request.Page,
-            request.PageSize);
-
-        var response = await handler.Handle(query, cancellationToken);
-
-        return Ok(response);
     }
 }

@@ -18,6 +18,58 @@ namespace SachkovTech.Issues.Presentation.Lessons;
 
 public class LessonsController : ApplicationController
 {
+    [HttpGet]
+    [Permission(Permissions.Lessons.READ_LESSON)]
+    public async Task<IActionResult> GetLessonsWithPagination(
+        [FromQuery] int page,
+        [FromQuery] int pageSize,
+        [FromServices] GetLessonsWithPaginationHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new GetLessonsWithPaginationQuery(page, pageSize),
+            cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("{lessonId:guid}")]
+    [Permission(Permissions.Lessons.READ_LESSON)]
+    public async Task<IActionResult> GetLessonById(
+        [FromRoute] Guid lessonId,
+        [FromServices] GetLessonByIdHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new GetLessonByIdQuery(lessonId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+
+    [HttpPost("{lessonId:guid}/start-upload-video")]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
+    public async Task<IActionResult> StartUploadVideo(
+        [FromServices] StartUploadVideoHandler handler,
+        [FromBody] FileMetadataRequest request,
+        CancellationToken cancellationToken = default)
+    {
+        var command = new StartUploadVideoCommand(
+            request.FileName,
+            request.ContentType,
+            request.FileSize);
+
+        var result = await handler.Handle(command, cancellationToken);
+
+        if (result.IsFailure)
+            result.Error.ToResponse();
+
+        return Ok(result.Value);
+    }
+    
     [HttpPost]
     [Permission(Permissions.Lessons.CREATE_LESSON)]
     public async Task<IActionResult> CreateLesson(
@@ -104,6 +156,21 @@ public class LessonsController : ApplicationController
 
         return Ok();
     }
+    
+    [HttpPatch("{lessonId}/restore")]
+    [Permission(Permissions.Lessons.UPDATE_LESSON)]
+    public async Task<IActionResult> RestoreLesson(
+        [FromRoute] Guid lessonId,
+        [FromServices] RestoreLessonHandler handler,
+        CancellationToken cancellationToken)
+    {
+        var result = await handler.Handle(new RestoreLessonCommand(lessonId), cancellationToken);
+
+        if (result.IsFailure)
+            return result.Error.ToResponse();
+
+        return Ok();
+    }
 
     [HttpDelete("{lessonId}/issue")]
     [Permission(Permissions.Lessons.UPDATE_LESSON)]
@@ -137,21 +204,6 @@ public class LessonsController : ApplicationController
         return Ok();
     }
 
-    [HttpPatch("{lessonId}/restore")]
-    [Permission(Permissions.Lessons.UPDATE_LESSON)]
-    public async Task<IActionResult> RestoreLesson(
-        [FromRoute] Guid lessonId,
-        [FromServices] RestoreLessonHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(new RestoreLessonCommand(lessonId), cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok();
-    }
-
     [HttpDelete("{lessonId:guid}")]
     [Permission(Permissions.Lessons.DELETE_LESSON)]
     public async Task<IActionResult> SoftDeleteLesson(
@@ -165,57 +217,5 @@ public class LessonsController : ApplicationController
             return result.Error.ToResponse();
 
         return Ok();
-    }
-
-    [HttpGet]
-    [Permission(Permissions.Lessons.READ_LESSON)]
-    public async Task<IActionResult> GetLessonsWithPagination(
-        [FromQuery] int page,
-        [FromQuery] int pageSize,
-        [FromServices] GetLessonsWithPaginationHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(new GetLessonsWithPaginationQuery(page, pageSize),
-            cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [HttpGet("{lessonId:guid}")]
-    [Permission(Permissions.Lessons.READ_LESSON)]
-    public async Task<IActionResult> GetLessonById(
-        [FromRoute] Guid lessonId,
-        [FromServices] GetLessonByIdHandler handler,
-        CancellationToken cancellationToken)
-    {
-        var result = await handler.Handle(new GetLessonByIdQuery(lessonId), cancellationToken);
-
-        if (result.IsFailure)
-            return result.Error.ToResponse();
-
-        return Ok(result.Value);
-    }
-
-    [HttpPost("{lessonId:guid}/start-upload-video")]
-    [Permission(Permissions.Lessons.UPDATE_LESSON)]
-    public async Task<IActionResult> StartUploadVideo(
-        [FromServices] StartUploadVideoHandler handler,
-        [FromBody] FileMetadataRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        var command = new StartUploadVideoCommand(
-            request.FileName,
-            request.ContentType,
-            request.FileSize);
-
-        var result = await handler.Handle(command, cancellationToken);
-
-        if (result.IsFailure)
-            result.Error.ToResponse();
-
-        return Ok(result.Value);
     }
 }

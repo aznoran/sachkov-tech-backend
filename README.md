@@ -20,3 +20,6 @@ Password - это токен
 
 # Как пушить новые nuget пакеты?
 Документация - [https://docs.github.com/ru/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry](https://docs.github.com/ru/packages/working-with-a-github-packages-registry/working-with-the-nuget-registry#publishing-a-package-using-a-nugetconfig-file)
+
+# .editorconfig
+Актуальный шаблон лежит в самом репозитории. Если для текущего проекта нужно расширить его функционал просто копируем .editorconfig в папку с решением .sln и конфигурируем. Если вводите что-то новое, то пишите это в конце после комментария #CUSTOM, править то что выше #CUSTOM не рекомендуется
